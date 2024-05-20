@@ -9,7 +9,10 @@ public enum ExceptionEnum {
     TRIP_NOT_FOUND(HttpStatus.BAD_REQUEST, "TRIP_NOT_FOUND-03","해당하는 데이터가 없습니다."), //예시
 
     //----------trip place
-    TRIP_PLACE_NOT_FOUND(HttpStatus.BAD_REQUEST, "TRIP_PLACE_NOT_FOUND","해당하는 장소가 없습니다.");
+    TRIP_PLACE_NOT_FOUND(HttpStatus.BAD_REQUEST, "TRIP_PLACE_NOT_FOUND","해당하는 장소가 없습니다."),
+
+    //----------trip place reply
+    TRIP_REPLY_NOT_FOUND(HttpStatus.BAD_REQUEST, "TRIP_REPLY_NOT_FOUND","해당하는 댓글이 없습니다.");
 
     private final HttpStatus status;
     private final String code;

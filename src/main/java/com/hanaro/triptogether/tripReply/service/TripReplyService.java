@@ -1,5 +1,7 @@
 package com.hanaro.triptogether.tripReply.service;
 
+import com.hanaro.triptogether.exception.ApiException;
+import com.hanaro.triptogether.exception.ExceptionEnum;
 import com.hanaro.triptogether.tripPlace.service.TripPlaceService;
 import com.hanaro.triptogether.tripReply.domain.TripReply;
 import com.hanaro.triptogether.tripReply.domain.TripReplyRepository;
@@ -28,11 +30,21 @@ public class TripReplyService {
                 .collect(Collectors.toList());
     }
 
+    public void deleteReply(Long trip_place_idx, Long reply_idx) {
+        tripPlaceService.checkTripPlaceExists(trip_place_idx);
+        checkTripReplyExist(reply_idx);
+        tripReplyRepository.deleteById(reply_idx);
+    }
+
     private TripReplyResDto mapToTripReplyResDto(TripReply tripReply) {
         String memberName = tripReply.getTeamMember().getMember().getDeletedAt() == null
                 ? tripReply.getTeamMember().getMember().getMemberName()
                 : DELETED_MEMBER;
 
         return new TripReplyResDto(tripReply, memberName);
+    }
+
+    public void checkTripReplyExist(Long reply_idx){
+        tripReplyRepository.findById(reply_idx).orElseThrow(() -> new ApiException(ExceptionEnum.TRIP_REPLY_NOT_FOUND));
     }
 }
