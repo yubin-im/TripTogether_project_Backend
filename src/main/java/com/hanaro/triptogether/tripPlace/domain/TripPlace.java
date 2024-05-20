@@ -44,10 +44,5 @@ public class TripPlace {
 
     private LocalDateTime lastModifiedAt;
     private Long lastModifiedBy;
-    private LocalDateTime deletedAt;
-
-    @ManyToOne
-    @JoinColumn(name = "deleted_by", insertable=false, updatable=false)
-    private Member deletedBy;
 
 }

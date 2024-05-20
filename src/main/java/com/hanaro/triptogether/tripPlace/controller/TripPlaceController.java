@@ -9,7 +9,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/trip/place")
+@RequestMapping("/trips/place")
 public class TripPlaceController {
 
     private final TripPlaceService tripPlaceService;

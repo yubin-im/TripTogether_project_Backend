@@ -22,7 +22,11 @@ public class TripPlaceService {
     }
 
     public void deleteTripPlace(Long trip_place_idx) {
-        TripPlace tripPlace = tripPlaceRepository.findById(trip_place_idx).orElseThrow(() -> new ApiException(ExceptionEnum.TRIP_PLACE_NOT_FOUND));
+        checkTripPlaceExists(trip_place_idx);
         tripPlaceRepository.deleteById(trip_place_idx);
+    }
+
+    public void checkTripPlaceExists(Long trip_place_idx){
+        tripPlaceRepository.findById(trip_place_idx).orElseThrow(() -> new ApiException(ExceptionEnum.TRIP_PLACE_NOT_FOUND));
     }
 }

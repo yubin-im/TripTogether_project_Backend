@@ -115,7 +115,7 @@ CREATE TABLE `Place` (
 );
 CREATE TABLE `Dues` (
     `dues_idx` BIGINT NOT NULL AUTO_INCREMENT,
-    `gathering_idx` BIGINT NOT NULL,
+    `team_idx` BIGINT NOT NULL,
     `dues_date` INT NOT NULL,
     `dues_amount` DECIMAL(20, 2) NOT NULL DEFAULT 0,
     `created_at` DATETIME(6) NOT NULL,
@@ -125,7 +125,7 @@ CREATE TABLE `Dues` (
     `deleted_at` DATETIME(6) NULL,
     `deleted_by` BIGINT NULL,
     PRIMARY KEY (`dues_idx`),
-    FOREIGN KEY (`gathering_idx`) REFERENCES `Team` (`team_idx`)
+    FOREIGN KEY (`team_idx`) REFERENCES `Team` (`team_idx`)
 );
 CREATE TABLE `Trip` (
     `trip_idx` BIGINT NOT NULL AUTO_INCREMENT,
@@ -143,7 +143,7 @@ CREATE TABLE `Trip` (
     `deleted_at` DATETIME(6) NULL,
     `deleted_by` BIGINT NULL,
     PRIMARY KEY (`trip_idx`),
-    FOREIGN KEY (`gathering_idx`) REFERENCES `Team` (`team_idx`),
+    FOREIGN KEY (`team_idx`) REFERENCES `Team` (`team_idx`),
     FOREIGN KEY (`country_idx`) REFERENCES `Country` (`country_idx`)
 );
 CREATE TABLE `Exchange_rate` (
@@ -157,7 +157,7 @@ CREATE TABLE `Exchange_rate` (
 );
 CREATE TABLE `Exchange_rate_alarm` (
     `alarm_idx` BIGINT NOT NULL AUTO_INCREMENT,
-    `gathering_idx` BIGINT NOT NULL,
+    `team_idx` BIGINT NOT NULL,
     `cur_idx` BIGINT NOT NULL,
     `max_rate` DECIMAL(20, 2) NOT NULL,
     `min_rate` DECIMAL(20, 2) NOT NULL,
@@ -168,7 +168,7 @@ CREATE TABLE `Exchange_rate_alarm` (
     `deleted_at` DATETIME(6) NULL,
     `deleted_by` BIGINT NULL,
     PRIMARY KEY (`alarm_idx`),
-    FOREIGN KEY (`gathering_idx`) REFERENCES `Team` (`team_idx`),
+    FOREIGN KEY (`team_idx`) REFERENCES `Team` (`team_idx`),
     FOREIGN KEY (`cur_idx`) REFERENCES `Exchange_rate` (`cur_idx`)
 );
 CREATE TABLE `Trip_place` (
@@ -191,14 +191,14 @@ CREATE TABLE `Trip_place` (
 CREATE TABLE `Trip_reply` (
     `trip_reply_idx` BIGINT NOT NULL AUTO_INCREMENT,
     `trip_place_idx` BIGINT NOT NULL,
-    `gathering_member_idx` BIGINT NOT NULL,
+    `team_member_idx` BIGINT NOT NULL,
     `trip_reply_content` VARCHAR(255) NOT NULL,
     `created_at` DATETIME(6) NOT NULL,
     `last_modified_at` DATETIME(6) NULL,
     `deleted_at` DATETIME(6) NULL,
     PRIMARY KEY (`trip_reply_idx`),
     FOREIGN KEY (`trip_place_idx`) REFERENCES `Trip_place` (`trip_place_idx`),
-    FOREIGN KEY (`gathering_member_idx`) REFERENCES `Team_member` (`team_member_idx`)
+    FOREIGN KEY (`team_member_idx`) REFERENCES `Team_member` (`team_member_idx`)
 );
 CREATE TABLE `Category` (
     `category_idx` BIGINT NOT NULL AUTO_INCREMENT,
