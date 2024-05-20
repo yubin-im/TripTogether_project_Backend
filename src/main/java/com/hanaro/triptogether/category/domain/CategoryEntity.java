@@ -1,6 +1,7 @@
 package com.hanaro.triptogether.category.domain;
 
 import com.hanaro.triptogether.category.dto.Category;
+import com.hanaro.triptogether.member.Member;
 import jakarta.annotation.PostConstruct;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -29,13 +30,21 @@ public class CategoryEntity {
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
-    @Column(nullable = false)
-    private Long createdBy;
+    @ManyToOne
+    @JoinColumn(name = "created_by", insertable=false, updatable=false)
+    private Member createdBy;
 
     private LocalDateTime lastModifiedAt;
-    private Long lastModifiedBy;
+
+    @ManyToOne
+    @JoinColumn(name = "last_modified_by", insertable=false, updatable=false)
+    private Member lastModifiedBy;
+
     private LocalDateTime deletedAt;
-    private Long deletedBy;
+
+    @ManyToOne
+    @JoinColumn(name = "deleted_by", insertable=false, updatable=false)
+    private Member deletedBy;
 
     public Category toCategory() {
         return Category.builder()

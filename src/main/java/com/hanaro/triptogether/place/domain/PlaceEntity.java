@@ -2,12 +2,12 @@ package com.hanaro.triptogether.place.domain;
 
 import java.time.LocalDateTime;
 
-import com.hanaro.triptogether.city.City;
+import com.hanaro.triptogether.city.domain.CityEntity;
+import com.hanaro.triptogether.member.Member;
 import com.hanaro.triptogether.place.dto.Place;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
@@ -22,7 +22,7 @@ public class PlaceEntity {
 
     @ManyToOne
     @JoinColumn(name = "city_idx", nullable = false)
-    private City city;
+    private CityEntity city;
 
     @Column(nullable = false, length = 100)
     private String placeNameKo;
@@ -34,13 +34,21 @@ public class PlaceEntity {
     @Column(nullable = false)
     private LocalDateTime createdAt;
 
-    @Column(nullable = false)
-    private Long createdBy;
+    @ManyToOne
+    @JoinColumn(name = "created_by", insertable=false, updatable=false)
+    private Member createdBy;
 
     private LocalDateTime lastModifiedAt;
-    private Long lastModifiedBy;
+
+    @ManyToOne
+    @JoinColumn(name = "last_modified_by", insertable=false, updatable=false)
+    private Member lastModifiedBy;
+
     private LocalDateTime deletedAt;
-    private Long deletedBy;
+
+    @ManyToOne
+    @JoinColumn(name = "deleted_by", insertable=false, updatable=false)
+    private Member deletedBy;
 
     public Place toPlace() {
         return Place.builder()
