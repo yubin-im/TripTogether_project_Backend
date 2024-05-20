@@ -1,6 +1,6 @@
 package com.hanaro.triptogether.accountTransactionDetails;
 
-import com.hanaro.triptogether.account.Account;
+import com.hanaro.triptogether.account.domain.Account;
 import com.hanaro.triptogether.enumeration.TransType;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
