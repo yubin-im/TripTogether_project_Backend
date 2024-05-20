@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 
 @Getter
 @Builder
-public class AccountListResDto {
+public class TeamServiceListResDto {
     private Long accIdx;
     private String accNumber;
     private BigDecimal accBalance;
