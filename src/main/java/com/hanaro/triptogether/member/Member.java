@@ -1,8 +1,6 @@
 package com.hanaro.triptogether.member;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import org.springframework.data.annotation.Id;
 
 import java.time.LocalDateTime;
 
