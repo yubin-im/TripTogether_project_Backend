@@ -4,10 +4,13 @@ import com.hanaro.triptogether.enumeration.TeamMemberState;
 import com.hanaro.triptogether.member.domain.Member;
 import com.hanaro.triptogether.team.domain.Team;
 import jakarta.persistence.*;
+import lombok.Getter;
+
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "Team_member")
+@Getter
 public class TeamMember {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -4,8 +4,11 @@ import java.time.LocalDateTime;
 
 import com.hanaro.triptogether.city.City;
 import jakarta.persistence.*;
+import lombok.Getter;
+
 @Entity
-@Table(name = "Place")
+@Table(name = "place")
+@Getter
 public class Place {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
