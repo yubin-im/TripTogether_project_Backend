@@ -1,6 +1,6 @@
 package com.hanaro.triptogether.team;
 
-import com.hanaro.triptogether.account.Account;
+import com.hanaro.triptogether.account.domain.Account;
 import com.hanaro.triptogether.enumeration.PreferenceType;
 import com.hanaro.triptogether.enumeration.TeamType;
 import jakarta.persistence.*;
