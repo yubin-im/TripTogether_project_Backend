@@ -2,7 +2,7 @@ package com.hanaro.triptogether.account.service.impl;
 
 import com.hanaro.triptogether.account.domain.Account;
 import com.hanaro.triptogether.account.domain.AccountRepository;
-import com.hanaro.triptogether.account.dto.response.AccountListResDto;
+import com.hanaro.triptogether.account.dto.response.TeamServiceListResDto;
 import com.hanaro.triptogether.account.service.AccountService;
 import com.hanaro.triptogether.member.domain.Member;
 import com.hanaro.triptogether.member.domain.MemberRepository;
@@ -24,23 +24,23 @@ public class AccountServiceImpl implements AccountService {
     // 모임서비스 전체 조회
     @Transactional
     @Override
-    public List<AccountListResDto> accountList(Long memberIdx) {
-        List<AccountListResDto> accountListResDtos = new ArrayList<>();
+    public List<TeamServiceListResDto> TeamServiceList(Long memberIdx) {
+        List<TeamServiceListResDto> teamServiceListResDtos = new ArrayList<>();
 
         Member member = memberRepository.findById(memberIdx).orElse(null);
         List<Account> accounts = accountRepository.findAccountsByMember(member);
 
         for(int i = 0; i < accounts.size(); i++) {
-            AccountListResDto accountListResDto = AccountListResDto.builder()
+            TeamServiceListResDto teamServiceListResDto = TeamServiceListResDto.builder()
                     .accIdx(accounts.get(i).getAccIdx())
                     .accNumber(accounts.get(i).getAccNumber())
                     .accBalance(accounts.get(i).getAccBalance())
                     .teamName(teamRepository.findTeamByAccount(accounts.get(i)).getTeamName())
                     .build();
 
-            accountListResDtos.add(accountListResDto);
+            teamServiceListResDtos.add(teamServiceListResDto);
         }
 
-        return accountListResDtos;
+        return teamServiceListResDtos;
     }
 }
