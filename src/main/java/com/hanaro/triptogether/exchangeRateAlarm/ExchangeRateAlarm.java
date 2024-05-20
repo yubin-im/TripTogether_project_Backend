@@ -1,7 +1,6 @@
 package com.hanaro.triptogether.exchangeRateAlarm;
 import com.hanaro.triptogether.exchangeRate.ExchangeRate;
-import com.hanaro.triptogether.team.Team;
-import lombok.*;
+import com.hanaro.triptogether.team.domain.Team;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;

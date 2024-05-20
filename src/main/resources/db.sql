@@ -38,7 +38,9 @@ CREATE TABLE `Account_transaction_details` (
     `deleted_at` DATETIME(6) NULL,
     `deleted_by` BIGINT NULL,
     PRIMARY KEY (`trans_idx`),
-    FOREIGN KEY (`acc_idx`) REFERENCES `Account` (`acc_idx`)
+    FOREIGN KEY (`acc_idx`) REFERENCES `Account` (`acc_idx`),
+    FOREIGN KEY (`last_modified_by`) REFERENCES `Member` (`member_idx`),
+    FOREIGN KEY (`deleted_by`) REFERENCES `Member` (`member_idx`)    
 );
 CREATE TABLE `Team` (
     `team_idx` BIGINT NOT NULL AUTO_INCREMENT,
@@ -55,7 +57,10 @@ CREATE TABLE `Team` (
     `deleted_at` DATETIME(6) NULL,
     `deleted_by` BIGINT NULL,
     PRIMARY KEY (`team_idx`),
-    FOREIGN KEY (`acc_idx`) REFERENCES `Account` (`acc_idx`)
+    FOREIGN KEY (`acc_idx`) REFERENCES `Account` (`acc_idx`),
+    FOREIGN KEY (`created_by`) REFERENCES `Member` (`member_idx`),
+    FOREIGN KEY (`last_modified_by`) REFERENCES `Member` (`member_idx`),
+    FOREIGN KEY (`deleted_by`) REFERENCES `Member` (`member_idx`)    
 );
 CREATE TABLE `Team_member` (
     `team_member_idx` BIGINT NOT NULL AUTO_INCREMENT,
@@ -69,7 +74,9 @@ CREATE TABLE `Team_member` (
     `deleted_by` BIGINT NULL,
     PRIMARY KEY (`team_member_idx`),
     FOREIGN KEY (`team_idx`) REFERENCES `Team` (`team_idx`),
-    FOREIGN KEY (`member_idx`) REFERENCES `Member` (`member_idx`)
+    FOREIGN KEY (`member_idx`) REFERENCES `Member` (`member_idx`),
+    FOREIGN KEY (`last_modified_by`) REFERENCES `Member` (`member_idx`),
+    FOREIGN KEY (`deleted_by`) REFERENCES `Member` (`member_idx`)    
 );
 CREATE TABLE `Country` (
     `country_idx` BIGINT NOT NULL AUTO_INCREMENT,
@@ -81,7 +88,10 @@ CREATE TABLE `Country` (
     `last_modified_by` BIGINT NULL,
     `deleted_at` DATETIME(6) NULL,
     `deleted_by` BIGINT NULL,
-    PRIMARY KEY (`country_idx`)
+    PRIMARY KEY (`country_idx`),
+    FOREIGN KEY (`created_by`) REFERENCES `Member` (`member_idx`),
+    FOREIGN KEY (`last_modified_by`) REFERENCES `Member` (`member_idx`),
+    FOREIGN KEY (`deleted_by`) REFERENCES `Member` (`member_idx`)    
 );
 CREATE TABLE `City` (
     `city_idx` BIGINT NOT NULL AUTO_INCREMENT,
@@ -95,7 +105,10 @@ CREATE TABLE `City` (
     `deleted_at` DATETIME(6) NULL,
     `deleted_by` BIGINT NULL,
     PRIMARY KEY (`city_idx`),
-    FOREIGN KEY (`country_idx`) REFERENCES `Country` (`country_idx`)
+    FOREIGN KEY (`country_idx`) REFERENCES `Country` (`country_idx`),
+    FOREIGN KEY (`created_by`) REFERENCES `Member` (`member_idx`),
+    FOREIGN KEY (`last_modified_by`) REFERENCES `Member` (`member_idx`),
+    FOREIGN KEY (`deleted_by`) REFERENCES `Member` (`member_idx`)
 );
 CREATE TABLE `Place` (
     `place_idx` BIGINT NOT NULL AUTO_INCREMENT,
@@ -111,7 +124,10 @@ CREATE TABLE `Place` (
     `deleted_at` DATETIME(6) NULL,
     `deleted_by` BIGINT NULL,
     PRIMARY KEY (`place_idx`),
-    FOREIGN KEY (`city_idx`) REFERENCES `City` (`city_idx`)
+    FOREIGN KEY (`city_idx`) REFERENCES `City` (`city_idx`),
+    FOREIGN KEY (`created_by`) REFERENCES `Member` (`member_idx`),
+    FOREIGN KEY (`last_modified_by`) REFERENCES `Member` (`member_idx`),
+    FOREIGN KEY (`deleted_by`) REFERENCES `Member` (`member_idx`)
 );
 CREATE TABLE `Dues` (
     `dues_idx` BIGINT NOT NULL AUTO_INCREMENT,
@@ -125,7 +141,10 @@ CREATE TABLE `Dues` (
     `deleted_at` DATETIME(6) NULL,
     `deleted_by` BIGINT NULL,
     PRIMARY KEY (`dues_idx`),
-    FOREIGN KEY (`team_idx`) REFERENCES `Team` (`team_idx`)
+    FOREIGN KEY (`team_idx`) REFERENCES `Team` (`team_idx`),
+    FOREIGN KEY (`created_by`) REFERENCES `Member` (`member_idx`),
+    FOREIGN KEY (`last_modified_by`) REFERENCES `Member` (`member_idx`),
+    FOREIGN KEY (`deleted_by`) REFERENCES `Member` (`member_idx`)
 );
 CREATE TABLE `Trip` (
     `trip_idx` BIGINT NOT NULL AUTO_INCREMENT,
@@ -144,7 +163,10 @@ CREATE TABLE `Trip` (
     `deleted_by` BIGINT NULL,
     PRIMARY KEY (`trip_idx`),
     FOREIGN KEY (`team_idx`) REFERENCES `Team` (`team_idx`),
-    FOREIGN KEY (`country_idx`) REFERENCES `Country` (`country_idx`)
+    FOREIGN KEY (`country_idx`) REFERENCES `Country` (`country_idx`),
+    FOREIGN KEY (`created_by`) REFERENCES `Member` (`member_idx`),
+    FOREIGN KEY (`last_modified_by`) REFERENCES `Member` (`member_idx`),
+    FOREIGN KEY (`deleted_by`) REFERENCES `Member` (`member_idx`)
 );
 CREATE TABLE `Exchange_rate` (
     `cur_idx` BIGINT NOT NULL AUTO_INCREMENT,
@@ -169,7 +191,10 @@ CREATE TABLE `Exchange_rate_alarm` (
     `deleted_by` BIGINT NULL,
     PRIMARY KEY (`alarm_idx`),
     FOREIGN KEY (`team_idx`) REFERENCES `Team` (`team_idx`),
-    FOREIGN KEY (`cur_idx`) REFERENCES `Exchange_rate` (`cur_idx`)
+    FOREIGN KEY (`cur_idx`) REFERENCES `Exchange_rate` (`cur_idx`),
+    FOREIGN KEY (`created_by`) REFERENCES `Member` (`member_idx`),
+    FOREIGN KEY (`last_modified_by`) REFERENCES `Member` (`member_idx`),
+    FOREIGN KEY (`deleted_by`) REFERENCES `Member` (`member_idx`)
 );
 CREATE TABLE `Trip_place` (
     `trip_place_idx` BIGINT NOT NULL AUTO_INCREMENT,
@@ -183,10 +208,10 @@ CREATE TABLE `Trip_place` (
     `created_by` BIGINT NOT NULL,
     `last_modified_at` DATETIME(6) NULL,
     `last_modified_by` BIGINT NULL,
-    `deleted_at` DATETIME(6) NULL,
-    `deleted_by` BIGINT NULL,
     PRIMARY KEY (`trip_place_idx`),
-    FOREIGN KEY (`trip_idx`) REFERENCES `Trip` (`trip_idx`)
+    FOREIGN KEY (`trip_idx`) REFERENCES `Trip` (`trip_idx`),
+    FOREIGN KEY (`created_by`) REFERENCES `Member` (`member_idx`),
+    FOREIGN KEY (`last_modified_by`) REFERENCES `Member` (`member_idx`)
 );
 CREATE TABLE `Trip_reply` (
     `trip_reply_idx` BIGINT NOT NULL AUTO_INCREMENT,
@@ -209,5 +234,8 @@ CREATE TABLE `Category` (
     `last_modified_by` BIGINT NULL,
     `deleted_at` DATETIME(6) NULL,
     `deleted_by` BIGINT NULL,
-    PRIMARY KEY (`category_idx`)
+    PRIMARY KEY (`category_idx`),
+    FOREIGN KEY (`created_by`) REFERENCES `Member` (`member_idx`),
+    FOREIGN KEY (`last_modified_by`) REFERENCES `Member` (`member_idx`),
+    FOREIGN KEY (`deleted_by`) REFERENCES `Member` (`member_idx`)
 );
