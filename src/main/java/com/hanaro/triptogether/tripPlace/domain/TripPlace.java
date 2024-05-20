@@ -1,6 +1,6 @@
 package com.hanaro.triptogether.tripPlace.domain;
 
-import com.hanaro.triptogether.member.Member;
+import com.hanaro.triptogether.member.domain.Member;
 import com.hanaro.triptogether.place.Place;
 import com.hanaro.triptogether.trip.Trip;
 import jakarta.persistence.*;
