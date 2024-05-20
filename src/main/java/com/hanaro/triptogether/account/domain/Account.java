@@ -1,13 +1,18 @@
-package com.hanaro.triptogether.account;
+package com.hanaro.triptogether.account.domain;
 
 
 import com.hanaro.triptogether.member.domain.Member;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import lombok.*;
 
 @Entity
 @Table(name = "Account")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
+@Builder
+@AllArgsConstructor
 public class Account {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

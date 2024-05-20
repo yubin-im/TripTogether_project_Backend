@@ -1,6 +1,6 @@
 package com.hanaro.triptogether.dues;
 
-import com.hanaro.triptogether.team.Team;
+import com.hanaro.triptogether.team.domain.Team;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;

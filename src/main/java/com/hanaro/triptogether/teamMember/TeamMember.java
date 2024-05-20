@@ -2,7 +2,7 @@ package com.hanaro.triptogether.teamMember;
 
 import com.hanaro.triptogether.enumeration.TeamMemberState;
 import com.hanaro.triptogether.member.domain.Member;
-import com.hanaro.triptogether.team.Team;
+import com.hanaro.triptogether.team.domain.Team;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
