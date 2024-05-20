@@ -19,4 +19,9 @@ public class TripPlaceController {
         return tripPlaceService.getPlace(trip_idx);
     }
 
+    @DeleteMapping("/{trip_place_idx}")
+    public void deletePlace(@PathVariable("trip_place_idx") Long trip_place_idx) {
+        tripPlaceService.deleteTripPlace(trip_place_idx);
+    }
+
 }
