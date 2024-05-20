@@ -1,7 +1,7 @@
 package com.hanaro.triptogether.trip;
 
 import com.hanaro.triptogether.country.Country;
-import com.hanaro.triptogether.team.Team;
+import com.hanaro.triptogether.team.domain.Team;
 import jakarta.persistence.*;
 import lombok.Getter;
 
