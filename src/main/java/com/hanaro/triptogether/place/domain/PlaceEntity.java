@@ -1,12 +1,21 @@
-package com.hanaro.triptogether.place;
+package com.hanaro.triptogether.place.domain;
 
 import java.time.LocalDateTime;
 
 import com.hanaro.triptogether.city.City;
+import com.hanaro.triptogether.place.dto.Place;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 @Entity
 @Table(name = "Place")
-public class Place {
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class PlaceEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long placeIdx;
@@ -32,4 +41,15 @@ public class Place {
     private Long lastModifiedBy;
     private LocalDateTime deletedAt;
     private Long deletedBy;
+
+    public Place toPlace() {
+        return Place.builder()
+                .placeIdx(this.placeIdx)
+                .cityIdx(this.city.getCityIdx())
+                .placeNameKo(this.placeNameKo)
+                .placeNameEng(this.placeNameEng)
+                .placeImg(this.placeImg)
+                .categoryIdx(this.categoryIdx)
+                .build();
+    }
 }
