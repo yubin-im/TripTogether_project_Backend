@@ -1,13 +1,18 @@
-package com.hanaro.triptogether.team;
+package com.hanaro.triptogether.team.domain;
 
 import com.hanaro.triptogether.account.domain.Account;
 import com.hanaro.triptogether.enumeration.PreferenceType;
 import com.hanaro.triptogether.enumeration.TeamType;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import lombok.*;
 
 @Entity
 @Table(name = "Team")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
+@Builder
+@AllArgsConstructor
 public class Team {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
