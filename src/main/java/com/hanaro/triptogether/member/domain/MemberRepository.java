@@ -5,4 +5,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface MemberRepository extends JpaRepository<Member, Long> {
+    // 간편 로그인
+    Member findMemberByMemberIdxAndMemberLoginPw(Long memberIdx, String memberLoginPw);
 }
