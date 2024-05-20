@@ -33,5 +33,8 @@ out/
 /nbdist/
 /.nb-gradle/
 
+src/main/**/application.properties
+src/main/**/db.sql
+
 ### VS Code ###
 .vscode/
