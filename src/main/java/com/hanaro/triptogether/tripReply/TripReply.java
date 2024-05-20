@@ -1,7 +1,7 @@
 package com.hanaro.triptogether.tripReply;
 
 import com.hanaro.triptogether.teamMember.TeamMember;
-import com.hanaro.triptogether.tripPlace.TripPlace;
+import com.hanaro.triptogether.tripPlace.domain.TripPlace;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
