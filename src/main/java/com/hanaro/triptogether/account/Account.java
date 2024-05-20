@@ -1,7 +1,7 @@
 package com.hanaro.triptogether.account;
 
 
-import com.hanaro.triptogether.member.Member;
+import com.hanaro.triptogether.member.domain.Member;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
