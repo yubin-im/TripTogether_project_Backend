@@ -38,4 +38,12 @@ public class TeamMemberContoller {
     public void acceptTeamMember(@RequestBody AcceptTeamMemberReqDto acceptTeamMemberReqDto) {
         teamMemberService.acceptTeamMember(acceptTeamMemberReqDto);
     }
+
+    // 모임원 전체 수락 (수락대기-> 모임원으로 상태 변경)
+    @PutMapping("/team/accept-all")
+    public void acceptTeamMembers(@RequestBody Map<String, Long> teamIdxMap) {
+        Long teamIdx = teamIdxMap.get("teamIdx");
+        teamMemberService.acceptTeamMembers(teamIdx);
+    }
+    
 }

@@ -83,4 +83,19 @@ public class TeamMemberServiceImpl implements TeamMemberService {
         }
     }
 
+    // 모임원 전체 수락 (수락대기-> 모임원으로 상태 변경)
+    @Transactional
+    @Override
+    public void acceptTeamMembers(Long teamIdx) {
+        Team team = teamRepository.findById(teamIdx).orElse(null);
+        List<TeamMember> teamMembers = teamMemberRepository.findTeamMembersByTeam(team);
+
+        for(int i = 0; i < teamMembers.size(); i++) {
+            if(teamMembers.get(i).getTeamMemberState() == TeamMemberState.수락대기) {
+                teamMembers.get(i).updateTeamMemberState(TeamMemberState.모임원);
+                teamMemberRepository.save(teamMembers.get(i));
+            }
+        }
+    }
+
 }

@@ -15,4 +15,7 @@ public interface TeamMemberService {
 
     // 모임원 수락 (수락대기-> 모임원으로 상태 변경)
     void acceptTeamMember(AcceptTeamMemberReqDto acceptTeamMemberReqDto);
+
+    // 모임원 전체 수락 (수락대기-> 모임원으로 상태 변경)
+    void acceptTeamMembers(Long teamIdx);
 }
