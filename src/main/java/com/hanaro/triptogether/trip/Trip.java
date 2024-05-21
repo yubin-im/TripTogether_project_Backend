@@ -1,21 +1,24 @@
 package com.hanaro.triptogether.trip;
 
 import com.hanaro.triptogether.country.Country;
-import com.hanaro.triptogether.team.Team;
+import com.hanaro.triptogether.team.domain.Team;
 import jakarta.persistence.*;
+import lombok.Getter;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
-@Table(name = "Trip")
+@Table(name = "trip")
+@Getter
 public class Trip {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long tripIdx;
 
     @ManyToOne
-    @JoinColumn(name = "gathering_idx", nullable = false)
+    @JoinColumn(name = "team_idx", nullable = false)
     private Team team;
 
     @ManyToOne

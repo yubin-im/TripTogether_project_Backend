@@ -15,7 +15,7 @@ public class ExchangeBatchScheduler {
     private final JobLauncher jobLauncher;
     private final Job job;
 
-    @Scheduled(cron = "0/10 * * * * *")
+    @Scheduled(cron = "* * 0/10 * * *")
     public void run() throws Exception {
         JobParameters parameters = new JobParametersBuilder()
                 .addString("jobName","exchangeJob"+System.currentTimeMillis())

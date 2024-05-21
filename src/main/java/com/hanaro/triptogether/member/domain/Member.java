@@ -1,11 +1,16 @@
-package com.hanaro.triptogether.member;
+package com.hanaro.triptogether.member.domain;
 
 import jakarta.persistence.*;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "Member")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
+@Builder
+@AllArgsConstructor
 public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
