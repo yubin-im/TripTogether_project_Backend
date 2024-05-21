@@ -19,9 +19,13 @@ public interface TeamMemberService {
     // 모임원 전체 수락 (수락대기-> 모임원으로 상태 변경)
     void acceptTeamMembers(Long teamIdx);
 
-    // 모임원 거절 (모임원 삭제)
+    // 모임원 거절 (수락대기-> 모임원 삭제)
+    // 모임원 내보내기 (모임원-> 모임원 삭제)
     void rejectTeamMember(AcceptTeamMemberReqDto acceptTeamMemberReqDto);
 
-    // 모임원 전체 거절 (모임원 삭제)
+    // 모임원 전체 거절 (수락대기-> 모임원 삭제)
     void rejectTeamMembers(Long teamIdx);
+
+    // 모임원 전체 내보내기 (모임원-> 모임원 삭제)
+    void exportTeamMembers(Long teamIdx);
 }
