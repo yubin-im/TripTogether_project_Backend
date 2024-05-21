@@ -1,16 +1,20 @@
-package com.hanaro.triptogether.teamMember;
+package com.hanaro.triptogether.teamMember.domain;
 
 import com.hanaro.triptogether.enumeration.TeamMemberState;
 import com.hanaro.triptogether.member.domain.Member;
 import com.hanaro.triptogether.team.domain.Team;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "Team_member")
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Builder
+@AllArgsConstructor
 public class TeamMember {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
