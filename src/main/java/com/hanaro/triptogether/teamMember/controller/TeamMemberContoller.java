@@ -3,6 +3,7 @@ package com.hanaro.triptogether.teamMember.controller;
 import com.hanaro.triptogether.teamMember.dto.request.AcceptTeamMemberReqDto;
 import com.hanaro.triptogether.teamMember.dto.request.AcceptTeamMembersReqDto;
 import com.hanaro.triptogether.teamMember.dto.request.ChangeOwnerReqDto;
+import com.hanaro.triptogether.teamMember.dto.request.RejectTeamMembersReqDto;
 import com.hanaro.triptogether.teamMember.dto.response.TeamMembersResDto;
 import com.hanaro.triptogether.teamMember.service.TeamMemberService;
 import lombok.RequiredArgsConstructor;
@@ -47,28 +48,26 @@ public class TeamMemberContoller {
     }
 
     // 모임원 거절 (수락대기-> 모임원 삭제)
-    @PostMapping("/team/reject-one")
+    @PutMapping("/team/reject-one")
     public void rejectTeamMember(@RequestBody AcceptTeamMemberReqDto acceptTeamMemberReqDto) {
         teamMemberService.rejectTeamMember(acceptTeamMemberReqDto);
     }
 
     // 모임원 전체 거절 (수락대기-> 모임원 삭제)
-    @PostMapping("/team/reject-all")
-    public void rejectTeamMembers(@RequestBody Map<String, Long> teamIdxMap) {
-        Long teamIdx = teamIdxMap.get("teamIdx");
-        teamMemberService.rejectTeamMembers(teamIdx);
+    @PutMapping("/team/reject-all")
+    public void rejectTeamMembers(@RequestBody RejectTeamMembersReqDto rejectTeamMembersReqDto) {
+        teamMemberService.rejectTeamMembers(rejectTeamMembersReqDto);
     }
 
     // 모임원 내보내기 (모임원-> 모임원 삭제)
-    @PostMapping("/team/export-member")
+    @PutMapping("/team/export-member")
     public void exportTeamMember(@RequestBody AcceptTeamMemberReqDto acceptTeamMemberReqDto) {
         teamMemberService.rejectTeamMember(acceptTeamMemberReqDto);
     }
 
     // 모임원 전체 내보내기 (모임원-> 모임원 삭제)
-    @PostMapping("/team/export-members")
-    public void exportTeamMembers(@RequestBody Map<String, Long> teamIdxMap) {
-        Long teamIdx = teamIdxMap.get("teamIdx");
-        teamMemberService.exportTeamMembers(teamIdx);
+    @PutMapping("/team/export-members")
+    public void exportTeamMembers(@RequestBody RejectTeamMembersReqDto rejectTeamMembersReqDt) {
+        teamMemberService.exportTeamMembers(rejectTeamMembersReqDt);
     }
 }
