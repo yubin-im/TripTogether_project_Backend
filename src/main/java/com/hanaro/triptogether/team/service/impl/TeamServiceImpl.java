@@ -5,6 +5,7 @@ import com.hanaro.triptogether.account.domain.AccountRepository;
 import com.hanaro.triptogether.team.domain.Team;
 import com.hanaro.triptogether.team.domain.TeamRepository;
 import com.hanaro.triptogether.team.dto.request.AddTeamReqDto;
+import com.hanaro.triptogether.team.dto.response.DetailTeamResDto;
 import com.hanaro.triptogether.team.service.TeamService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -34,5 +35,23 @@ public class TeamServiceImpl implements TeamService {
                 .build();
 
         teamRepository.save(team);
+    }
+
+    // 모임서비스 상세
+    @Transactional
+    @Override
+    public DetailTeamResDto detailTeam(Long accIdx) {
+        Account account = accountRepository.findById(accIdx).orElse(null);
+        Team team = teamRepository.findTeamByAccount(account);
+
+        DetailTeamResDto detailTeamResDto = DetailTeamResDto.builder()
+                .teamIdx(team.getTeamIdx())
+                .teamNotice(team.getTeamNotice())
+                .teamName(team.getTeamName())
+                .accNumber(account.getAccNumber())
+                .accBalance(account.getAccBalance())
+                .build();
+
+        return detailTeamResDto;
     }
 }
