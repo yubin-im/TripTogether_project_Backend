@@ -11,6 +11,4 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
     // 모임서비스 전체 조회
     List<Account> findAccountsByMember(Member member);
 
-
-
 }
