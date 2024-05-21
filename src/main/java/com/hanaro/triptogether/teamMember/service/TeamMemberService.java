@@ -25,4 +25,7 @@ public interface TeamMemberService {
 
     // 모임원 전체 거절 (수락대기-> 모임원 삭제)
     void rejectTeamMembers(Long teamIdx);
+
+    // 모임원 전체 내보내기 (모임원-> 모임원 삭제)
+    void exportTeamMembers(Long teamIdx);
 }

@@ -64,4 +64,11 @@ public class TeamMemberContoller {
     public void exportTeamMember(@RequestBody AcceptTeamMemberReqDto acceptTeamMemberReqDto) {
         teamMemberService.rejectTeamMember(acceptTeamMemberReqDto);
     }
+
+    // 모임원 전체 내보내기 (모임원-> 모임원 삭제)
+    @PostMapping("/team/export-members")
+    public void exportTeamMembers(@RequestBody Map<String, Long> teamIdxMap) {
+        Long teamIdx = teamIdxMap.get("teamIdx");
+        teamMemberService.exportTeamMembers(teamIdx);
+    }
 }

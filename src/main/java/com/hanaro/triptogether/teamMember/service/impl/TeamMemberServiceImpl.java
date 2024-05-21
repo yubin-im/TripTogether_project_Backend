@@ -127,4 +127,17 @@ public class TeamMemberServiceImpl implements TeamMemberService {
         }
     }
 
+    // 모임원 전체 내보내기 (모임원-> 모임원 삭제)
+    @Transactional
+    @Override
+    public void exportTeamMembers(Long teamIdx) {
+        Team team = teamRepository.findById(teamIdx).orElse(null);
+        List<TeamMember> teamMembers = teamMemberRepository.findTeamMembersByTeam(team);
+
+        for(int i = 0; i < teamMembers.size(); i++) {
+            if(teamMembers.get(i).getTeamMemberState() == TeamMemberState.모임원) {
+                teamMemberRepository.delete(teamMembers.get(i));
+            }
+        }
+    }
 }
