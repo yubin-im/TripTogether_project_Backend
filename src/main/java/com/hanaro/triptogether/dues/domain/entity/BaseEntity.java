@@ -1,6 +1,6 @@
-package com.hanaro.triptogether.exchangeRate.domain.entity;
+package com.hanaro.triptogether.dues.domain.entity;
 
-import com.hanaro.triptogether.member.Member;
+import com.hanaro.triptogether.member.domain.Member;
 import jakarta.persistence.*;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
@@ -23,10 +23,10 @@ public class BaseEntity {
 
     @CreatedBy
     @Column(updatable = false)
-    private String createdBy;
+    private Long createdBy;
 
     @LastModifiedBy
-    private String lastModifiedBy;
+    private Long lastModifiedBy;
 
     @Column(updatable = false)
     private LocalDateTime deletedAt;

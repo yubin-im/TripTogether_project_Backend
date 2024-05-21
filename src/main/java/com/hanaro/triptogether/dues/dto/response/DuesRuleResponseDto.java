@@ -1,4 +1,4 @@
-package com.hanaro.triptogether.exchangeRate.dto.response;
+package com.hanaro.triptogether.dues.dto.response;
 
 import lombok.Getter;
 import lombok.Setter;
