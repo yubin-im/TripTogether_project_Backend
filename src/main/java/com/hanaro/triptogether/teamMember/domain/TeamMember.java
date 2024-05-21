@@ -44,4 +44,10 @@ public class TeamMember {
     public void updateTeamMemberState(TeamMemberState teamMemberState) {
         this.teamMemberState = teamMemberState;
     }
+
+    // 수정 시간, 수정자 변경
+    public void updateModified(LocalDateTime lastModifiedAt, Long lastModifiedBy) {
+        this.lastModifiedAt = lastModifiedAt;
+        this.lastModifiedBy = lastModifiedBy;
+    }
 }

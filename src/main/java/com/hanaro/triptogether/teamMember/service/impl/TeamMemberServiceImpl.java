@@ -6,6 +6,7 @@ import com.hanaro.triptogether.team.domain.TeamRepository;
 import com.hanaro.triptogether.teamMember.domain.TeamMember;
 import com.hanaro.triptogether.teamMember.domain.TeamMemberRepository;
 import com.hanaro.triptogether.teamMember.dto.request.AcceptTeamMemberReqDto;
+import com.hanaro.triptogether.teamMember.dto.request.AcceptTeamMembersReqDto;
 import com.hanaro.triptogether.teamMember.dto.request.ChangeOwnerReqDto;
 import com.hanaro.triptogether.teamMember.dto.response.TeamMembersResDto;
 import com.hanaro.triptogether.teamMember.service.TeamMemberService;
@@ -13,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,14 +57,15 @@ public class TeamMemberServiceImpl implements TeamMemberService {
         for(int i = 0; i < teamMembers.size(); i++) {
             Long teamMemberIdx = teamMembers.get(i).getTeamMemberIdx();
 
-            // 기존 총무 -> 모임원으로 벼경
+            // 기존 총무 -> 모임원으로 변경
             if(changeOwnerReqDto.getCurOwnerIdx().equals(teamMemberIdx)) {
                 teamMembers.get(i).updateTeamMemberState(TeamMemberState.모임원);
+                teamMembers.get(i).updateModified(LocalDateTime.now(), changeOwnerReqDto.getNewOwnerIdx());
                 teamMemberRepository.save(teamMembers.get(i));
-
                 // 모임원 -> 새로운 총무로 변경
             } else if(changeOwnerReqDto.getNewOwnerIdx().equals(teamMemberIdx)) {
                 teamMembers.get(i).updateTeamMemberState(TeamMemberState.총무);
+                teamMembers.get(i).updateModified(LocalDateTime.now(), changeOwnerReqDto.getNewOwnerIdx());
                 teamMemberRepository.save(teamMembers.get(i));
             }
         }
@@ -78,6 +81,7 @@ public class TeamMemberServiceImpl implements TeamMemberService {
         for(int i = 0; i < teamMembers.size(); i++) {
             if (acceptTeamMemberReqDto.getTeamMemberIdx().equals(teamMembers.get(i).getTeamMemberIdx())) {
                 teamMembers.get(i).updateTeamMemberState(TeamMemberState.모임원);
+                teamMembers.get(i).updateModified(LocalDateTime.now(), acceptTeamMemberReqDto.getMemberIdx());
                 teamMemberRepository.save(teamMembers.get(i));
             }
         }
@@ -86,13 +90,14 @@ public class TeamMemberServiceImpl implements TeamMemberService {
     // 모임원 전체 수락 (수락대기-> 모임원으로 상태 변경)
     @Transactional
     @Override
-    public void acceptTeamMembers(Long teamIdx) {
-        Team team = teamRepository.findById(teamIdx).orElse(null);
+    public void acceptTeamMembers(AcceptTeamMembersReqDto acceptTeamMembersReqDto) {
+        Team team = teamRepository.findById(acceptTeamMembersReqDto.getTeamIdx()).orElse(null);
         List<TeamMember> teamMembers = teamMemberRepository.findTeamMembersByTeam(team);
 
         for(int i = 0; i < teamMembers.size(); i++) {
             if(teamMembers.get(i).getTeamMemberState() == TeamMemberState.수락대기) {
                 teamMembers.get(i).updateTeamMemberState(TeamMemberState.모임원);
+                teamMembers.get(i).updateModified(LocalDateTime.now(), acceptTeamMembersReqDto.getMemberIdx());
                 teamMemberRepository.save(teamMembers.get(i));
             }
         }
