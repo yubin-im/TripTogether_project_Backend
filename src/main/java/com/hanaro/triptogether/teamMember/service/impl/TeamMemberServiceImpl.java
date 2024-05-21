@@ -98,4 +98,17 @@ public class TeamMemberServiceImpl implements TeamMemberService {
         }
     }
 
+    // 모임원 거절 (모임원 삭제)
+    @Transactional
+    @Override
+    public void rejectTeamMember(AcceptTeamMemberReqDto acceptTeamMemberReqDto) {
+        Team team = teamRepository.findById(acceptTeamMemberReqDto.getTeamIdx()).orElse(null);
+        List<TeamMember> teamMembers = teamMemberRepository.findTeamMembersByTeam(team);
+
+        for(int i = 0; i < teamMembers.size(); i++) {
+            if (acceptTeamMemberReqDto.getTeamMemberIdx().equals(teamMembers.get(i).getTeamMemberIdx())) {
+                teamMemberRepository.delete(teamMembers.get(i));
+            }
+        }
+    }
 }
