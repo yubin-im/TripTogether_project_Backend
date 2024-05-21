@@ -5,6 +5,7 @@ import com.hanaro.triptogether.team.domain.Team;
 import com.hanaro.triptogether.team.domain.TeamRepository;
 import com.hanaro.triptogether.teamMember.domain.TeamMember;
 import com.hanaro.triptogether.teamMember.domain.TeamMemberRepository;
+import com.hanaro.triptogether.teamMember.dto.request.AcceptTeamMemberReqDto;
 import com.hanaro.triptogether.teamMember.dto.request.ChangeOwnerReqDto;
 import com.hanaro.triptogether.teamMember.dto.response.TeamMembersResDto;
 import com.hanaro.triptogether.teamMember.service.TeamMemberService;
@@ -66,4 +67,20 @@ public class TeamMemberServiceImpl implements TeamMemberService {
             }
         }
     }
+
+    // 모임원 수락 (수락대기-> 모임원으로 상태 변경)
+    @Transactional
+    @Override
+    public void acceptTeamMember(AcceptTeamMemberReqDto acceptTeamMemberReqDto) {
+        Team team = teamRepository.findById(acceptTeamMemberReqDto.getTeamIdx()).orElse(null);
+        List<TeamMember> teamMembers = teamMemberRepository.findTeamMembersByTeam(team);
+
+        for(int i = 0; i < teamMembers.size(); i++) {
+            if (acceptTeamMemberReqDto.getTeamMemberIdx().equals(teamMembers.get(i).getTeamMemberIdx())) {
+                teamMembers.get(i).updateTeamMemberState(TeamMemberState.모임원);
+                teamMemberRepository.save(teamMembers.get(i));
+            }
+        }
+    }
+
 }

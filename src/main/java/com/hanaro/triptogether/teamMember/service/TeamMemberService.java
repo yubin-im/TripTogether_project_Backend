@@ -1,5 +1,6 @@
 package com.hanaro.triptogether.teamMember.service;
 
+import com.hanaro.triptogether.teamMember.dto.request.AcceptTeamMemberReqDto;
 import com.hanaro.triptogether.teamMember.dto.request.ChangeOwnerReqDto;
 import com.hanaro.triptogether.teamMember.dto.response.TeamMembersResDto;
 
@@ -11,4 +12,7 @@ public interface TeamMemberService {
 
     // 총무 변경
     void changeOwner(ChangeOwnerReqDto changeOwnerReqDto);
+
+    // 모임원 수락 (수락대기-> 모임원으로 상태 변경)
+    void acceptTeamMember(AcceptTeamMemberReqDto acceptTeamMemberReqDto);
 }
