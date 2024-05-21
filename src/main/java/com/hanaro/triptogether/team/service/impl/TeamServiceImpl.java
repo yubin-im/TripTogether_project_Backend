@@ -32,6 +32,8 @@ public class TeamServiceImpl implements TeamService {
                 .preferenceType(addTeamReqDto.getPreferenceType())
                 .createdAt(LocalDateTime.now())
                 .createdBy(addTeamReqDto.getMemberIdx())
+                .lastModifiedAt(LocalDateTime.now())
+                .lastModifiedBy(addTeamReqDto.getMemberIdx())
                 .build();
 
         teamRepository.save(team);

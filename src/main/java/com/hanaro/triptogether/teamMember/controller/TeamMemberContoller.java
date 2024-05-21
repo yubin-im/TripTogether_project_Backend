@@ -1,6 +1,7 @@
 package com.hanaro.triptogether.teamMember.controller;
 
 import com.hanaro.triptogether.teamMember.dto.request.AcceptTeamMemberReqDto;
+import com.hanaro.triptogether.teamMember.dto.request.AcceptTeamMembersReqDto;
 import com.hanaro.triptogether.teamMember.dto.request.ChangeOwnerReqDto;
 import com.hanaro.triptogether.teamMember.dto.response.TeamMembersResDto;
 import com.hanaro.triptogether.teamMember.service.TeamMemberService;
@@ -41,9 +42,8 @@ public class TeamMemberContoller {
 
     // 모임원 전체 수락 (수락대기-> 모임원으로 상태 변경)
     @PutMapping("/team/accept-all")
-    public void acceptTeamMembers(@RequestBody Map<String, Long> teamIdxMap) {
-        Long teamIdx = teamIdxMap.get("teamIdx");
-        teamMemberService.acceptTeamMembers(teamIdx);
+    public void acceptTeamMembers(@RequestBody AcceptTeamMembersReqDto acceptTeamMembersReqDto) {
+        teamMemberService.acceptTeamMembers(acceptTeamMembersReqDto);
     }
 
     // 모임원 거절 (수락대기-> 모임원 삭제)
