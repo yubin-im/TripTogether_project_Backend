@@ -45,5 +45,18 @@ public class TeamMemberContoller {
         Long teamIdx = teamIdxMap.get("teamIdx");
         teamMemberService.acceptTeamMembers(teamIdx);
     }
-    
+
+    // 모임원 거절 (모임원 삭제)
+    @PostMapping("/team/reject-one")
+    public void rejectTeamMember(@RequestBody AcceptTeamMemberReqDto acceptTeamMemberReqDto) {
+        teamMemberService.rejectTeamMember(acceptTeamMemberReqDto);
+    }
+
+    // 모임원 전체 거절 (모임원 삭제)
+    @PostMapping("/team/reject-all")
+    public void rejectTeamMembers(@RequestBody Map<String, Long> teamIdxMap) {
+        Long teamIdx = teamIdxMap.get("teamIdx");
+        teamMemberService.rejectTeamMembers(teamIdx);
+    }
+
 }
