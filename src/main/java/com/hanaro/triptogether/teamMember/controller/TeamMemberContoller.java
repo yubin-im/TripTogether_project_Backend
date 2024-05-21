@@ -1,9 +1,11 @@
 package com.hanaro.triptogether.teamMember.controller;
 
+import com.hanaro.triptogether.teamMember.dto.request.ChangeOwnerReqDto;
 import com.hanaro.triptogether.teamMember.dto.response.TeamMembersResDto;
 import com.hanaro.triptogether.teamMember.service.TeamMemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -24,4 +26,9 @@ public class TeamMemberContoller {
         return teamMembersResDtos;
     }
 
+    // 총무 변경
+    @PutMapping("/team/change-owner")
+    public void changeOwner(@RequestBody ChangeOwnerReqDto changeOwnerReqDto) {
+        teamMemberService.changeOwner(changeOwnerReqDto);
+    }
 }

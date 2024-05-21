@@ -1,9 +1,11 @@
 package com.hanaro.triptogether.teamMember.service.impl;
 
+import com.hanaro.triptogether.enumeration.TeamMemberState;
 import com.hanaro.triptogether.team.domain.Team;
 import com.hanaro.triptogether.team.domain.TeamRepository;
 import com.hanaro.triptogether.teamMember.domain.TeamMember;
 import com.hanaro.triptogether.teamMember.domain.TeamMemberRepository;
+import com.hanaro.triptogether.teamMember.dto.request.ChangeOwnerReqDto;
 import com.hanaro.triptogether.teamMember.dto.response.TeamMembersResDto;
 import com.hanaro.triptogether.teamMember.service.TeamMemberService;
 import lombok.RequiredArgsConstructor;
@@ -40,5 +42,28 @@ public class TeamMemberServiceImpl implements TeamMemberService {
         }
 
         return teamMembersResDtos;
+    }
+
+    // 총무 변경
+    @Transactional
+    @Override
+    public void changeOwner(ChangeOwnerReqDto changeOwnerReqDto) {
+        Team team = teamRepository.findById(changeOwnerReqDto.getTeamIdx()).orElse(null);
+        List<TeamMember> teamMembers = teamMemberRepository.findTeamMembersByTeam(team);
+
+        for(int i = 0; i < teamMembers.size(); i++) {
+            Long teamMemberIdx = teamMembers.get(i).getTeamMemberIdx();
+
+            // 기존 총무 -> 모임원으로 벼경
+            if(changeOwnerReqDto.getCurOwnerIdx().equals(teamMemberIdx)) {
+                teamMembers.get(i).updateTeamMemberState(TeamMemberState.모임원);
+                teamMemberRepository.save(teamMembers.get(i));
+
+                // 모임원 -> 새로운 총무로 변경
+            } else if(changeOwnerReqDto.getNewOwnerIdx().equals(teamMemberIdx)) {
+                teamMembers.get(i).updateTeamMemberState(TeamMemberState.총무);
+                teamMemberRepository.save(teamMembers.get(i));
+            }
+        }
     }
 }

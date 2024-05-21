@@ -40,5 +40,8 @@ public class TeamMember {
     private LocalDateTime deletedAt;
     private Long deletedBy;
 
-
+    // 상태 변경
+    public void updateTeamMemberState(TeamMemberState teamMemberState) {
+        this.teamMemberState = teamMemberState;
+    }
 }
