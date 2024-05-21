@@ -21,4 +21,7 @@ public interface TeamMemberService {
 
     // 모임원 거절 (모임원 삭제)
     void rejectTeamMember(AcceptTeamMemberReqDto acceptTeamMemberReqDto);
+
+    // 모임원 전체 거절 (모임원 삭제)
+    void rejectTeamMembers(Long teamIdx);
 }
