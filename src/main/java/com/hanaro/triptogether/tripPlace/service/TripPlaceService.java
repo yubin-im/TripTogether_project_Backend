@@ -39,18 +39,7 @@ public class TripPlaceService {
         Place place = placeService.findByPlaceIdx(dto.getPlace_idx());
         Member member = memberService.findByMemberId(dto.getMember_id());
 
-        // 요청자가 해당 여행 팀원인지 확인
-        List<Team> teams = teamMemberService.findTeamMemberByMemberId(dto.getMember_id())
-                .stream()
-                .map(TeamMember::getTeam)
-                .toList();
-
-        boolean isTeamMember = teams.stream()
-                .anyMatch(team -> team.equals(trip.getTeam()));
-
-        if (!isTeamMember) {
-            throw new ApiException(ExceptionEnum.INVALID_TEAM_MEMBER);
-        }
+        checkTeamMember(trip.getTeam(), dto.getMember_id());
 
         //여행 일자 범위 확인
         if(trip.getTripDay() < dto.getTrip_date()){
@@ -77,19 +66,9 @@ public class TripPlaceService {
         Place place = placeService.findByPlaceIdx(dto.getPlace_idx());
         Member member = memberService.findByMemberId(dto.getMember_id());
 
-        // 요청자가 해당 여행 팀원인지 확인
-        List<Team> teams = teamMemberService.findTeamMemberByMemberId(dto.getMember_id())
-                .stream()
-                .map(TeamMember::getTeam)
-                .toList();
+        checkTeamMember(tripPlace.getTrip().getTeam(), dto.getMember_id());
 
-        boolean isTeamMember = teams.stream()
-                .anyMatch(team -> team.equals(tripPlace.getTrip().getTeam()));
-        if (!isTeamMember) {
-            throw new ApiException(ExceptionEnum.INVALID_TEAM_MEMBER);
-        }
         tripPlace.update(place, dto.getPlace_amount(), dto.getPlace_memo(), member);
-
     }
 
 
@@ -115,5 +94,20 @@ public class TripPlaceService {
                 .getTrip()
                 .getTeam()
                 .getTeamIdx();
+    }
+
+    // memberId가 해당 팀원인지 확인
+    private void checkTeamMember(Team dtoTeam, String member_id) {
+        List<Team> teams = teamMemberService.findTeamMemberByMemberId(member_id)
+                .stream()
+                .map(TeamMember::getTeam)
+                .toList();
+
+        boolean isTeamMember = teams.stream()
+                .anyMatch(team -> team.equals(dtoTeam));
+
+        if (!isTeamMember) {
+            throw new ApiException(ExceptionEnum.INVALID_TEAM_MEMBER);
+        }
     }
 }
