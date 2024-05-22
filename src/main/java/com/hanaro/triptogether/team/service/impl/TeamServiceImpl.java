@@ -8,6 +8,7 @@ import com.hanaro.triptogether.team.domain.TeamRepository;
 import com.hanaro.triptogether.team.dto.request.AddTeamReqDto;
 import com.hanaro.triptogether.team.dto.request.ExportTeamReqDto;
 import com.hanaro.triptogether.team.dto.request.ManageTeamReqDto;
+import com.hanaro.triptogether.team.dto.request.UpdateTeamNoticeReq;
 import com.hanaro.triptogether.team.dto.response.DetailTeamResDto;
 import com.hanaro.triptogether.team.dto.response.ManageTeamResDto;
 import com.hanaro.triptogether.team.service.TeamService;
@@ -99,5 +100,15 @@ public class TeamServiceImpl implements TeamService {
                 .build();
 
         return manageTeamResDto;
+    }
+
+    // 공지 등록/수정
+    @Transactional
+    @Override
+    public void updateTeamNotice(UpdateTeamNoticeReq updateTeamNoticeReq) {
+        Team team = teamRepository.findById(updateTeamNoticeReq.getTeamIdx()).orElse(null);
+
+        team.updateTeamNotice(updateTeamNoticeReq.getTeamNotice());
+        teamRepository.save(team);
     }
 }

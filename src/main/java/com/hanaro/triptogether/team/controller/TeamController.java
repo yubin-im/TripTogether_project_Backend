@@ -3,6 +3,7 @@ package com.hanaro.triptogether.team.controller;
 import com.hanaro.triptogether.team.dto.request.AddTeamReqDto;
 import com.hanaro.triptogether.team.dto.request.ExportTeamReqDto;
 import com.hanaro.triptogether.team.dto.request.ManageTeamReqDto;
+import com.hanaro.triptogether.team.dto.request.UpdateTeamNoticeReq;
 import com.hanaro.triptogether.team.dto.response.DetailTeamResDto;
 import com.hanaro.triptogether.team.dto.response.ManageTeamResDto;
 import com.hanaro.triptogether.team.service.TeamService;
@@ -46,5 +47,11 @@ public class TeamController {
         ManageTeamResDto manageTeamResDto = teamService.manageTeam(manageTeamReqDto);
 
         return manageTeamResDto;
+    }
+
+    // 공지 등록/수정
+    @PutMapping("/account/notice")
+    public void updateTeamNotice(@RequestBody UpdateTeamNoticeReq updateTeamNoticeReq) {
+        teamService.updateTeamNotice(updateTeamNoticeReq);
     }
 }
