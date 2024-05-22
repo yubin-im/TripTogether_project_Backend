@@ -4,8 +4,11 @@ import com.hanaro.triptogether.member.dto.request.LoginReqDto;
 import com.hanaro.triptogether.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -23,4 +26,10 @@ public class MemberController {
         return result;
     }
 
+    // 알림설정 (on/off)
+    @PutMapping("/account/alarm")
+    public void setAlarm(@RequestBody Map<String, Long> memberIdxMap) {
+        Long memberIdx = memberIdxMap.get("memberIdx");
+        memberService.setAlarm(memberIdx);
+    }
 }

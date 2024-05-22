@@ -25,4 +25,18 @@ public class MemberServiceImpl implements MemberService {
         }
     }
 
+    // 알림설정 (on/off)
+    @Transactional
+    @Override
+    public void setAlarm(Long memberIdx) {
+        Member member = memberRepository.findById(memberIdx).orElse(null);
+        Boolean alarmStatus = member.getAlarmStatus();
+
+        if (alarmStatus == true) {
+            member.updateAlarm(false);
+        } else {
+            member.updateAlarm(true);
+        }
+        memberRepository.save(member);
+    }
 }
