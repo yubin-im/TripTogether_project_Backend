@@ -5,19 +5,24 @@ import com.hanaro.triptogether.account.domain.AccountRepository;
 import com.hanaro.triptogether.team.domain.Team;
 import com.hanaro.triptogether.team.domain.TeamRepository;
 import com.hanaro.triptogether.team.dto.request.AddTeamReqDto;
+import com.hanaro.triptogether.team.dto.request.ExportTeamReqDto;
 import com.hanaro.triptogether.team.dto.response.DetailTeamResDto;
 import com.hanaro.triptogether.team.service.TeamService;
+import com.hanaro.triptogether.teamMember.domain.TeamMember;
+import com.hanaro.triptogether.teamMember.domain.TeamMemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class TeamServiceImpl implements TeamService {
     private final TeamRepository teamRepository;
     private final AccountRepository accountRepository;
+    private final TeamMemberRepository teamMemberRepository;
 
     // 모임서비스 가입
     @Transactional
@@ -55,5 +60,23 @@ public class TeamServiceImpl implements TeamService {
                 .build();
 
         return detailTeamResDto;
+    }
+
+    // 모임서비스 나가기 (전체 내보내기 후 모임 삭제)
+    @Transactional
+    @Override
+    public void exportTeam(ExportTeamReqDto exportTeamReqDto) {
+        Team team = teamRepository.findById(exportTeamReqDto.getTeamIdx()).orElse(null);
+        List<TeamMember> teamMembers = teamMemberRepository.findTeamMembersByTeam(team);
+
+        // 전체 내보내기
+        for(int i = 0; i < teamMembers.size(); i++) {
+            teamMembers.get(i).delete(LocalDateTime.now(), exportTeamReqDto.getMemberIdx());
+            teamMemberRepository.save(teamMembers.get(i));
+        }
+
+        // 모임 삭제
+        team.delete(LocalDateTime.now(), exportTeamReqDto.getMemberIdx());
+        teamRepository.save(team);
     }
 }
