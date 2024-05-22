@@ -51,4 +51,9 @@ public class Team {
         this.deletedAt = deletedAt;
         this.deletedBy = deletedBy;
     }
+
+    // 공지 등록/수정
+    public void updateTeamNotice(String teamNotice) {
+        this.teamNotice = teamNotice;
+    }
 }
