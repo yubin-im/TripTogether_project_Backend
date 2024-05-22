@@ -5,12 +5,14 @@ import com.hanaro.triptogether.tripPlace.domain.TripPlace;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "trip_reply")
 @Getter
+@NoArgsConstructor
 public class TripReply {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,5 +39,11 @@ public class TripReply {
         this.teamMember = teamMember;
         this.tripReplyContent = tripReplyContent;
         this.createdAt = LocalDateTime.now();
+    }
+
+    @Builder
+    public void update(String tripReplyContent) {
+        this.tripReplyContent = tripReplyContent;
+        this.lastModifiedAt = LocalDateTime.now();
     }
 }

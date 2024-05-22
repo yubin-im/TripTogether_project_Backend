@@ -9,9 +9,11 @@ import com.hanaro.triptogether.tripPlace.service.TripPlaceService;
 import com.hanaro.triptogether.tripReply.domain.TripReply;
 import com.hanaro.triptogether.tripReply.domain.TripReplyRepository;
 import com.hanaro.triptogether.tripReply.dto.request.TripReplyReqDto;
+import com.hanaro.triptogether.tripReply.dto.request.TripReplyUpdateReqDto;
 import com.hanaro.triptogether.tripReply.dto.response.TripReplyResDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
@@ -26,6 +28,7 @@ public class TripReplyService {
     private final TeamMemberServiceImpl teamMemberService;
     private final TripReplyRepository tripReplyRepository;
 
+    @Transactional
     public void createReply(Long trip_place_idx, TripReplyReqDto dto) {
         TripPlace tripplace = tripPlaceService.checkTripPlaceExists(trip_place_idx);
         TeamMember teamMember = teamMemberService.findTeamMemberByTeamMemberIdx(dto.getTeam_member_idx());
@@ -36,6 +39,24 @@ public class TripReplyService {
         };
 
         tripReplyRepository.save(dto.toEntity(tripplace, teamMember, dto.getTrip_reply_content()));
+    }
+    @Transactional
+    public void updateReply(Long trip_place_idx, TripReplyUpdateReqDto dto) {
+        tripPlaceService.checkTripPlaceExists(trip_place_idx);
+        TeamMember teamMember = teamMemberService.findTeamMemberByTeamMemberIdx(dto.getTeam_member_idx());
+
+        //place의 팀과 teamMember의 팀이 일치하지 않는 경우
+        if(!Objects.equals(tripPlaceService.findTeamIdByTripPlaceIdx(trip_place_idx), teamMember.getTeam().getTeamIdx())){
+            throw new ApiException(ExceptionEnum.TRIP_INFO_NOT_MATCH);
+        };
+
+        TripReply tripReply = tripReplyRepository.findById(dto.getTrip_reply_idx()).orElseThrow(() -> new ApiException(ExceptionEnum.TRIP_REPLY_NOT_FOUND));
+
+        //작성자와 수정자가 일치하지 않는 경우
+        if(!Objects.equals(tripReply.getTeamMember(),teamMember)){
+            throw new ApiException(ExceptionEnum.TRIP_REPLY_MEMBER_NOT_MATCH);
+        }
+        tripReply.update(dto.getTrip_reply_content());
     }
 
     public List<TripReplyResDto> getReply(Long trip_place_idx) {
