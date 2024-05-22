@@ -2,7 +2,6 @@ package com.hanaro.triptogether.dues.controller;
 
 import com.hanaro.triptogether.common.response.BaseResponse;
 import com.hanaro.triptogether.common.response.ResponseStatus;
-import com.hanaro.triptogether.dues.dto.request.DuesAlarmRequestDto;
 import com.hanaro.triptogether.dues.dto.request.DuesRuleRequestDto;
 import com.hanaro.triptogether.dues.dto.response.DuesListResponseDto;
 import com.hanaro.triptogether.dues.service.DuesService;
@@ -32,7 +31,7 @@ public class DuesController {
     }
 
 
-//    @PostMapping("/requestDues")
+//    @PostMapping("/request")
 //    public BaseResponse requestDuesToMember(@RequestBody DuesAlarmRequestDto duesAlarmRequestDto) {
 //
 //    }

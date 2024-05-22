@@ -1,6 +1,5 @@
 package com.hanaro.triptogether.dues.dto.request;
 
-import com.hanaro.triptogether.member.domain.Member;
 import lombok.Getter;
 import lombok.Setter;
 

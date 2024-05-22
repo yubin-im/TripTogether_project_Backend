@@ -1,12 +1,19 @@
-package com.hanaro.triptogether.exchangeRate;
+package com.hanaro.triptogether.exchangeRate.domain.entity;
 
-import lombok.*;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "Exchange_rate")
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
 public class ExchangeRate {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,9 +25,9 @@ public class ExchangeRate {
     @Column(nullable = false, precision = 20, scale = 2)
     private BigDecimal rate;
 
-    @Column(nullable = false)
-    private LocalDateTime createdAt;
+    public void  updateExchangeRate(BigDecimal curRate){
+        this.rate = curRate;
+    }
 
-    private LocalDateTime lastModifiedAt;
-    private LocalDateTime deletedAt;
+
 }
