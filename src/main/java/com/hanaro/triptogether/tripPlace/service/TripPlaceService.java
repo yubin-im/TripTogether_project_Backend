@@ -7,6 +7,7 @@ import com.hanaro.triptogether.tripPlace.domain.TripPlaceRepository;
 import com.hanaro.triptogether.tripPlace.dto.response.TripPlaceResDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -21,12 +22,22 @@ public class TripPlaceService {
         return tripPlaces.stream().map(TripPlaceResDto::new).toList();
     }
 
+    @Transactional
     public void deleteTripPlace(Long trip_place_idx) {
         checkTripPlaceExists(trip_place_idx);
         tripPlaceRepository.deleteById(trip_place_idx);
     }
 
-    public void checkTripPlaceExists(Long trip_place_idx){
-        tripPlaceRepository.findById(trip_place_idx).orElseThrow(() -> new ApiException(ExceptionEnum.TRIP_PLACE_NOT_FOUND));
+    public TripPlace checkTripPlaceExists(Long trip_place_idx){
+        return tripPlaceRepository.findById(trip_place_idx).orElseThrow(() -> new ApiException(ExceptionEnum.TRIP_PLACE_NOT_FOUND));
+    }
+
+    public Long findTeamIdByTripPlaceIdx(Long trip_place_idx){
+        return tripPlaceRepository
+                .findById(trip_place_idx)
+                .orElseThrow(() -> new ApiException(ExceptionEnum.TRIP_PLACE_NOT_FOUND))
+                .getTrip()
+                .getTeam()
+                .getTeamIdx();
     }
 }

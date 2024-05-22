@@ -1,6 +1,8 @@
 package com.hanaro.triptogether.teamMember.service.impl;
 
 import com.hanaro.triptogether.enumeration.TeamMemberState;
+import com.hanaro.triptogether.exception.ApiException;
+import com.hanaro.triptogether.exception.ExceptionEnum;
 import com.hanaro.triptogether.team.domain.Team;
 import com.hanaro.triptogether.team.domain.TeamRepository;
 import com.hanaro.triptogether.teamMember.domain.TeamMember;
@@ -148,5 +150,11 @@ public class TeamMemberServiceImpl implements TeamMemberService {
                 teamMemberRepository.save(teamMembers.get(i));
             }
         }
+    }
+
+    //모임원 검색
+    public TeamMember findTeamMemberByTeamMemberIdx(Long team_member_idx) {
+        return teamMemberRepository.findById(team_member_idx)
+                .orElseThrow(() -> new ApiException(ExceptionEnum.TEAM_MEMBER_NOT_FOUND));
     }
 }
