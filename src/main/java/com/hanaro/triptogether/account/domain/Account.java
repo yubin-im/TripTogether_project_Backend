@@ -39,4 +39,9 @@ public class Account {
 
     private LocalDateTime lastModifiedAt;
     private LocalDateTime deletedAt;
+
+    // 잔액 업데이트
+    public void updateAccBalance(BigDecimal accBalance) {
+        this.accBalance = accBalance;
+    }
 }
