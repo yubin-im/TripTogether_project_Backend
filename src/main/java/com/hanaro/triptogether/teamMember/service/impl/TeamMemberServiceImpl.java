@@ -153,8 +153,15 @@ public class TeamMemberServiceImpl implements TeamMemberService {
     }
 
     //모임원 검색
+    @Override
     public TeamMember findTeamMemberByTeamMemberIdx(Long team_member_idx) {
         return teamMemberRepository.findById(team_member_idx)
                 .orElseThrow(() -> new ApiException(ExceptionEnum.TEAM_MEMBER_NOT_FOUND));
+    }
+
+    //내 모임 검색
+    @Override
+    public List<TeamMember> findTeamMemberByMemberId(String member_id) {
+        return teamMemberRepository.findTeamMemberByMember_MemberId(member_id);
     }
 }

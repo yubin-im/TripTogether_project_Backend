@@ -1,11 +1,12 @@
 package com.hanaro.triptogether.tripPlace.domain;
 
 import com.hanaro.triptogether.member.domain.Member;
-import com.hanaro.triptogether.place.Place;
-import com.hanaro.triptogether.trip.Trip;
+import com.hanaro.triptogether.place.domain.Place;
+import com.hanaro.triptogether.trip.domain.Trip;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -13,6 +14,7 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "trip_place")
 @Getter
+@NoArgsConstructor
 public class TripPlace {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,10 +41,22 @@ public class TripPlace {
     private LocalDateTime createdAt;
 
     @ManyToOne
-    @JoinColumn(name = "created_by", insertable=false, updatable=false)
+    @JoinColumn(name = "created_by", updatable=false)
     private Member createdBy;
 
     private LocalDateTime lastModifiedAt;
     private Long lastModifiedBy;
+
+    @Builder
+    public TripPlace( Trip trip, Integer tripDate, Integer placeOrder, Place place, BigDecimal placeAmount, String placeMemo, Member member) {
+        this.trip = trip;
+        this.tripDate = tripDate;
+        this.placeOrder = placeOrder;
+        this.place = place;
+        this.placeAmount = placeAmount;
+        this.placeMemo = placeMemo;
+        this.createdAt = LocalDateTime.now();
+        this.createdBy = member;
+    }
 
 }

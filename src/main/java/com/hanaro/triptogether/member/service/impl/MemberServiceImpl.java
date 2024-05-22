@@ -1,5 +1,7 @@
 package com.hanaro.triptogether.member.service.impl;
 
+import com.hanaro.triptogether.exception.ApiException;
+import com.hanaro.triptogether.exception.ExceptionEnum;
 import com.hanaro.triptogether.member.domain.Member;
 import com.hanaro.triptogether.member.domain.MemberRepository;
 import com.hanaro.triptogether.member.service.MemberService;
@@ -23,6 +25,11 @@ public class MemberServiceImpl implements MemberService {
         } else {
             return "로그인이 완료되었습니다!";
         }
+    }
+
+    @Override
+    public Member findByMemberId(String memberId) {
+        return memberRepository.findMemberByMemberId(memberId).orElseThrow(()->new ApiException(ExceptionEnum.MEMBER_NOT_FOUND));
     }
 
 }

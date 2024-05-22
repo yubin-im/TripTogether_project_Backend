@@ -1,4 +1,4 @@
-package com.hanaro.triptogether.place;
+package com.hanaro.triptogether.place.domain;
 
 import java.time.LocalDateTime;
 
