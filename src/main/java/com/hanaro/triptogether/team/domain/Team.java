@@ -45,4 +45,10 @@ public class Team {
     private Long lastModifiedBy;
     private LocalDateTime deletedAt;
     private Long deletedBy;
+
+    // 삭제 시간, 삭제한 사용자 추가
+    public void delete(LocalDateTime deletedAt, Long deletedBy) {
+        this.deletedAt = deletedAt;
+        this.deletedBy = deletedBy;
+    }
 }

@@ -1,10 +1,12 @@
 package com.hanaro.triptogether.team.controller;
 
 import com.hanaro.triptogether.team.dto.request.AddTeamReqDto;
+import com.hanaro.triptogether.team.dto.request.ExportTeamReqDto;
 import com.hanaro.triptogether.team.dto.response.DetailTeamResDto;
 import com.hanaro.triptogether.team.service.TeamService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -28,5 +30,11 @@ public class TeamController {
         DetailTeamResDto detailTeamResDto = teamService.detailTeam(accIdx);
 
         return detailTeamResDto;
+    }
+
+    // 모임서비스 나가기 (전체 내보내기 후 모임 삭제)
+    @PutMapping("/team/export-team")
+    public void exportTeam(@RequestBody ExportTeamReqDto exportTeamReqDto) {
+        teamService.exportTeam(exportTeamReqDto);
     }
 }
