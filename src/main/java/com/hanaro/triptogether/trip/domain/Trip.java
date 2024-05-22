@@ -1,4 +1,4 @@
-package com.hanaro.triptogether.trip;
+package com.hanaro.triptogether.trip.domain;
 
 import com.hanaro.triptogether.country.Country;
 import com.hanaro.triptogether.team.domain.Team;

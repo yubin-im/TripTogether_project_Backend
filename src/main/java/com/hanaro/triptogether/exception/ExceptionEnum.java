@@ -6,13 +6,23 @@ import org.springframework.http.HttpStatus;
 @Getter
 public enum ExceptionEnum {
     RUNTIME_EXCEPTION(HttpStatus.BAD_REQUEST, "E0001"), //예시
-    TRIP_NOT_FOUND(HttpStatus.BAD_REQUEST, "TRIP_NOT_FOUND-03","해당하는 데이터가 없습니다."), //예시
+
+    //------member
+    MEMBER_NOT_FOUND(HttpStatus.BAD_REQUEST, "MEMBER_NOT_FOUND","해당하는 멤버가 없습니다."),
 
     //---------team member
     TEAM_MEMBER_NOT_FOUND(HttpStatus.BAD_REQUEST, "TEAM_MEMBER_NOT_FOUND","해당하는 팀원IDX가 없습니다."),
+    INVALID_TEAM_MEMBER(HttpStatus.BAD_REQUEST, "INVALID_TEAM_MEMBER","팀원이 아닙니다."),
+    INVALID_TEAM_MEMBER_ROLE(HttpStatus.FORBIDDEN, "INVALID_TEAM_MEMBER_ROLE","접근 권한이 없습니다."),
 
+    //-----place
+    PLACE_NOT_FOUND(HttpStatus.BAD_REQUEST, "PLACE_NOT_FOUND","해당하는 명소가 없습니다."),
+
+    //---------trip
+    TRIP_NOT_FOUND(HttpStatus.BAD_REQUEST, "TRIP_NOT_FOUND","해당하는 여행이 없습니다."),
     //----------trip place
-    TRIP_PLACE_NOT_FOUND(HttpStatus.BAD_REQUEST, "TRIP_PLACE_NOT_FOUND","해당하는 장소가 없습니다."),
+    TRIP_PLACE_NOT_FOUND(HttpStatus.BAD_REQUEST, "TRIP_PLACE_NOT_FOUND","해당하는 여행 장소가 없습니다."),
+    INVALID_TRIP_DATE(HttpStatus.BAD_REQUEST, "INVALID_TRIP_DATE","잘못된 여행 일정입니다."),
 
     //----------trip place reply
     TRIP_REPLY_NOT_FOUND(HttpStatus.BAD_REQUEST, "TRIP_REPLY_NOT_FOUND","해당하는 댓글이 없습니다."),

@@ -32,6 +32,9 @@ public interface TeamMemberService {
     // 모임원 전체 내보내기 (모임원-> 모임원 삭제)
     void exportTeamMembers(RejectTeamMembersReqDto rejectTeamMembersReqDto);
 
-    //팀 멤버 검색
+    //팀 멤버 idx로 팀 멤버 검색
     TeamMember findTeamMemberByTeamMemberIdx(Long team_member_idx);
+
+    //멤버id로 팀 검색
+    List<TeamMember> findTeamMemberByMemberId(String member_id);
 }
