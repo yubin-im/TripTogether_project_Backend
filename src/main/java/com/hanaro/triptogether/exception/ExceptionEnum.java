@@ -13,6 +13,7 @@ public enum ExceptionEnum {
     //---------team member
     TEAM_MEMBER_NOT_FOUND(HttpStatus.BAD_REQUEST, "TEAM_MEMBER_NOT_FOUND","해당하는 팀원IDX가 없습니다."),
     INVALID_TEAM_MEMBER(HttpStatus.BAD_REQUEST, "INVALID_TEAM_MEMBER","팀원이 아닙니다."),
+    INVALID_TEAM_MEMBER_ROLE(HttpStatus.FORBIDDEN, "INVALID_TEAM_MEMBER_ROLE","접근 권한이 없습니다."),
 
     //-----place
     PLACE_NOT_FOUND(HttpStatus.BAD_REQUEST, "PLACE_NOT_FOUND","해당하는 명소가 없습니다."),

@@ -1,5 +1,6 @@
 package com.hanaro.triptogether.tripPlace.service;
 
+import com.hanaro.triptogether.enumeration.TeamMemberState;
 import com.hanaro.triptogether.exception.ApiException;
 import com.hanaro.triptogether.exception.ExceptionEnum;
 import com.hanaro.triptogether.member.domain.Member;
@@ -20,7 +21,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.swing.text.html.Option;
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -98,16 +101,25 @@ public class TripPlaceService {
 
     // memberId가 해당 팀원인지 확인
     private void checkTeamMember(Team dtoTeam, String member_id) {
-        List<Team> teams = teamMemberService.findTeamMemberByMemberId(member_id)
-                .stream()
-                .map(TeamMember::getTeam)
-                .toList();
+        List<TeamMember> teamMembers = teamMemberService.findTeamMemberByMemberId(member_id);
 
-        boolean isTeamMember = teams.stream()
-                .anyMatch(team -> team.equals(dtoTeam));
+        // 해당 멤버가 요청한 팀의 멤버인지 확인
+        boolean isTeamMember = teamMembers.stream()
+                .anyMatch(teamMember -> teamMember.getTeam().equals(dtoTeam));
 
         if (!isTeamMember) {
             throw new ApiException(ExceptionEnum.INVALID_TEAM_MEMBER);
+        }
+
+        // 팀 멤버 상태 확인
+        TeamMember teamMember = teamMembers.stream()
+                .filter(tm -> tm.getTeam().equals(dtoTeam))
+                .findFirst()
+                .orElseThrow(() -> new ApiException(ExceptionEnum.INVALID_TEAM_MEMBER));
+
+        String state = teamMember.getTeamMemberState().name();
+        if (state.equals(TeamMemberState.요청중.name()) || state.equals(TeamMemberState.수락대기.name())) {
+            throw new ApiException(ExceptionEnum.INVALID_TEAM_MEMBER_ROLE);
         }
     }
 }
