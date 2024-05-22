@@ -2,11 +2,14 @@ package com.hanaro.triptogether.team.service.impl;
 
 import com.hanaro.triptogether.account.domain.Account;
 import com.hanaro.triptogether.account.domain.AccountRepository;
+import com.hanaro.triptogether.member.domain.Member;
 import com.hanaro.triptogether.team.domain.Team;
 import com.hanaro.triptogether.team.domain.TeamRepository;
 import com.hanaro.triptogether.team.dto.request.AddTeamReqDto;
 import com.hanaro.triptogether.team.dto.request.ExportTeamReqDto;
+import com.hanaro.triptogether.team.dto.request.ManageTeamReqDto;
 import com.hanaro.triptogether.team.dto.response.DetailTeamResDto;
+import com.hanaro.triptogether.team.dto.response.ManageTeamResDto;
 import com.hanaro.triptogether.team.service.TeamService;
 import com.hanaro.triptogether.teamMember.domain.TeamMember;
 import com.hanaro.triptogether.teamMember.domain.TeamMemberRepository;
@@ -78,5 +81,23 @@ public class TeamServiceImpl implements TeamService {
         // 모임 삭제
         team.delete(LocalDateTime.now(), exportTeamReqDto.getMemberIdx());
         teamRepository.save(team);
+    }
+
+    // 모임서비스 관리 (설정)
+    @Transactional
+    @Override
+    public ManageTeamResDto manageTeam(ManageTeamReqDto manageTeamReqDto) {
+        Team team = teamRepository.findById(manageTeamReqDto.getTeamIdx()).orElse(null);
+        Account account = team.getAccount();
+        Member member = account.getMember();
+
+        ManageTeamResDto manageTeamResDto = ManageTeamResDto.builder()
+                .teamName(team.getTeamName())
+                .accNumber(account.getAccNumber())
+                .accBalance(account.getAccBalance())
+                .alarmStatus(member.getAlarmStatus())
+                .build();
+
+        return manageTeamResDto;
     }
 }
