@@ -45,7 +45,10 @@ public class TripPlace {
     private Member createdBy;
 
     private LocalDateTime lastModifiedAt;
-    private Long lastModifiedBy;
+
+    @ManyToOne
+    @JoinColumn(name = "last_modified_by")
+    private Member lastModifiedBy;
 
     @Builder
     public TripPlace( Trip trip, Integer tripDate, Integer placeOrder, Place place, BigDecimal placeAmount, String placeMemo, Member member) {
@@ -57,6 +60,14 @@ public class TripPlace {
         this.placeMemo = placeMemo;
         this.createdAt = LocalDateTime.now();
         this.createdBy = member;
+    }
+
+    public void update(Place place, BigDecimal placeAmount, String placeMemo, Member member){
+        this.place = place;
+        this.placeAmount = placeAmount;
+        this.placeMemo = placeMemo;
+        this.lastModifiedAt = LocalDateTime.now();
+        this.lastModifiedBy = member;
     }
 
 }

@@ -14,6 +14,7 @@ import com.hanaro.triptogether.trip.service.TripService;
 import com.hanaro.triptogether.tripPlace.domain.TripPlace;
 import com.hanaro.triptogether.tripPlace.domain.TripPlaceRepository;
 import com.hanaro.triptogether.tripPlace.dto.request.TripPlaceAddReqDto;
+import com.hanaro.triptogether.tripPlace.dto.request.TripPlaceUpdateReqDto;
 import com.hanaro.triptogether.tripPlace.dto.response.TripPlaceResDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -68,6 +69,27 @@ public class TripPlaceService {
                 .member(member)
                 .build();
         tripPlaceRepository.save(tripPlace);
+    }
+
+    @Transactional
+    public void updatePlace(Long trip_place_idx, TripPlaceUpdateReqDto dto) {
+        TripPlace tripPlace = checkTripPlaceExists(trip_place_idx);
+        Place place = placeService.findByPlaceIdx(dto.getPlace_idx());
+        Member member = memberService.findByMemberId(dto.getMember_id());
+
+        // 요청자가 해당 여행 팀원인지 확인
+        List<Team> teams = teamMemberService.findTeamMemberByMemberId(dto.getMember_id())
+                .stream()
+                .map(TeamMember::getTeam)
+                .toList();
+
+        boolean isTeamMember = teams.stream()
+                .anyMatch(team -> team.equals(tripPlace.getTrip().getTeam()));
+        if (!isTeamMember) {
+            throw new ApiException(ExceptionEnum.INVALID_TEAM_MEMBER);
+        }
+        tripPlace.update(place, dto.getPlace_amount(), dto.getPlace_memo(), member);
+
     }
 
 

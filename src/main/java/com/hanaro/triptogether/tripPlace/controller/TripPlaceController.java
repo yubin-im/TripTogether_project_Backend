@@ -1,6 +1,7 @@
 package com.hanaro.triptogether.tripPlace.controller;
 
 import com.hanaro.triptogether.tripPlace.dto.request.TripPlaceAddReqDto;
+import com.hanaro.triptogether.tripPlace.dto.request.TripPlaceUpdateReqDto;
 import com.hanaro.triptogether.tripPlace.dto.response.TripPlaceResDto;
 import com.hanaro.triptogether.tripPlace.service.TripPlaceService;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,11 @@ public class TripPlaceController {
     @PostMapping("")
     public void addPlace(@RequestBody TripPlaceAddReqDto dto) {
         tripPlaceService.addPlace(dto);
+    }
+
+    @PutMapping("/{trip_place_idx}")
+    public void updatePlace(@PathVariable("trip_place_idx") Long trip_place_idx, @RequestBody TripPlaceUpdateReqDto dto) {
+        tripPlaceService.updatePlace(trip_place_idx, dto);
     }
 
     @GetMapping("/{trip_idx}")
