@@ -1,5 +1,6 @@
 package com.hanaro.triptogether.tripReply.controller;
 
+import com.hanaro.triptogether.tripReply.dto.request.TripReplyReqDto;
 import com.hanaro.triptogether.tripReply.dto.response.TripReplyResDto;
 import com.hanaro.triptogether.tripReply.service.TripReplyService;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +13,11 @@ import java.util.List;
 @RequestMapping("/trips/place")
 public class TripReplyController {
     private final TripReplyService tripReplyService;
+
+    @PostMapping("/{trip_place_idx}/reply")
+    public void createReply(@PathVariable("trip_place_idx") Long trip_place_idx, @RequestBody TripReplyReqDto dto) {
+        tripReplyService.createReply(trip_place_idx, dto);
+    }
 
     @GetMapping("/{trip_place_idx}/reply")
     public List<TripReplyResDto> getReply(@PathVariable("trip_place_idx") Long trip_place_idx) {
