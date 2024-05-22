@@ -35,4 +35,9 @@ public class Member {
     private LocalDateTime createdAt;
 
     private LocalDateTime deletedAt;
+
+    // 알림설정 (on/off)
+    public void updateAlarm(Boolean alarmStatus) {
+        this.alarmStatus = alarmStatus;
+    }
 }

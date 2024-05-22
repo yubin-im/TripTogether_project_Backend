@@ -2,6 +2,7 @@ package com.hanaro.triptogether.account.service.impl;
 
 import com.hanaro.triptogether.account.domain.Account;
 import com.hanaro.triptogether.account.domain.AccountRepository;
+import com.hanaro.triptogether.account.dto.request.UpdateAccBalanceReq;
 import com.hanaro.triptogether.account.dto.response.AccountsResDto;
 import com.hanaro.triptogether.account.dto.response.TeamServiceListResDto;
 import com.hanaro.triptogether.account.service.AccountService;
@@ -65,5 +66,26 @@ public class AccountServiceImpl implements AccountService {
         }
 
         return accountsResDtos;
+    }
+
+    // 계좌 입금
+    @Transactional
+    @Override
+    public void depositAcc(UpdateAccBalanceReq updateAccBalanceReq) {
+        System.out.println("확인: " + updateAccBalanceReq.getAccIdx());
+        Account account = accountRepository.findById(updateAccBalanceReq.getAccIdx()).orElse(null);
+
+        account.updateAccBalance(account.getAccBalance().add(updateAccBalanceReq.getAmount()));
+        accountRepository.save(account);
+    }
+
+    // 계좌 출금
+    @Transactional
+    @Override
+    public void withdrawAcc(UpdateAccBalanceReq updateAccBalanceReq) {
+        Account account = accountRepository.findById(updateAccBalanceReq.getAccIdx()).orElse(null);
+
+        account.updateAccBalance(account.getAccBalance().subtract(updateAccBalanceReq.getAmount()));
+        accountRepository.save(account);
     }
 }

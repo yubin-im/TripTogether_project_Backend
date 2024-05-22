@@ -1,10 +1,12 @@
 package com.hanaro.triptogether.account.controller;
 
+import com.hanaro.triptogether.account.dto.request.UpdateAccBalanceReq;
 import com.hanaro.triptogether.account.dto.response.AccountsResDto;
 import com.hanaro.triptogether.account.dto.response.TeamServiceListResDto;
 import com.hanaro.triptogether.account.service.AccountService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -32,5 +34,17 @@ public class AccountController {
         List<AccountsResDto> accountsResDtos = accountService.accounts(memberIdx);
 
         return accountsResDtos;
+    }
+
+    // 계좌 입금
+    @PutMapping("/account/deposit")
+    public void depositAcc(@RequestBody UpdateAccBalanceReq updateAccBalanceReq) {
+        accountService.depositAcc(updateAccBalanceReq);
+    }
+
+    // 계좌 출금
+    @PutMapping("/account/withdraw")
+    public void withdrawAcc(@RequestBody UpdateAccBalanceReq updateAccBalanceReq) {
+        accountService.withdrawAcc(updateAccBalanceReq);
     }
 }
