@@ -69,5 +69,10 @@ public class TripPlace {
         this.lastModifiedAt = LocalDateTime.now();
         this.lastModifiedBy = member;
     }
+    public void updateOrder(Integer placeOrder, Member member){
+        this.placeOrder=placeOrder;
+        this.lastModifiedAt = LocalDateTime.now();
+        this.lastModifiedBy = member;
+    }
 
 }
