@@ -1,17 +1,12 @@
 package com.hanaro.triptogether.team.controller;
 
-import com.hanaro.triptogether.team.dto.request.AddTeamReqDto;
-import com.hanaro.triptogether.team.dto.request.ExportTeamReqDto;
-import com.hanaro.triptogether.team.dto.request.ManageTeamReqDto;
-import com.hanaro.triptogether.team.dto.request.UpdateTeamNoticeReq;
+import com.hanaro.triptogether.team.dto.request.*;
 import com.hanaro.triptogether.team.dto.response.DetailTeamResDto;
+import com.hanaro.triptogether.team.dto.response.InviteTeamResDto;
 import com.hanaro.triptogether.team.dto.response.ManageTeamResDto;
 import com.hanaro.triptogether.team.service.TeamService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
@@ -53,5 +48,19 @@ public class TeamController {
     @PutMapping("/account/notice")
     public void updateTeamNotice(@RequestBody UpdateTeamNoticeReq updateTeamNoticeReq) {
         teamService.updateTeamNotice(updateTeamNoticeReq);
+    }
+
+    // 모임 초대하기 (초대링크 생성)
+    @PostMapping("/team/invite-team")
+    public String generateInviteLink(@RequestBody InviteTeamReqDto inviteTeamReqDto) {
+        String inviteUrl = teamService.generateInviteLink(inviteTeamReqDto);
+
+        return inviteUrl;
+    }
+
+    // 모임에 초대받은 화면
+    @GetMapping("/invite")
+    public InviteTeamResDto inviteTeam(@RequestParam String inviter, @RequestParam Long teamNo) {
+        return teamService.inviteTeam(inviter, teamNo);
     }
 }
