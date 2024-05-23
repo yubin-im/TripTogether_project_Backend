@@ -2,16 +2,17 @@ package com.hanaro.triptogether.exception;
 
 import lombok.Builder;
 import lombok.Getter;
-import org.springframework.http.HttpStatus;
 
 @Getter
 public class ExceptionResponse {
-    private String errorCode;
-    private String errorMessage;
+    private int status;
+    private String code;
+    private String message;
 
     @Builder
-    public ExceptionResponse(HttpStatus status, String errorCode, String errorMessage){
-        this.errorCode = errorCode;
-        this.errorMessage = errorMessage;
+    public ExceptionResponse(int status, String code, String message) {
+        this.status = status;
+        this.code = code;
+        this.message = message;
     }
 }
