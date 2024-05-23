@@ -1,10 +1,8 @@
 package com.hanaro.triptogether.team.service;
 
-import com.hanaro.triptogether.team.dto.request.AddTeamReqDto;
-import com.hanaro.triptogether.team.dto.request.ExportTeamReqDto;
-import com.hanaro.triptogether.team.dto.request.ManageTeamReqDto;
-import com.hanaro.triptogether.team.dto.request.UpdateTeamNoticeReq;
+import com.hanaro.triptogether.team.dto.request.*;
 import com.hanaro.triptogether.team.dto.response.DetailTeamResDto;
+import com.hanaro.triptogether.team.dto.response.InviteTeamResDto;
 import com.hanaro.triptogether.team.dto.response.ManageTeamResDto;
 
 public interface TeamService {
@@ -22,4 +20,10 @@ public interface TeamService {
 
     // 공지 등록/수정
     void updateTeamNotice(UpdateTeamNoticeReq updateTeamNoticeReq);
+
+    // 모임 초대하기 (초대링크 생성)
+    String generateInviteLink(InviteTeamReqDto inviteTeamReqDto);
+
+    // 모임에 초대받은 화면
+    InviteTeamResDto inviteTeam(String inviter, Long teamNo);
 }

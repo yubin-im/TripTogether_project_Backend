@@ -3,13 +3,12 @@ package com.hanaro.triptogether.team.service.impl;
 import com.hanaro.triptogether.account.domain.Account;
 import com.hanaro.triptogether.account.domain.AccountRepository;
 import com.hanaro.triptogether.member.domain.Member;
+import com.hanaro.triptogether.member.domain.MemberRepository;
 import com.hanaro.triptogether.team.domain.Team;
 import com.hanaro.triptogether.team.domain.TeamRepository;
-import com.hanaro.triptogether.team.dto.request.AddTeamReqDto;
-import com.hanaro.triptogether.team.dto.request.ExportTeamReqDto;
-import com.hanaro.triptogether.team.dto.request.ManageTeamReqDto;
-import com.hanaro.triptogether.team.dto.request.UpdateTeamNoticeReq;
+import com.hanaro.triptogether.team.dto.request.*;
 import com.hanaro.triptogether.team.dto.response.DetailTeamResDto;
+import com.hanaro.triptogether.team.dto.response.InviteTeamResDto;
 import com.hanaro.triptogether.team.dto.response.ManageTeamResDto;
 import com.hanaro.triptogether.team.service.TeamService;
 import com.hanaro.triptogether.teamMember.domain.TeamMember;
@@ -27,6 +26,7 @@ public class TeamServiceImpl implements TeamService {
     private final TeamRepository teamRepository;
     private final AccountRepository accountRepository;
     private final TeamMemberRepository teamMemberRepository;
+    private final MemberRepository memberRepository;
 
     // 모임서비스 가입
     @Transactional
@@ -110,5 +110,33 @@ public class TeamServiceImpl implements TeamService {
 
         team.updateTeamNotice(updateTeamNoticeReq.getTeamNotice());
         teamRepository.save(team);
+    }
+
+    // 모임 초대하기 (초대링크 생성)
+    @Transactional
+    @Override
+    public String generateInviteLink(InviteTeamReqDto inviteTeamReqDto) {
+        Team team = teamRepository.findById(inviteTeamReqDto.getTeamIdx()).orElse(null);
+        Member member = memberRepository.findById(inviteTeamReqDto.getMemberIdx()).orElse(null);
+
+        String inviter = member.getMemberName();
+        Long teamIdx = team.getTeamIdx();
+
+        return "http://localhost:8080/invite?inviter=" + inviter + "&teamNo=" + teamIdx;
+    }
+
+    // 모임에 초대받은 화면
+    @Transactional
+    @Override
+    public InviteTeamResDto inviteTeam(String inviter, Long teamNo) {
+        Team team = teamRepository.findById(teamNo).orElse(null);
+
+        InviteTeamResDto inviteTeamResDto = InviteTeamResDto.builder()
+                .inviter(inviter)
+                .teamName(team.getTeamName())
+                .teamNo(teamNo)
+                .build();
+
+        return inviteTeamResDto;
     }
 }
