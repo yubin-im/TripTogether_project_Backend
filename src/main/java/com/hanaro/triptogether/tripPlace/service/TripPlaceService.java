@@ -15,7 +15,9 @@ import com.hanaro.triptogether.trip.service.TripService;
 import com.hanaro.triptogether.tripPlace.domain.TripPlace;
 import com.hanaro.triptogether.tripPlace.domain.TripPlaceRepository;
 import com.hanaro.triptogether.tripPlace.dto.request.TripPlaceAddReqDto;
+import com.hanaro.triptogether.tripPlace.dto.request.TripPlaceOrderReqDto;
 import com.hanaro.triptogether.tripPlace.dto.request.TripPlaceUpdateReqDto;
+import com.hanaro.triptogether.tripPlace.dto.request.UpdateOrderReqDto;
 import com.hanaro.triptogether.tripPlace.dto.response.TripPlaceResDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -23,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.swing.text.html.Option;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 
@@ -72,6 +75,29 @@ public class TripPlaceService {
         checkTeamMember(tripPlace.getTrip().getTeam(), dto.getMember_id());
 
         tripPlace.update(place, dto.getPlace_amount(), dto.getPlace_memo(), member);
+    }
+
+    @Transactional
+    public void updatePlaceOrder(Long trip_idx, UpdateOrderReqDto dto) {
+
+        Trip trip = tripService.findByTripIdx(trip_idx);
+
+        checkTeamMember(trip.getTeam(), dto.getMember_id());
+
+        if(trip.getTripDay() < dto.getTrip_date()){
+            throw new ApiException(ExceptionEnum.INVALID_TRIP_DATE);
+        }
+
+        List<TripPlaceOrderReqDto> dtos = dto.getOrders();
+        Member member = memberService.findByMemberId(dto.getMember_id());
+
+        for(int i=0;i<dtos.size();i++){
+            TripPlace tripPlace = checkTripPlaceExists(dtos.get(i).getTrip_place_idx());
+            if(!Objects.equals(tripPlace.getTrip().getTripIdx(), trip_idx)){
+                throw new ApiException(ExceptionEnum.TEAM_NOT_MATCH);
+            }
+            tripPlace.updateOrder(i+1, member);
+        }
     }
 
 

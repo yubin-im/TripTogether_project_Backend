@@ -20,9 +20,11 @@ public enum ExceptionEnum {
 
     //---------trip
     TRIP_NOT_FOUND(HttpStatus.BAD_REQUEST, "TRIP_NOT_FOUND","해당하는 여행이 없습니다."),
+
     //----------trip place
     TRIP_PLACE_NOT_FOUND(HttpStatus.BAD_REQUEST, "TRIP_PLACE_NOT_FOUND","해당하는 여행 장소가 없습니다."),
     INVALID_TRIP_DATE(HttpStatus.BAD_REQUEST, "INVALID_TRIP_DATE","잘못된 여행 일정입니다."),
+    TEAM_NOT_MATCH(HttpStatus.FORBIDDEN, "TEAM_NOT_MATCH","접근 권한이 없습니다."),
 
     //----------trip place reply
     TRIP_REPLY_NOT_FOUND(HttpStatus.BAD_REQUEST, "TRIP_REPLY_NOT_FOUND","해당하는 댓글이 없습니다."),
