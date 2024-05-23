@@ -5,7 +5,6 @@ import org.springframework.http.HttpStatus;
 
 @Getter
 public enum ExceptionEnum {
-    RUNTIME_EXCEPTION(HttpStatus.BAD_REQUEST, "E0001"), //예시
 
     //------member
     MEMBER_NOT_FOUND(HttpStatus.BAD_REQUEST, "MEMBER_NOT_FOUND","해당하는 멤버가 없습니다."),
@@ -33,12 +32,7 @@ public enum ExceptionEnum {
 
     private final HttpStatus status;
     private final String code;
-    private String message;
-
-    ExceptionEnum(HttpStatus status, String code) {
-        this.status = status;
-        this.code = code;
-    }
+    private final String message;
 
     ExceptionEnum(HttpStatus status, String code, String message) {
         this.status = status;
