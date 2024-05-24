@@ -25,9 +25,7 @@ public class TeamController {
     @PostMapping("/account/detail")
     public DetailTeamResDto detailTeam(@RequestBody Map<String, Long> accIdxMap) {
         Long accIdx = accIdxMap.get("accIdx");
-        DetailTeamResDto detailTeamResDto = teamService.detailTeam(accIdx);
-
-        return detailTeamResDto;
+        return teamService.detailTeam(accIdx);
     }
 
     // 모임서비스 나가기 (전체 내보내기 후 모임 삭제)
@@ -39,9 +37,7 @@ public class TeamController {
     // 모임서비스 관리 (설정)
     @PostMapping("/account/set")
     public ManageTeamResDto manageTeam(@RequestBody ManageTeamReqDto manageTeamReqDto) {
-        ManageTeamResDto manageTeamResDto = teamService.manageTeam(manageTeamReqDto);
-
-        return manageTeamResDto;
+        return teamService.manageTeam(manageTeamReqDto);
     }
 
     // 공지 등록/수정
