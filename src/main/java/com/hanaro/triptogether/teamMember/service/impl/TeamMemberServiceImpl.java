@@ -3,6 +3,7 @@ package com.hanaro.triptogether.teamMember.service.impl;
 import com.hanaro.triptogether.enumeration.TeamMemberState;
 import com.hanaro.triptogether.exception.ApiException;
 import com.hanaro.triptogether.exception.ExceptionEnum;
+import com.hanaro.triptogether.member.domain.Member;
 import com.hanaro.triptogether.team.domain.Team;
 import com.hanaro.triptogether.team.domain.TeamRepository;
 import com.hanaro.triptogether.teamMember.domain.TeamMember;
@@ -162,7 +163,7 @@ public class TeamMemberServiceImpl implements TeamMemberService {
     @Override
     public void validateTeamMemberState(TeamMember teamMember) {
         String state = teamMember.getTeamMemberState().name();
-        if (state.equals(TeamMemberState.요청중.name()) || state.equals(TeamMemberState.수락대기.name())) {
+        if (!state.equals(TeamMemberState.총무.name()) && !state.equals(TeamMemberState.모임원.name())) {
             throw new ApiException(ExceptionEnum.INVALID_TEAM_MEMBER_ROLE);
         }
     }
@@ -178,5 +179,11 @@ public class TeamMemberServiceImpl implements TeamMemberService {
     @Override
     public List<TeamMember> findTeamMemberByMemberId(String member_id) {
         return teamMemberRepository.findTeamMemberByMember_MemberId(member_id);
+    }
+
+    @Override
+    public TeamMember checkIsMyTeamByTeamMemberIdx(Long team_member_idx) {
+        return teamMemberRepository.findById(team_member_idx)
+                .orElseThrow(() -> new ApiException(ExceptionEnum.INVALID_TEAM_MEMBER));
     }
 }
