@@ -2,7 +2,7 @@ package com.hanaro.triptogether.city.domain;
 
 import com.hanaro.triptogether.city.dto.City;
 import com.hanaro.triptogether.country.domain.CountryEntity;
-import com.hanaro.triptogether.member.Member;
+import com.hanaro.triptogether.member.domain.Member;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
