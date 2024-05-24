@@ -30,7 +30,7 @@ public class PlaceController {
     }
 
 
-    @GetMapping("/category/{category_idx}")
+    @GetMapping("/categories/{category_idx}")
     public ResponseEntity<List<Place>> getPlacesByCategoryId(@PathVariable Long category_idx) {
         return ResponseEntity
                 .status(HttpStatus.OK)
