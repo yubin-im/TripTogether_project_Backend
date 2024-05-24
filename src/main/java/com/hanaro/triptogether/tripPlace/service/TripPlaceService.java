@@ -24,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 
 @Service
@@ -77,7 +78,10 @@ public class TripPlaceService {
 
         List<TripPlaceOrderReqDto> dtos = dto.getOrders();
         Member member = memberService.findByMemberId(dto.getMember_id());
-
+        int num = tripPlaceRepository.countByTripId(trip_idx, dto.getTrip_date());
+        if (dtos.stream().map(TripPlaceOrderReqDto::getTrip_place_idx).distinct().count() != num){ //중복 및 사이즈 체크
+            throw new ApiException(ExceptionEnum.INVALID_ORDER_LIST);
+        }
         for(int i=0;i<dtos.size();i++){
             TripPlace tripPlace = checkTripPlaceExists(dtos.get(i).getTrip_place_idx());
             if(!Objects.equals(tripPlace.getTrip().getTripIdx(), trip_idx)){
