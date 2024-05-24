@@ -3,6 +3,7 @@ package com.hanaro.triptogether.tripPlace.domain;
 import com.hanaro.triptogether.member.domain.Member;
 import com.hanaro.triptogether.place.domain.Place;
 import com.hanaro.triptogether.trip.domain.Trip;
+import com.hanaro.triptogether.tripReply.domain.TripReply;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -10,6 +11,7 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "trip_place")
@@ -49,6 +51,9 @@ public class TripPlace {
     @ManyToOne
     @JoinColumn(name = "last_modified_by")
     private Member lastModifiedBy;
+
+    @OneToMany(mappedBy = "tripPlace", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<TripReply> tripReplies;
 
     @Builder
     public TripPlace( Trip trip, Integer tripDate, Integer placeOrder, Place place, BigDecimal placeAmount, String placeMemo, Member member) {
