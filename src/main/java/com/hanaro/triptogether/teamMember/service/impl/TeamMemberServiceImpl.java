@@ -162,7 +162,7 @@ public class TeamMemberServiceImpl implements TeamMemberService {
     @Override
     public void validateTeamMemberState(TeamMember teamMember) {
         String state = teamMember.getTeamMemberState().name();
-        if (state.equals(TeamMemberState.요청중.name()) || state.equals(TeamMemberState.수락대기.name())) {
+        if (!state.equals(TeamMemberState.총무.name()) && !state.equals(TeamMemberState.모임원.name())) {
             throw new ApiException(ExceptionEnum.INVALID_TEAM_MEMBER_ROLE);
         }
     }
@@ -194,5 +194,10 @@ public class TeamMemberServiceImpl implements TeamMemberService {
                 .createdAt(LocalDateTime.now()).build();
 
         teamMemberRepository.save(teamMember);
+
+    @Override
+    public TeamMember checkIsMyTeamByTeamMemberIdx(Long team_member_idx) {
+        return teamMemberRepository.findById(team_member_idx)
+                .orElseThrow(() -> new ApiException(ExceptionEnum.INVALID_TEAM_MEMBER));
     }
 }

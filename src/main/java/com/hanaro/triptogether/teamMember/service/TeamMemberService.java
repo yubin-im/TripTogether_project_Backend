@@ -44,4 +44,7 @@ public interface TeamMemberService {
 
     // 모임 가입
     void joinTeamMember(JoinTeamMemberReq joinTeamMemberReq);
+
+    // 팀멤버idx로 팀멤버 검색
+    TeamMember checkIsMyTeamByTeamMemberIdx(Long team_member_idx);
 }
