@@ -53,9 +53,7 @@ public class TeamController {
     // 모임 초대하기 (초대링크 생성)
     @PostMapping("/team/invite-team")
     public String generateInviteLink(@RequestBody InviteTeamReqDto inviteTeamReqDto) {
-        String inviteUrl = teamService.generateInviteLink(inviteTeamReqDto);
-
-        return inviteUrl;
+        return teamService.generateInviteLink(inviteTeamReqDto);
     }
 
     // 모임에 초대받은 화면
