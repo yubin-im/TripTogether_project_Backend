@@ -1,0 +1,33 @@
+package com.hanaro.triptogether.member.controller;
+
+import com.hanaro.triptogether.member.dto.request.LoginReqDto;
+import com.hanaro.triptogether.member.service.MemberService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Map;
+
+@RestController
+@RequiredArgsConstructor
+public class MemberController {
+    private final MemberService memberService;
+
+    // 간편 로그인
+    @PostMapping("/login")
+    public String login(@RequestBody LoginReqDto loginReqDto) {
+        Long memberIdx = loginReqDto.getMemberIdx();
+        String memberLoginPw = loginReqDto.getMemberLoginPw();
+
+        return memberService.login(memberIdx, memberLoginPw);
+    }
+
+    // 알림설정 (on/off)
+    @PutMapping("/account/alarm")
+    public void setAlarm(@RequestBody Map<String, Long> memberIdxMap) {
+        Long memberIdx = memberIdxMap.get("memberIdx");
+        memberService.setAlarm(memberIdx);
+    }
+}
