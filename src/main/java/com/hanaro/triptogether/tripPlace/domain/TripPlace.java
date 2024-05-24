@@ -1,7 +1,7 @@
 package com.hanaro.triptogether.tripPlace.domain;
 
 import com.hanaro.triptogether.member.domain.Member;
-import com.hanaro.triptogether.place.domain.Place;
+import com.hanaro.triptogether.place.domain.PlaceEntity;
 import com.hanaro.triptogether.trip.domain.Trip;
 import com.hanaro.triptogether.tripReply.domain.TripReply;
 import jakarta.persistence.*;
@@ -34,7 +34,7 @@ public class TripPlace {
 
     @ManyToOne
     @JoinColumn(name = "place_idx")
-    private Place place;
+    private PlaceEntity place;
 
     private BigDecimal placeAmount;
     private String placeMemo;
@@ -56,7 +56,7 @@ public class TripPlace {
     private List<TripReply> tripReplies;
 
     @Builder
-    public TripPlace( Trip trip, Integer tripDate, Integer placeOrder, Place place, BigDecimal placeAmount, String placeMemo, Member member) {
+    public TripPlace( Trip trip, Integer tripDate, Integer placeOrder, PlaceEntity place, BigDecimal placeAmount, String placeMemo, Member member) {
         this.trip = trip;
         this.tripDate = tripDate;
         this.placeOrder = placeOrder;
@@ -67,7 +67,7 @@ public class TripPlace {
         this.createdBy = member;
     }
 
-    public void update(Place place, BigDecimal placeAmount, String placeMemo, Member member){
+    public void update(PlaceEntity place, BigDecimal placeAmount, String placeMemo, Member member){
         this.place = place;
         this.placeAmount = placeAmount;
         this.placeMemo = placeMemo;

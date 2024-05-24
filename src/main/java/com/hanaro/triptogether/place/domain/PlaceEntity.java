@@ -3,7 +3,7 @@ package com.hanaro.triptogether.place.domain;
 import java.time.LocalDateTime;
 
 import com.hanaro.triptogether.city.domain.CityEntity;
-import com.hanaro.triptogether.member.Member;
+import com.hanaro.triptogether.member.domain.Member;
 import com.hanaro.triptogether.place.dto.Place;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
