@@ -21,9 +21,7 @@ public class MemberController {
         Long memberIdx = loginReqDto.getMemberIdx();
         String memberLoginPw = loginReqDto.getMemberLoginPw();
 
-        String result = memberService.login(memberIdx, memberLoginPw);
-
-        return result;
+        return memberService.login(memberIdx, memberLoginPw);
     }
 
     // 알림설정 (on/off)
