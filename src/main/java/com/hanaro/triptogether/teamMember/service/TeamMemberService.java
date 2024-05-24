@@ -2,10 +2,7 @@ package com.hanaro.triptogether.teamMember.service;
 
 import com.hanaro.triptogether.team.domain.Team;
 import com.hanaro.triptogether.teamMember.domain.TeamMember;
-import com.hanaro.triptogether.teamMember.dto.request.AcceptTeamMemberReqDto;
-import com.hanaro.triptogether.teamMember.dto.request.AcceptTeamMembersReqDto;
-import com.hanaro.triptogether.teamMember.dto.request.ChangeOwnerReqDto;
-import com.hanaro.triptogether.teamMember.dto.request.RejectTeamMembersReqDto;
+import com.hanaro.triptogether.teamMember.dto.request.*;
 import com.hanaro.triptogether.teamMember.dto.response.TeamMembersResDto;
 
 import java.util.List;
@@ -44,4 +41,7 @@ public interface TeamMemberService {
 
     //유효한 팀원인지 확인
     void validateTeamMemberState(TeamMember teamMember);
+
+    // 모임 가입
+    void joinTeamMember(JoinTeamMemberReq joinTeamMemberReq);
 }

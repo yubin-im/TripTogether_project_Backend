@@ -3,14 +3,13 @@ package com.hanaro.triptogether.teamMember.service.impl;
 import com.hanaro.triptogether.enumeration.TeamMemberState;
 import com.hanaro.triptogether.exception.ApiException;
 import com.hanaro.triptogether.exception.ExceptionEnum;
+import com.hanaro.triptogether.member.domain.Member;
+import com.hanaro.triptogether.member.domain.MemberRepository;
 import com.hanaro.triptogether.team.domain.Team;
 import com.hanaro.triptogether.team.domain.TeamRepository;
 import com.hanaro.triptogether.teamMember.domain.TeamMember;
 import com.hanaro.triptogether.teamMember.domain.TeamMemberRepository;
-import com.hanaro.triptogether.teamMember.dto.request.AcceptTeamMemberReqDto;
-import com.hanaro.triptogether.teamMember.dto.request.AcceptTeamMembersReqDto;
-import com.hanaro.triptogether.teamMember.dto.request.ChangeOwnerReqDto;
-import com.hanaro.triptogether.teamMember.dto.request.RejectTeamMembersReqDto;
+import com.hanaro.triptogether.teamMember.dto.request.*;
 import com.hanaro.triptogether.teamMember.dto.response.TeamMembersResDto;
 import com.hanaro.triptogether.teamMember.service.TeamMemberService;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +25,7 @@ import java.util.List;
 public class TeamMemberServiceImpl implements TeamMemberService {
     private final TeamMemberRepository teamMemberRepository;
     private final TeamRepository teamRepository;
+    private final MemberRepository memberRepository;
 
     // 모임원 전체 출력
     @Transactional
@@ -178,5 +178,21 @@ public class TeamMemberServiceImpl implements TeamMemberService {
     @Override
     public List<TeamMember> findTeamMemberByMemberId(String member_id) {
         return teamMemberRepository.findTeamMemberByMember_MemberId(member_id);
+    }
+
+    // 모임 가입
+    @Transactional
+    @Override
+    public void joinTeamMember(JoinTeamMemberReq joinTeamMemberReq) {
+        Member member = memberRepository.findById(joinTeamMemberReq.getMemberIdx()).orElse(null);
+        Team team = teamRepository.findById(joinTeamMemberReq.getTeamIdx()).orElse(null);
+
+        TeamMember teamMember = TeamMember.builder()
+                .team(team)
+                .member(member)
+                .teamMemberState(TeamMemberState.수락대기)
+                .createdAt(LocalDateTime.now()).build();
+
+        teamMemberRepository.save(teamMember);
     }
 }

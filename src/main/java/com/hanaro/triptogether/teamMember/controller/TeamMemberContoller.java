@@ -1,9 +1,6 @@
 package com.hanaro.triptogether.teamMember.controller;
 
-import com.hanaro.triptogether.teamMember.dto.request.AcceptTeamMemberReqDto;
-import com.hanaro.triptogether.teamMember.dto.request.AcceptTeamMembersReqDto;
-import com.hanaro.triptogether.teamMember.dto.request.ChangeOwnerReqDto;
-import com.hanaro.triptogether.teamMember.dto.request.RejectTeamMembersReqDto;
+import com.hanaro.triptogether.teamMember.dto.request.*;
 import com.hanaro.triptogether.teamMember.dto.response.TeamMembersResDto;
 import com.hanaro.triptogether.teamMember.service.TeamMemberService;
 import lombok.RequiredArgsConstructor;
@@ -24,9 +21,7 @@ public class TeamMemberContoller {
     @PostMapping("/team")
     public List<TeamMembersResDto> teamMembers(@RequestBody Map<String, Long> teamIdxMap) {
         Long teamIdx = teamIdxMap.get("teamIdx");
-        List<TeamMembersResDto> teamMembersResDtos = teamMemberService.teamMembers(teamIdx);
-
-        return teamMembersResDtos;
+        return teamMemberService.teamMembers(teamIdx);
     }
 
     // 총무 변경
@@ -69,5 +64,11 @@ public class TeamMemberContoller {
     @PutMapping("/team/export-members")
     public void exportTeamMembers(@RequestBody RejectTeamMembersReqDto rejectTeamMembersReqDt) {
         teamMemberService.exportTeamMembers(rejectTeamMembersReqDt);
+    }
+
+    // 모임 가입
+    @PostMapping("/team/join")
+    public void joinTeamMember(@RequestBody JoinTeamMemberReq joinTeamMemberReq) {
+        teamMemberService.joinTeamMember(joinTeamMemberReq);
     }
 }
