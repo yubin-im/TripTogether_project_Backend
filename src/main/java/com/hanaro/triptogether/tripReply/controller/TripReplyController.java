@@ -1,5 +1,6 @@
 package com.hanaro.triptogether.tripReply.controller;
 
+import com.hanaro.triptogether.tripReply.dto.request.TripReplyDeleteReqDto;
 import com.hanaro.triptogether.tripReply.dto.request.TripReplyReqDto;
 import com.hanaro.triptogether.tripReply.dto.request.TripReplyUpdateReqDto;
 import com.hanaro.triptogether.tripReply.dto.response.TripReplyResDto;
@@ -30,8 +31,8 @@ public class TripReplyController {
         return tripReplyService.getReply(trip_place_idx);
     }
 
-    @DeleteMapping("/{trip_place_idx}/reply/{trip_reply_idx}")
-    public void deleteReply(@PathVariable("trip_place_idx") Long trip_place_idx, @PathVariable("trip_reply_idx") Long trip_reply_idx) {
-        tripReplyService.deleteReply(trip_place_idx, trip_reply_idx);
+    @DeleteMapping("/{trip_place_idx}/reply")
+    public void deleteReply(@PathVariable("trip_place_idx") Long trip_place_idx, @RequestBody TripReplyDeleteReqDto dto) {
+        tripReplyService.deleteReply(trip_place_idx, dto);
     }
 }

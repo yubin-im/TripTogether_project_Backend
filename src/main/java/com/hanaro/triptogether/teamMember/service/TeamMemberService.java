@@ -44,4 +44,7 @@ public interface TeamMemberService {
 
     //유효한 팀원인지 확인
     void validateTeamMemberState(TeamMember teamMember);
+
+    // 팀멤버idx로 팀멤버 검색
+    TeamMember checkIsMyTeamByTeamMemberIdx(Long team_member_idx);
 }

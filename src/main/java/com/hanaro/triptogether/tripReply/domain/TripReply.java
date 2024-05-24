@@ -41,7 +41,6 @@ public class TripReply {
         this.createdAt = LocalDateTime.now();
     }
 
-    @Builder
     public void update(String tripReplyContent) {
         this.tripReplyContent = tripReplyContent;
         this.lastModifiedAt = LocalDateTime.now();
