@@ -1,7 +1,7 @@
 package com.hanaro.triptogether.category.domain;
 
 import com.hanaro.triptogether.category.dto.Category;
-import com.hanaro.triptogether.member.Member;
+import com.hanaro.triptogether.member.domain.Member;
 import jakarta.annotation.PostConstruct;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

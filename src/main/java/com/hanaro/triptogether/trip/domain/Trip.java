@@ -1,6 +1,6 @@
 package com.hanaro.triptogether.trip.domain;
 
-import com.hanaro.triptogether.country.Country;
+import com.hanaro.triptogether.country.domain.CountryEntity;
 import com.hanaro.triptogether.team.domain.Team;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -23,7 +23,7 @@ public class Trip {
 
     @ManyToOne
     @JoinColumn(name = "country_idx", nullable = false)
-    private Country country;
+    private CountryEntity country;
 
     @Column(nullable = false, length = 30)
     private String tripName;
