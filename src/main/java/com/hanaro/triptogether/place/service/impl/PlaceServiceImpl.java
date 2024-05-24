@@ -1,5 +1,7 @@
 package com.hanaro.triptogether.place.service.impl;
 
+import com.hanaro.triptogether.exception.ApiException;
+import com.hanaro.triptogether.exception.ExceptionEnum;
 import com.hanaro.triptogether.place.domain.PlaceEntity;
 import com.hanaro.triptogether.place.domain.PlaceRepository;
 import com.hanaro.triptogether.place.dto.Place;
@@ -33,5 +35,10 @@ public class PlaceServiceImpl implements PlaceService {
                 .collect(Collectors.toList());
 
         return places;
+    }
+
+    @Override
+    public PlaceEntity findByPlaceIdx(Long placeIdx) {
+        return repository.findById(placeIdx).orElseThrow(()->new ApiException(ExceptionEnum.PLACE_NOT_FOUND));
     }
 }

@@ -4,7 +4,7 @@ import com.hanaro.triptogether.exception.ApiException;
 import com.hanaro.triptogether.exception.ExceptionEnum;
 import com.hanaro.triptogether.member.domain.Member;
 import com.hanaro.triptogether.member.service.impl.MemberServiceImpl;
-import com.hanaro.triptogether.place.domain.Place;
+import com.hanaro.triptogether.place.domain.PlaceEntity;
 import com.hanaro.triptogether.place.service.PlaceService;
 import com.hanaro.triptogether.team.domain.Team;
 import com.hanaro.triptogether.teamMember.domain.TeamMember;
@@ -24,7 +24,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 
 
 @Service
@@ -42,7 +41,7 @@ public class TripPlaceService {
         validateTeamMember(trip.getTeam(), dto.getMember_id());
         validateTripDate(trip, dto.getTrip_date());
 
-        Place place = placeService.findByPlaceIdx(dto.getPlace_idx());
+        PlaceEntity place = placeService.findByPlaceIdx(dto.getPlace_idx());
         Member member = memberService.findByMemberId(dto.getMember_id());
         int placeOrder = tripPlaceRepository.countByTripId(dto.getTrip_idx(), dto.getTrip_date())+ 1;
 
@@ -63,7 +62,7 @@ public class TripPlaceService {
         TripPlace tripPlace = checkTripPlaceExists(trip_place_idx);
         validateTeamMember(tripPlace.getTrip().getTeam(), dto.getMember_id());
 
-        Place place = placeService.findByPlaceIdx(dto.getPlace_idx());
+        PlaceEntity place = placeService.findByPlaceIdx(dto.getPlace_idx());
         Member member = memberService.findByMemberId(dto.getMember_id());
         tripPlace.update(place, dto.getPlace_amount(), dto.getPlace_memo(), member);
     }
