@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/continent")
+@RequestMapping("/continents")
 @RequiredArgsConstructor
 public class ContinentController {
 

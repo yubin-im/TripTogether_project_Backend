@@ -1,15 +1,21 @@
 package com.hanaro.triptogether.continent.domain;
 
 import com.hanaro.triptogether.continent.dto.Continent;
+import com.hanaro.triptogether.country.domain.CountryEntity;
 import jakarta.persistence.*;
 import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.data.annotation.CreatedBy;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
-@Table(name = "continent")
+@Data
+@NoArgsConstructor
 @Entity
+@Table(name = "continent")
 public class ContinentEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,6 +25,9 @@ public class ContinentEntity {
     private String continentNameKo;
 
     private String continentNameEng;
+
+    @OneToMany(mappedBy = "continent")
+    private List<CountryEntity> countries;
 
     @Column(nullable = false)
     @CreationTimestamp
