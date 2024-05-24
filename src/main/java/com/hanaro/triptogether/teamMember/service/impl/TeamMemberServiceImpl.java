@@ -152,6 +152,21 @@ public class TeamMemberServiceImpl implements TeamMemberService {
         }
     }
 
+    @Override
+    public TeamMember checkIsMyTeam(Team dtoTeam, List<TeamMember> teamMembers) {
+        return teamMembers.stream()
+                .filter(tm -> tm.getTeam().equals(dtoTeam))
+                .findFirst()
+                .orElseThrow(() -> new ApiException(ExceptionEnum.INVALID_TEAM_MEMBER));
+    }
+    @Override
+    public void validateTeamMemberState(TeamMember teamMember) {
+        String state = teamMember.getTeamMemberState().name();
+        if (state.equals(TeamMemberState.요청중.name()) || state.equals(TeamMemberState.수락대기.name())) {
+            throw new ApiException(ExceptionEnum.INVALID_TEAM_MEMBER_ROLE);
+        }
+    }
+
     //모임원 검색
     @Override
     public TeamMember findTeamMemberByTeamMemberIdx(Long team_member_idx) {
