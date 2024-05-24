@@ -121,8 +121,9 @@ public class TeamServiceImpl implements TeamService {
 
         String inviter = member.getMemberName();
         Long teamIdx = team.getTeamIdx();
+        String inviteUrl = "http://localhost:8080/invite?inviter=" + inviter + "&teamNo=" + teamIdx;
 
-        return "http://localhost:8080/invite?inviter=" + inviter + "&teamNo=" + teamIdx;
+        return "[하나은행]\n" + inviter + "님이 " + team.getTeamName() + "에 초대했어요.\n" + inviteUrl;
     }
 
     // 모임에 초대받은 화면
