@@ -95,8 +95,15 @@ public class TripPlaceService {
 
     @Transactional
     public void deleteTripPlace(Long trip_place_idx) {
-        checkTripPlaceExists(trip_place_idx);
+        TripPlace tripPlaceToDelete = checkTripPlaceExists(trip_place_idx);
+        Integer deletedPlaceOrder = tripPlaceToDelete.getPlaceOrder();
+        Long tripId = tripPlaceToDelete.getTrip().getTripIdx();
+
+        // 삭제할 일정 삭제
         tripPlaceRepository.deleteById(trip_place_idx);
+
+        // placeOrder 감소
+        tripPlaceRepository.decrementPlaceOrderAfter(tripId, deletedPlaceOrder);
     }
 
     public TripPlace checkTripPlaceExists(Long trip_place_idx){
