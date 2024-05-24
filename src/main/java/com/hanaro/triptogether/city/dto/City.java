@@ -10,4 +10,6 @@ public class City {
     Long countryIdx;
     String cityNameKo;
     String cityNameEng;
+    String naverId;
+    String cityImg;
 }

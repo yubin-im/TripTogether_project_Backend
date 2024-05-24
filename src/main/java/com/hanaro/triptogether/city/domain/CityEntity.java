@@ -1,7 +1,7 @@
 package com.hanaro.triptogether.city.domain;
 
 import com.hanaro.triptogether.city.dto.City;
-import com.hanaro.triptogether.country.Country;
+import com.hanaro.triptogether.country.domain.CountryEntity;
 import com.hanaro.triptogether.member.Member;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "City")
+@Table(name = "city")
 public class CityEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,12 +24,16 @@ public class CityEntity {
 
     @ManyToOne
     @JoinColumn(name = "country_idx", nullable = false)
-    private Country country;
+    private CountryEntity country;
 
     @Column(nullable = false, length = 100)
     private String cityNameKo;
 
     private String cityNameEng;
+
+    private String naverId;
+
+    private String cityImg;
 
     @Column(nullable = false)
     private LocalDateTime createdAt;
@@ -55,6 +59,9 @@ public class CityEntity {
                 .cityIdx(this.cityIdx)
                 .countryIdx(this.country.getCountryIdx())
                 .cityNameKo(this.cityNameKo)
-                .cityNameEng(this.cityNameEng).build();
+                .cityNameEng(this.cityNameEng)
+                .naverId(this.naverId)
+                .cityImg(this.cityImg)
+                .build();
     }
 }

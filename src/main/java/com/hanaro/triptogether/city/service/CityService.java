@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface CityService {
     public List<City> getAll();
+
+    public List<City> getCitiesByCountryId(Long countryId);
 }

@@ -24,4 +24,13 @@ public class CityServiceImpl implements CityService {
 
         return cities;
     }
+
+    @Override
+    public List<City> getCitiesByCountryId(Long countryId) {
+        List<CityEntity> entities = repository.findAllByCountry_CountryIdx(countryId);
+        List<City> cities = entities.stream().map((entity) -> entity.toCity())
+                .collect(Collectors.toList());
+
+        return cities;
+    }
 }
