@@ -1,6 +1,5 @@
 package com.hanaro.triptogether.tripPlace.service;
 
-import com.hanaro.triptogether.enumeration.TeamMemberState;
 import com.hanaro.triptogether.exception.ApiException;
 import com.hanaro.triptogether.exception.ExceptionEnum;
 import com.hanaro.triptogether.member.domain.Member;
@@ -23,10 +22,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 
 @Service
@@ -40,18 +37,12 @@ public class TripPlaceService {
 
     @Transactional
     public void addPlace(TripPlaceAddReqDto dto) {
-
         Trip trip =  tripService.findByTripIdx(dto.getTrip_idx());
+        validateTeamMember(trip.getTeam(), dto.getMember_id());
+        validateTripDate(trip, dto.getTrip_date());
+
         Place place = placeService.findByPlaceIdx(dto.getPlace_idx());
         Member member = memberService.findByMemberId(dto.getMember_id());
-
-        checkTeamMember(trip.getTeam(), dto.getMember_id());
-
-        //여행 일자 범위 확인
-        if(trip.getTripDay() < dto.getTrip_date()){
-            throw new ApiException(ExceptionEnum.INVALID_TRIP_DATE);
-        }
-
         int placeOrder = tripPlaceRepository.countByTripId(dto.getTrip_idx(), dto.getTrip_date())+ 1;
 
         TripPlace tripPlace = TripPlace.builder()
@@ -69,11 +60,10 @@ public class TripPlaceService {
     @Transactional
     public void updatePlace(Long trip_place_idx, TripPlaceUpdateReqDto dto) {
         TripPlace tripPlace = checkTripPlaceExists(trip_place_idx);
+        validateTeamMember(tripPlace.getTrip().getTeam(), dto.getMember_id());
+
         Place place = placeService.findByPlaceIdx(dto.getPlace_idx());
         Member member = memberService.findByMemberId(dto.getMember_id());
-
-        checkTeamMember(tripPlace.getTrip().getTeam(), dto.getMember_id());
-
         tripPlace.update(place, dto.getPlace_amount(), dto.getPlace_memo(), member);
     }
 
@@ -82,11 +72,8 @@ public class TripPlaceService {
 
         Trip trip = tripService.findByTripIdx(trip_idx);
 
-        checkTeamMember(trip.getTeam(), dto.getMember_id());
-
-        if(trip.getTripDay() < dto.getTrip_date()){
-            throw new ApiException(ExceptionEnum.INVALID_TRIP_DATE);
-        }
+        validateTeamMember(trip.getTeam(), dto.getMember_id());
+        validateTripDate(trip, dto.getTrip_date());
 
         List<TripPlaceOrderReqDto> dtos = dto.getOrders();
         Member member = memberService.findByMemberId(dto.getMember_id());
@@ -125,27 +112,20 @@ public class TripPlaceService {
                 .getTeamIdx();
     }
 
-    // memberId가 해당 팀원인지 확인
-    private void checkTeamMember(Team dtoTeam, String member_id) {
+    private void validateTeamMember(Team team, String member_id) {
+        //내 팀 리스트 리턴
         List<TeamMember> teamMembers = teamMemberService.findTeamMemberByMemberId(member_id);
+        //팀 멤버 여부 확인
+        TeamMember teamMember = teamMemberService.checkIsMyTeam(team, teamMembers);
+        //유효한 상태인지 확인
+        teamMemberService.validateTeamMemberState(teamMember);
+    }
 
-        // 해당 멤버가 요청한 팀의 멤버인지 확인
-        boolean isTeamMember = teamMembers.stream()
-                .anyMatch(teamMember -> teamMember.getTeam().equals(dtoTeam));
-
-        if (!isTeamMember) {
-            throw new ApiException(ExceptionEnum.INVALID_TEAM_MEMBER);
-        }
-
-        // 팀 멤버 상태 확인
-        TeamMember teamMember = teamMembers.stream()
-                .filter(tm -> tm.getTeam().equals(dtoTeam))
-                .findFirst()
-                .orElseThrow(() -> new ApiException(ExceptionEnum.INVALID_TEAM_MEMBER));
-
-        String state = teamMember.getTeamMemberState().name();
-        if (state.equals(TeamMemberState.요청중.name()) || state.equals(TeamMemberState.수락대기.name())) {
-            throw new ApiException(ExceptionEnum.INVALID_TEAM_MEMBER_ROLE);
+    private void validateTripDate(Trip trip, int trip_date) {
+        //여행 일자 범위 확인
+        if (trip.getTripDay() < trip_date) {
+            throw new ApiException(ExceptionEnum.INVALID_TRIP_DATE);
         }
     }
+
 }

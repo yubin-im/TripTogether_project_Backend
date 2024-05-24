@@ -1,5 +1,6 @@
 package com.hanaro.triptogether.teamMember.service;
 
+import com.hanaro.triptogether.team.domain.Team;
 import com.hanaro.triptogether.teamMember.domain.TeamMember;
 import com.hanaro.triptogether.teamMember.dto.request.AcceptTeamMemberReqDto;
 import com.hanaro.triptogether.teamMember.dto.request.AcceptTeamMembersReqDto;
@@ -37,4 +38,10 @@ public interface TeamMemberService {
 
     //멤버id로 팀 검색
     List<TeamMember> findTeamMemberByMemberId(String member_id);
+
+    // 모임원인지 확인
+    TeamMember checkIsMyTeam(Team dtoTeam, List<TeamMember> teamMembers);
+
+    //유효한 팀원인지 확인
+    void validateTeamMemberState(TeamMember teamMember);
 }
