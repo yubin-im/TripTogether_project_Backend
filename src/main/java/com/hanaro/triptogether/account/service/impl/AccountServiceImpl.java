@@ -72,7 +72,6 @@ public class AccountServiceImpl implements AccountService {
     @Transactional
     @Override
     public void depositAcc(UpdateAccBalanceReq updateAccBalanceReq) {
-        System.out.println("확인: " + updateAccBalanceReq.getAccIdx());
         Account account = accountRepository.findById(updateAccBalanceReq.getAccIdx()).orElse(null);
 
         account.updateAccBalance(account.getAccBalance().add(updateAccBalanceReq.getAmount()));
