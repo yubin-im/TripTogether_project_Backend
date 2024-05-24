@@ -194,6 +194,7 @@ public class TeamMemberServiceImpl implements TeamMemberService {
                 .createdAt(LocalDateTime.now()).build();
 
         teamMemberRepository.save(teamMember);
+    }
 
     @Override
     public TeamMember checkIsMyTeamByTeamMemberIdx(Long team_member_idx) {
