@@ -598,20 +598,24 @@ class TripPlaceServiceTest {
         assertEquals(ExceptionEnum.TEAM_NOT_MATCH.getMessage(), exception.getError().getMessage());
     }
 
-    @Test
-    void getPlace() {
-    }
 
     @Test
-    void deleteTripPlace() {
-    }
+    void deleteTripPlace_success() {
+        // given
+        Long tripPlaceIdx = 1L;
+        TripPlace tripPlaceToDelete = mock(TripPlace.class);
 
-    @Test
-    void checkTripPlaceExists() {
-    }
+        given(tripPlaceRepository.findById(tripPlaceIdx)).willReturn(Optional.of(tripPlaceToDelete));
+        given(tripPlaceToDelete.getPlaceOrder()).willReturn(1);
+        given(tripPlaceToDelete.getTrip()).willReturn(trip);
 
-    @Test
-    void findTeamIdByTripPlaceIdx() {
+        // when
+        tripPlaceService.deleteTripPlace(tripPlaceIdx);
+
+        // then
+        then(tripPlaceRepository).should().deleteById(tripPlaceIdx);
+        then(tripPlaceRepository).should().decrementPlaceOrderAfter(eq(1L), eq(1));
+
     }
 
 }
