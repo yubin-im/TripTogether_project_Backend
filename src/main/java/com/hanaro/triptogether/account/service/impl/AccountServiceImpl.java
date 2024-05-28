@@ -13,6 +13,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -75,6 +76,7 @@ public class AccountServiceImpl implements AccountService {
         Account account = accountRepository.findById(updateAccBalanceReq.getAccIdx()).orElse(null);
 
         account.updateAccBalance(account.getAccBalance().add(updateAccBalanceReq.getAmount()));
+        account.updateModifiedAt(LocalDateTime.now());
         accountRepository.save(account);
     }
 
@@ -85,6 +87,7 @@ public class AccountServiceImpl implements AccountService {
         Account account = accountRepository.findById(updateAccBalanceReq.getAccIdx()).orElse(null);
 
         account.updateAccBalance(account.getAccBalance().subtract(updateAccBalanceReq.getAmount()));
+        account.updateModifiedAt(LocalDateTime.now());
         accountRepository.save(account);
     }
 }

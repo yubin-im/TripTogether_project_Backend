@@ -44,4 +44,9 @@ public class Account {
     public void updateAccBalance(BigDecimal accBalance) {
         this.accBalance = accBalance;
     }
+
+    // 수정날짜 업데이트
+    public void updateModifiedAt(LocalDateTime lastModifiedAt) {
+        this.lastModifiedAt = lastModifiedAt;
+    }
 }
