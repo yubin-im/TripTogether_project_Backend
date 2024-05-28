@@ -52,7 +52,7 @@ public class TripPlaceService {
                 .place(place)
                 .placeAmount(dto.getPlace_amount())
                 .placeMemo(dto.getPlace_memo())
-                .member(member)
+                .createdBy(member)
                 .build();
         tripPlaceRepository.save(tripPlace);
     }
@@ -110,6 +110,7 @@ public class TripPlaceService {
     }
 
     public TripPlace checkTripPlaceExists(Long trip_place_idx){
+        System.out.println("~~~~~"+tripPlaceRepository.findById(trip_place_idx).get().getTrip().getTripIdx());
         return tripPlaceRepository.findById(trip_place_idx).orElseThrow(() -> new ApiException(ExceptionEnum.TRIP_PLACE_NOT_FOUND));
     }
 
@@ -122,7 +123,7 @@ public class TripPlaceService {
                 .getTeamIdx();
     }
 
-    private void validateTeamMember(Team team, String member_id) {
+    void validateTeamMember(Team team, String member_id) {
         //내 팀 리스트 리턴
         List<TeamMember> teamMembers = teamMemberService.findTeamMemberByMemberId(member_id);
         //팀 멤버 여부 확인

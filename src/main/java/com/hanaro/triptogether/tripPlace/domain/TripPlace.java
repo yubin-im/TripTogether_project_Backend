@@ -5,6 +5,7 @@ import com.hanaro.triptogether.place.domain.PlaceEntity;
 import com.hanaro.triptogether.trip.domain.Trip;
 import com.hanaro.triptogether.tripReply.domain.TripReply;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,6 +18,8 @@ import java.util.List;
 @Table(name = "trip_place")
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class TripPlace {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -55,7 +58,7 @@ public class TripPlace {
     @OneToMany(mappedBy = "tripPlace", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<TripReply> tripReplies;
 
-    @Builder
+    @Builder(buildMethodName = "create")
     public TripPlace( Trip trip, Integer tripDate, Integer placeOrder, PlaceEntity place, BigDecimal placeAmount, String placeMemo, Member member) {
         this.trip = trip;
         this.tripDate = tripDate;

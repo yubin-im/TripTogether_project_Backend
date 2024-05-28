@@ -37,13 +37,13 @@ public class CategoryEntity {
     private LocalDateTime lastModifiedAt;
 
     @ManyToOne
-    @JoinColumn(name = "last_modified_by", insertable=false, updatable=false)
+    @JoinColumn(name = "last_modified_by")
     private Member lastModifiedBy;
 
     private LocalDateTime deletedAt;
 
     @ManyToOne
-    @JoinColumn(name = "deleted_by", insertable=false, updatable=false)
+    @JoinColumn(name = "deleted_by", updatable = false)
     private Member deletedBy;
 
     public Category toCategory() {

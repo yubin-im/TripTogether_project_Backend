@@ -12,6 +12,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @Table(name = "country")
 public class CountryEntity {
     @Id
