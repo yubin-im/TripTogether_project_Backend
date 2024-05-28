@@ -18,7 +18,9 @@ import com.hanaro.triptogether.trip.service.TripService;
 import com.hanaro.triptogether.tripPlace.domain.TripPlace;
 import com.hanaro.triptogether.tripPlace.domain.TripPlaceRepository;
 import com.hanaro.triptogether.tripPlace.dto.request.TripPlaceAddReqDto;
+import com.hanaro.triptogether.tripPlace.dto.request.TripPlaceOrderReqDto;
 import com.hanaro.triptogether.tripPlace.dto.request.TripPlaceUpdateReqDto;
+import com.hanaro.triptogether.tripPlace.dto.request.UpdateOrderReqDto;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,6 +30,7 @@ import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -445,8 +448,154 @@ class TripPlaceServiceTest {
     }
 
 
+    private TripPlace createMockTripPlace(Long tripPlaceIdx, int placeOrder) {
+        return TripPlace.builder()
+                .tripPlaceIdx(tripPlaceIdx)
+                .trip(trip)
+                .place(place)
+                .placeOrder(placeOrder)
+                .createdBy(member1)
+                .build();
+    }
+
     @Test
-    void updatePlaceOrder() {
+    void updatePlaceOrder_success() {
+        // given
+        Long tripIdx = 1L;
+        Long tripPlaceIdx1 = 1L;
+        Long tripPlaceIdx2 = 2L;
+        int tripDate = 1;
+
+        TripPlaceOrderReqDto orderDto1 = TripPlaceOrderReqDto.builder().trip_place_idx(tripPlaceIdx1).build();
+        TripPlaceOrderReqDto orderDto2 = TripPlaceOrderReqDto.builder().trip_place_idx(tripPlaceIdx2).build();
+        UpdateOrderReqDto updateOrderReqDto = UpdateOrderReqDto.builder()
+                .trip_date(tripDate)
+                .member_id("member1")
+                .orders(List.of(orderDto1, orderDto2))
+                .build();
+
+        TripPlace tripPlace1 = createMockTripPlace(tripPlaceIdx1, 1);
+        TripPlace tripPlace2 = createMockTripPlace(tripPlaceIdx2, 2);
+
+        given(tripService.findByTripIdx(tripIdx)).willReturn(trip);
+        willDoNothing().given(tripPlaceService).validateTeamMember(any(), anyString());
+        willDoNothing().given(tripPlaceService).validateTripDate(any(), anyInt());
+        given(memberService.findByMemberId("member1")).willReturn(member1);
+        given(tripPlaceRepository.countByTripId(tripIdx, tripDate)).willReturn(2);
+        given(tripPlaceRepository.findById(tripPlaceIdx1)).willReturn(Optional.of(tripPlace1));
+        given(tripPlaceRepository.findById(tripPlaceIdx2)).willReturn(Optional.of(tripPlace2));
+
+        // when
+        tripPlaceService.updatePlaceOrder(tripIdx, updateOrderReqDto);
+
+        // then
+        then(tripService).should().findByTripIdx(tripIdx);
+        then(tripPlaceService).should().validateTeamMember(any(), eq("member1"));
+        then(tripPlaceService).should().validateTripDate(trip, tripDate);
+        then(memberService).should().findByMemberId("member1");
+        then(tripPlaceRepository).should().countByTripId(tripIdx, tripDate);
+        then(tripPlaceRepository).should().findById(tripPlaceIdx1);
+        then(tripPlaceRepository).should().findById(tripPlaceIdx2);
+
+        assertEquals(1, tripPlace1.getPlaceOrder());
+        assertEquals(2, tripPlace2.getPlaceOrder());
+    }
+
+    @Test
+    void updatePlaceOrder_invalidateLength() {
+        // given
+        Long tripIdx = 1L;
+        Long tripPlaceIdx1 = 1L;
+        Long tripPlaceIdx2 = 2L;
+        Long tripPlaceIdx3 = 3L;
+        int tripDate = 1;
+
+        TripPlaceOrderReqDto orderDto1 = TripPlaceOrderReqDto.builder().trip_place_idx(tripPlaceIdx1).build();
+        TripPlaceOrderReqDto orderDto2 = TripPlaceOrderReqDto.builder().trip_place_idx(tripPlaceIdx2).build();
+        TripPlaceOrderReqDto orderDto3 = TripPlaceOrderReqDto.builder().trip_place_idx(tripPlaceIdx3).build();
+        UpdateOrderReqDto updateOrderReqDto = UpdateOrderReqDto.builder()
+                .trip_date(tripDate)
+                .member_id("member1")
+                .orders(List.of(orderDto1, orderDto2, orderDto3)) // 잘못된 길이
+                .build();
+
+        given(tripService.findByTripIdx(tripIdx)).willReturn(trip);
+        willDoNothing().given(tripPlaceService).validateTeamMember(any(), anyString());
+        willDoNothing().given(tripPlaceService).validateTripDate(any(), anyInt());
+        given(memberService.findByMemberId("member1")).willReturn(member1);
+        given(tripPlaceRepository.countByTripId(tripIdx, tripDate)).willReturn(2);
+
+        // when
+        ApiException exception = assertThrows(ApiException.class, () -> tripPlaceService.updatePlaceOrder(tripIdx, updateOrderReqDto));
+
+        // then
+        assertEquals(ExceptionEnum.INVALID_ORDER_LIST.getMessage(), exception.getError().getMessage());
+    }
+
+    @Test
+    void updatePlaceOrder_duplicatedList() {
+        // given
+        Long tripIdx = 1L;
+        Long tripPlaceIdx1 = 1L;
+        int tripDate = 1;
+
+        TripPlaceOrderReqDto orderDto1 = TripPlaceOrderReqDto.builder().trip_place_idx(tripPlaceIdx1).build();
+        UpdateOrderReqDto updateOrderReqDto = UpdateOrderReqDto.builder()
+                .trip_date(tripDate)
+                .member_id("member1")
+                .orders(List.of(orderDto1, orderDto1)) // 중복된 트립 플레이스
+                .build();
+
+        given(tripService.findByTripIdx(tripIdx)).willReturn(trip);
+        willDoNothing().given(tripPlaceService).validateTeamMember(any(), anyString());
+        willDoNothing().given(tripPlaceService).validateTripDate(any(), anyInt());
+        given(memberService.findByMemberId("member1")).willReturn(member1);
+        given(tripPlaceRepository.countByTripId(tripIdx, tripDate)).willReturn(2);
+
+        // when
+        ApiException exception = assertThrows(ApiException.class, () -> tripPlaceService.updatePlaceOrder(tripIdx, updateOrderReqDto));
+
+        // then
+        assertEquals(ExceptionEnum.INVALID_ORDER_LIST.getMessage(), exception.getError().getMessage());
+    }
+
+    @Test
+    void updatePlaceOrder_teamNotMatch() {
+        // given
+        Long tripIdx = 1L;
+        Long tripPlaceIdx1 = 1L;
+        Long tripPlaceIdx2 = 2L;
+        int tripDate = 1;
+
+        TripPlaceOrderReqDto orderDto1 = TripPlaceOrderReqDto.builder().trip_place_idx(tripPlaceIdx1).build();
+        TripPlaceOrderReqDto orderDto2 = TripPlaceOrderReqDto.builder().trip_place_idx(tripPlaceIdx2).build();
+        UpdateOrderReqDto updateOrderReqDto = UpdateOrderReqDto.builder()
+                .trip_date(tripDate)
+                .member_id("member1")
+                .orders(List.of(orderDto1, orderDto2))
+                .build();
+
+        Trip trip = mock(Trip.class);
+        TripPlace tripPlace1 = mock(TripPlace.class);
+        TripPlace tripPlace2 = mock(TripPlace.class);
+
+        given(tripPlace1.getTrip()).willReturn(trip);
+        given(tripPlace2.getTrip()).willReturn(trip);
+        given(trip.getTripIdx()).willReturn(999L);
+
+        given(tripService.findByTripIdx(tripIdx)).willReturn(trip);
+        willDoNothing().given(tripPlaceService).validateTeamMember(any(), anyString());
+        willDoNothing().given(tripPlaceService).validateTripDate(any(), anyInt());
+        given(memberService.findByMemberId("member1")).willReturn(member1);
+        given(tripPlaceRepository.countByTripId(tripIdx, tripDate)).willReturn(2);
+        given(tripPlaceRepository.findById(tripPlaceIdx1)).willReturn(Optional.of(tripPlace1));
+        given(tripPlaceRepository.findById(tripPlaceIdx2)).willReturn(Optional.of(tripPlace2));
+
+        // when
+        ApiException exception = assertThrows(ApiException.class, () -> tripPlaceService.updatePlaceOrder(tripIdx, updateOrderReqDto));
+
+        // then
+        assertEquals(ExceptionEnum.TEAM_NOT_MATCH.getMessage(), exception.getError().getMessage());
     }
 
     @Test
