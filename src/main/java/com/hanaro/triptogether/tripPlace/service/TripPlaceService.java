@@ -110,7 +110,6 @@ public class TripPlaceService {
     }
 
     public TripPlace checkTripPlaceExists(Long trip_place_idx){
-        System.out.println("~~~~~"+tripPlaceRepository.findById(trip_place_idx).get().getTrip().getTripIdx());
         return tripPlaceRepository.findById(trip_place_idx).orElseThrow(() -> new ApiException(ExceptionEnum.TRIP_PLACE_NOT_FOUND));
     }
 
@@ -132,7 +131,7 @@ public class TripPlaceService {
         teamMemberService.validateTeamMemberState(teamMember);
     }
 
-    private void validateTripDate(Trip trip, int trip_date) {
+    void validateTripDate(Trip trip, int trip_date) {
         //여행 일자 범위 확인
         if (trip.getTripDay() < trip_date) {
             throw new ApiException(ExceptionEnum.INVALID_TRIP_DATE);
