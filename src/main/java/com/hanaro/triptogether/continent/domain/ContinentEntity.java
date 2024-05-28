@@ -3,6 +3,7 @@ package com.hanaro.triptogether.continent.domain;
 import com.hanaro.triptogether.continent.dto.Continent;
 import com.hanaro.triptogether.country.domain.CountryEntity;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,6 +17,8 @@ import java.util.List;
 @NoArgsConstructor
 @Entity
 @Table(name = "continent")
+@Builder
+@AllArgsConstructor
 public class ContinentEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

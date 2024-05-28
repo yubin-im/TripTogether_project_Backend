@@ -39,19 +39,19 @@ public class CityEntity {
     private LocalDateTime createdAt;
 
     @ManyToOne
-    @JoinColumn(name = "created_by", insertable=false, updatable=false)
+    @JoinColumn(name = "created_by", updatable=false)
     private Member createdBy;
 
     private LocalDateTime lastModifiedAt;
 
     @ManyToOne
-    @JoinColumn(name = "last_modified_by", insertable=false, updatable=false)
+    @JoinColumn(name = "last_modified_by")
     private Member lastModifiedBy;
 
     private LocalDateTime deletedAt;
 
     @ManyToOne
-    @JoinColumn(name = "deleted_by", insertable=false, updatable=false)
+    @JoinColumn(name = "deleted_by")
     private Member deletedBy;
 
     public City toCity() {

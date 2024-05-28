@@ -40,9 +40,7 @@ public class TeamServiceImpl implements TeamService {
                 .teamName(addTeamReqDto.getTeamName())
                 .preferenceType(addTeamReqDto.getPreferenceType())
                 .createdAt(LocalDateTime.now())
-                .createdBy(addTeamReqDto.getMemberIdx())
-                .lastModifiedAt(LocalDateTime.now())
-                .lastModifiedBy(addTeamReqDto.getMemberIdx())
+                .createdBy(memberRepository.findById(addTeamReqDto.getMemberIdx()).get())
                 .build();
 
         teamRepository.save(team);
@@ -80,7 +78,7 @@ public class TeamServiceImpl implements TeamService {
         }
 
         // 모임 삭제
-        team.delete(LocalDateTime.now(), exportTeamReqDto.getMemberIdx());
+        team.delete(LocalDateTime.now(), memberRepository.findById(exportTeamReqDto.getMemberIdx()).get());
         teamRepository.save(team);
     }
 
