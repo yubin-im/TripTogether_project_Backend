@@ -90,10 +90,10 @@ public class TripReplyService {
         }
     }
 
-    private TeamMember validateAndReturn(Long trip_place_idx, Long team_member_idx) {
+    TeamMember validateAndReturn(Long trip_place_idx, Long team_member_idx) {
         TeamMember teamMember = teamMemberService.findTeamMemberByTeamMemberIdx(team_member_idx);
         validateTeam( trip_place_idx, teamMember.getTeam().getTeamIdx());
-        validateTeamMember( team_member_idx);
+        validateTeamMember( teamMember.getTeamMemberIdx());
         return teamMember;
     }
 
