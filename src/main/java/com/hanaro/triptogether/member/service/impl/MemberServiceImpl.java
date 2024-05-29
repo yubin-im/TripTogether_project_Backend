@@ -20,6 +20,10 @@ public class MemberServiceImpl implements MemberService {
     public String login(Long memberIdx, String memberLoginPw) {
         Member member = memberRepository.findMemberByMemberIdxAndMemberLoginPw(memberIdx, memberLoginPw);
 
+        if(member == null) {
+            return "비밀번호가 맞지 않습니다.";
+        }
+
         if (!memberLoginPw.equals(member.getMemberLoginPw())) {
             return "비밀번호가 맞지 않습니다.";
         } else {
