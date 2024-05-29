@@ -1,9 +1,13 @@
-package com.hanaro.triptogether.trip;
+package com.hanaro.triptogether.trip.domain;
 
-import com.hanaro.triptogether.country.Country;
+import com.hanaro.triptogether.country.domain.CountryEntity;
+import com.hanaro.triptogether.member.domain.Member;
 import com.hanaro.triptogether.team.domain.Team;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -12,6 +16,9 @@ import java.util.Date;
 @Entity
 @Table(name = "trip")
 @Getter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Trip {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,10 +27,6 @@ public class Trip {
     @ManyToOne
     @JoinColumn(name = "team_idx", nullable = false)
     private Team team;
-
-    @ManyToOne
-    @JoinColumn(name = "country_idx", nullable = false)
-    private Country country;
 
     @Column(nullable = false, length = 30)
     private String tripName;
@@ -41,11 +44,18 @@ public class Trip {
     @Column(nullable = false)
     private LocalDateTime createdAt;
 
-    @Column(nullable = false)
-    private Long createdBy;
+    @ManyToOne
+    @JoinColumn(name = "created_by", updatable=false)
+    private Member createdBy;
 
     private LocalDateTime lastModifiedAt;
-    private Long lastModifiedBy;
+
+    @ManyToOne
+    @JoinColumn(name = "last_modified_by")
+    private Member lastModifiedBy;
     private LocalDateTime deletedAt;
-    private Long deletedBy;
+
+    @ManyToOne
+    @JoinColumn(name = "deleted_by")
+    private Member deletedBy;
 }

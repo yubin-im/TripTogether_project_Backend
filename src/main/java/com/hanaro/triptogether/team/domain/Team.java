@@ -3,6 +3,7 @@ package com.hanaro.triptogether.team.domain;
 import com.hanaro.triptogether.account.domain.Account;
 import com.hanaro.triptogether.enumeration.PreferenceType;
 import com.hanaro.triptogether.enumeration.TeamType;
+import com.hanaro.triptogether.member.domain.Member;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import lombok.*;
@@ -38,11 +39,29 @@ public class Team {
     @Column(nullable = false)
     private LocalDateTime createdAt;
 
-    @Column(nullable = false)
-    private Long createdBy;
+    @ManyToOne
+    @JoinColumn(name = "created_by", updatable=false)
+    private Member createdBy;
 
     private LocalDateTime lastModifiedAt;
-    private Long lastModifiedBy;
+
+    @ManyToOne
+    @JoinColumn(name = "last_modified_by")
+    private Member lastModifiedBy;
     private LocalDateTime deletedAt;
-    private Long deletedBy;
+
+    @ManyToOne
+    @JoinColumn(name = "deleted_by")
+    private Member deletedBy;
+
+    // 삭제 시간, 삭제한 사용자 추가
+    public void delete(LocalDateTime deletedAt, Member deletedBy) {
+        this.deletedAt = deletedAt;
+        this.deletedBy = deletedBy;
+    }
+
+    // 공지 등록/수정
+    public void updateTeamNotice(String teamNotice) {
+        this.teamNotice = teamNotice;
+    }
 }

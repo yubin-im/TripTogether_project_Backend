@@ -2,6 +2,7 @@ package com.hanaro.triptogether.account.service.impl;
 
 import com.hanaro.triptogether.account.domain.Account;
 import com.hanaro.triptogether.account.domain.AccountRepository;
+import com.hanaro.triptogether.account.dto.request.UpdateAccBalanceReq;
 import com.hanaro.triptogether.account.dto.response.AccountsResDto;
 import com.hanaro.triptogether.account.dto.response.TeamServiceListResDto;
 import com.hanaro.triptogether.account.service.AccountService;
@@ -12,6 +13,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -65,5 +67,27 @@ public class AccountServiceImpl implements AccountService {
         }
 
         return accountsResDtos;
+    }
+
+    // 계좌 입금
+    @Transactional
+    @Override
+    public void depositAcc(UpdateAccBalanceReq updateAccBalanceReq) {
+        Account account = accountRepository.findById(updateAccBalanceReq.getAccIdx()).orElse(null);
+
+        account.updateAccBalance(account.getAccBalance().add(updateAccBalanceReq.getAmount()));
+        account.updateModifiedAt(LocalDateTime.now());
+        accountRepository.save(account);
+    }
+
+    // 계좌 출금
+    @Transactional
+    @Override
+    public void withdrawAcc(UpdateAccBalanceReq updateAccBalanceReq) {
+        Account account = accountRepository.findById(updateAccBalanceReq.getAccIdx()).orElse(null);
+
+        account.updateAccBalance(account.getAccBalance().subtract(updateAccBalanceReq.getAmount()));
+        account.updateModifiedAt(LocalDateTime.now());
+        accountRepository.save(account);
     }
 }

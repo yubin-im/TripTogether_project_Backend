@@ -40,5 +40,20 @@ public class TeamMember {
     private LocalDateTime deletedAt;
     private Long deletedBy;
 
+    // 상태 변경
+    public void updateTeamMemberState(TeamMemberState teamMemberState) {
+        this.teamMemberState = teamMemberState;
+    }
 
+    // 수정 시간, 수정자 변경
+    public void updateModified(LocalDateTime lastModifiedAt, Long lastModifiedBy) {
+        this.lastModifiedAt = lastModifiedAt;
+        this.lastModifiedBy = lastModifiedBy;
+    }
+
+    // 삭제 시간, 삭제한 사용자 추가
+    public void delete(LocalDateTime deletedAt, Long deletedBy) {
+        this.deletedAt = deletedAt;
+        this.deletedBy = deletedBy;
+    }
 }

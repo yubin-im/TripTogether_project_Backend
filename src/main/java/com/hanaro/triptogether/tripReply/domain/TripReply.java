@@ -3,13 +3,16 @@ package com.hanaro.triptogether.tripReply.domain;
 import com.hanaro.triptogether.teamMember.domain.TeamMember;
 import com.hanaro.triptogether.tripPlace.domain.TripPlace;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "trip_reply")
 @Getter
+@NoArgsConstructor
 public class TripReply {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,4 +32,17 @@ public class TripReply {
     @Column(nullable = false)
     private LocalDateTime createdAt;
     private LocalDateTime lastModifiedAt;
+
+    @Builder
+    public TripReply(TripPlace tripPlace, TeamMember teamMember, String tripReplyContent) {
+        this.tripPlace = tripPlace;
+        this.teamMember = teamMember;
+        this.tripReplyContent = tripReplyContent;
+        this.createdAt = LocalDateTime.now();
+    }
+
+    public void update(String tripReplyContent) {
+        this.tripReplyContent = tripReplyContent;
+        this.lastModifiedAt = LocalDateTime.now();
+    }
 }

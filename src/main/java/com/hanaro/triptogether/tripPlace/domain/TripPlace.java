@@ -1,18 +1,25 @@
 package com.hanaro.triptogether.tripPlace.domain;
 
 import com.hanaro.triptogether.member.domain.Member;
-import com.hanaro.triptogether.place.Place;
-import com.hanaro.triptogether.trip.Trip;
+import com.hanaro.triptogether.place.domain.PlaceEntity;
+import com.hanaro.triptogether.trip.domain.Trip;
+import com.hanaro.triptogether.tripReply.domain.TripReply;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "trip_place")
 @Getter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class TripPlace {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,7 +37,7 @@ public class TripPlace {
 
     @ManyToOne
     @JoinColumn(name = "place_idx")
-    private Place place;
+    private PlaceEntity place;
 
     private BigDecimal placeAmount;
     private String placeMemo;
@@ -39,10 +46,41 @@ public class TripPlace {
     private LocalDateTime createdAt;
 
     @ManyToOne
-    @JoinColumn(name = "created_by", insertable=false, updatable=false)
+    @JoinColumn(name = "created_by", updatable=false)
     private Member createdBy;
 
     private LocalDateTime lastModifiedAt;
-    private Long lastModifiedBy;
+
+    @ManyToOne
+    @JoinColumn(name = "last_modified_by")
+    private Member lastModifiedBy;
+
+    @OneToMany(mappedBy = "tripPlace", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<TripReply> tripReplies;
+
+    @Builder(buildMethodName = "create")
+    public TripPlace( Trip trip, Integer tripDate, Integer placeOrder, PlaceEntity place, BigDecimal placeAmount, String placeMemo, Member member) {
+        this.trip = trip;
+        this.tripDate = tripDate;
+        this.placeOrder = placeOrder;
+        this.place = place;
+        this.placeAmount = placeAmount;
+        this.placeMemo = placeMemo;
+        this.createdAt = LocalDateTime.now();
+        this.createdBy = member;
+    }
+
+    public void update(PlaceEntity place, BigDecimal placeAmount, String placeMemo, Member member){
+        this.place = place;
+        this.placeAmount = placeAmount;
+        this.placeMemo = placeMemo;
+        this.lastModifiedAt = LocalDateTime.now();
+        this.lastModifiedBy = member;
+    }
+    public void updateOrder(Integer placeOrder, Member member){
+        this.placeOrder=placeOrder;
+        this.lastModifiedAt = LocalDateTime.now();
+        this.lastModifiedBy = member;
+    }
 
 }

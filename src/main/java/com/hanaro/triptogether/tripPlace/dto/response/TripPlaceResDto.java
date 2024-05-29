@@ -20,7 +20,7 @@ public class TripPlaceResDto {
         this.trip_place_idx = tripPlace.getTripPlaceIdx();
         this.trip_date = tripPlace.getTripDate();
         this.place_order = tripPlace.getPlaceOrder();
-        this.place_idx = tripPlace.getPlace().getPlaceIdx();
+        this.place_idx = tripPlace.getPlace().toPlace().getPlaceIdx();
         this.place_amount = tripPlace.getPlaceAmount();
         this.place_memo = tripPlace.getPlaceMemo();
     }
