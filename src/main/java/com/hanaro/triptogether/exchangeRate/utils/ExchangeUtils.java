@@ -13,6 +13,8 @@ import org.springframework.web.util.DefaultUriBuilderFactory;
 import java.io.IOException;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -49,7 +51,6 @@ public class ExchangeUtils {
                 .retrieve()
                 .bodyToMono(String.class)
                 .block();
-
         return parseJson(responseBody);
     }
 
@@ -93,7 +94,12 @@ public class ExchangeUtils {
     private String getSearchDate() {
         LocalDate currentDate = LocalDate.now();
         DayOfWeek dayOfWeek = currentDate.getDayOfWeek();
+        LocalDateTime nowTime = LocalDateTime.now();
+        LocalTime elevenAM = LocalTime.of(11,0);
 
+        if(nowTime.toLocalTime().isBefore(elevenAM)) {
+            return currentDate.minusDays(1).format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+        }
         if (dayOfWeek.getValue() == 6)
             return currentDate.minusDays(1).format(DateTimeFormatter.ofPattern("yyyyMMdd"));
         if (dayOfWeek.getValue() == 7)

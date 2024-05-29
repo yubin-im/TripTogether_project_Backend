@@ -1,12 +1,15 @@
 package com.hanaro.triptogether.exchangeRate.dto;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import com.hanaro.triptogether.common.BigDecimalConverter;
+import com.hanaro.triptogether.exchangeRate.domain.entity.ExchangeRate;
+import com.hanaro.triptogether.exchangeRate.dto.request.ExchangeRateResponseDto;
+import lombok.*;
 
 @Getter
-@NoArgsConstructor
 @ToString
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class ExchangeDto {
     private Integer result; // 결과
     private String cur_unit; // 통화코드
@@ -19,4 +22,19 @@ public class ExchangeDto {
     private String ten_dd_efee_r; // 10일환가료율
     private String kftc_bkpr; // 서울외국환중개 매매기준율
     private String kftc_deal_bas_r; // 서울외국환중개장부가격
+
+
+    public ExchangeRateResponseDto toDto() {
+        return ExchangeRateResponseDto.builder()
+                .cur_unit(cur_unit)
+                .deal_bas_r(deal_bas_r)
+                .build();
+    }
+
+    public ExchangeRate saveExchangeRate() {
+        return ExchangeRate.builder()
+                .rate(BigDecimalConverter.convertStringToBigDecimal(deal_bas_r))
+                .curCd(cur_unit)
+                .build();
+    }
 }

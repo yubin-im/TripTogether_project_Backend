@@ -1,6 +1,5 @@
 package com.hanaro.triptogether.dues.dto.request;
 
-import com.hanaro.triptogether.member.domain.Member;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,7 +13,8 @@ public class DuesAlarmRequestDto {
     private BigDecimal duesAmount;
     private List<RequestMemberInfo> memberInfos;
 
-    static class RequestMemberInfo {
+    @Getter
+    public static class RequestMemberInfo {
         private Long memberIdx;
         private String fcmToken;
     }

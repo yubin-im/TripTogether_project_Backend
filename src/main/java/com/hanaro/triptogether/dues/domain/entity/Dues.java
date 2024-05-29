@@ -1,16 +1,13 @@
 package com.hanaro.triptogether.dues.domain.entity;
 
-import com.hanaro.triptogether.dues.domain.entity.BaseEntity;
-import com.hanaro.triptogether.team.domain.Team;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "Dues")
+@Table(name = "dues")
 @Getter
 @Builder
 @AllArgsConstructor
