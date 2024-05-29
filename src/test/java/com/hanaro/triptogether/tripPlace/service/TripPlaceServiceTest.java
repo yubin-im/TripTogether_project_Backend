@@ -21,6 +21,7 @@ import com.hanaro.triptogether.tripPlace.dto.request.TripPlaceAddReqDto;
 import com.hanaro.triptogether.tripPlace.dto.request.TripPlaceOrderReqDto;
 import com.hanaro.triptogether.tripPlace.dto.request.TripPlaceUpdateReqDto;
 import com.hanaro.triptogether.tripPlace.dto.request.UpdateOrderReqDto;
+import com.hanaro.triptogether.tripPlace.dto.response.TripPlaceResDto;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -614,6 +615,24 @@ class TripPlaceServiceTest {
         // then
         then(tripPlaceRepository).should().deleteById(tripPlaceIdx);
         then(tripPlaceRepository).should().decrementPlaceOrderAfter(eq(1L), eq(1));
+
+    }
+
+    @Test
+    void getTripPlace_success() {
+        // given
+        Long trip_idx = 1L;
+        TripPlace tripPlace1 = createMockTripPlace(1L);
+        TripPlace tripPlace2 = createMockTripPlace(2L);
+        given(tripPlaceRepository.findAllByTrip_TripIdxOrderByTripDateAscPlaceOrderAsc(trip_idx)).willReturn(List.of(tripPlace1, tripPlace2));
+
+        // when
+        List<TripPlaceResDto> tripPlaces = tripPlaceService.getPlace(trip_idx);
+
+        //then
+        assertEquals(2, tripPlaces.size());
+        assertEquals(tripPlace1.getTripPlaceIdx(), tripPlaces.get(0).getTrip_place_idx());
+        assertEquals(tripPlace2.getTripPlaceIdx(), tripPlaces.get(1).getTrip_place_idx());
 
     }
 
