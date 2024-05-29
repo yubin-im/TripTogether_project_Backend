@@ -22,6 +22,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -52,6 +53,7 @@ public class TripPlaceService {
                 .place(place)
                 .placeAmount(dto.getPlace_amount())
                 .placeMemo(dto.getPlace_memo())
+                .createdAt(LocalDateTime.now())
                 .createdBy(member)
                 .build();
         tripPlaceRepository.save(tripPlace);
