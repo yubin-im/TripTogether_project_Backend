@@ -23,6 +23,7 @@ public class MemberServiceImpl implements MemberService {
         if (!memberLoginPw.equals(member.getMemberLoginPw())) {
             return "비밀번호가 맞지 않습니다.";
         } else {
+
             return "로그인이 완료되었습니다!";
         }
     }

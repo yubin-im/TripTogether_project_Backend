@@ -71,7 +71,6 @@ public class ExchangeService {
     public void checkNotifyAlarms() throws IOException {
 
         List<ExchangeRateAlarm> alarms = exchangeRateAlarmRepository.findAll();
-        //List<ExchangeRate> currRates = exchangeRateRepository.findAll();
 
         for(ExchangeRateAlarm alarm : alarms){
             if(alarm.getNotified()) {
