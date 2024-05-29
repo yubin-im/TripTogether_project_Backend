@@ -13,7 +13,8 @@ public class DuesAlarmRequestDto {
     private BigDecimal duesAmount;
     private List<RequestMemberInfo> memberInfos;
 
-    static class RequestMemberInfo {
+    @Getter
+    public static class RequestMemberInfo {
         private Long memberIdx;
         private String fcmToken;
     }

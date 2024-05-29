@@ -1,7 +1,10 @@
 package com.hanaro.triptogether.dues.controller;
 
+import com.google.firebase.messaging.FirebaseMessagingException;
+import com.hanaro.triptogether.common.firebase.FirebaseFCMService;
 import com.hanaro.triptogether.common.response.BaseResponse;
 import com.hanaro.triptogether.common.response.ResponseStatus;
+import com.hanaro.triptogether.dues.dto.request.DuesAlarmRequestDto;
 import com.hanaro.triptogether.dues.dto.request.DuesRuleRequestDto;
 import com.hanaro.triptogether.dues.dto.response.DuesListResponseDto;
 import com.hanaro.triptogether.dues.service.DuesService;
@@ -9,7 +12,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.time.YearMonth;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -18,6 +23,7 @@ import java.util.List;
 public class DuesController {
 
     private final DuesService duesService;
+    private final FirebaseFCMService firebaseFCMService;
 
     @PostMapping("")
     public BaseResponse setDuesRule(@RequestBody DuesRuleRequestDto duesRuleRequestDto) {
@@ -31,10 +37,14 @@ public class DuesController {
     }
 
 
-//    @PostMapping("/request")
-//    public BaseResponse requestDuesToMember(@RequestBody DuesAlarmRequestDto duesAlarmRequestDto) {
-//
-//    }
+    @PostMapping("/request")
+    public BaseResponse requestDuesToMember(@RequestBody DuesAlarmRequestDto duesAlarmRequestDto) throws IOException, FirebaseMessagingException {
+        List<String> tokenList = new ArrayList<>();
+        for (DuesAlarmRequestDto.RequestMemberInfo memberInfo:duesAlarmRequestDto.getMemberInfos()) {
+            tokenList.add(memberInfo.getFcmToken());
+        }
+        return firebaseFCMService.notificationAlarm("회비 요청 알림",duesAlarmRequestDto.getDuesAmount().toString(),tokenList);
+    }
 
 
 }

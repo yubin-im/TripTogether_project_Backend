@@ -23,11 +23,4 @@ public class ExchangeRateAlarmController {
     }
 
 
-//    @PostMapping("/notification")
-//    public BaseResponse sendNotification(@RequestBody FcmSendDto fcmSendDto)throws IOException {
-//        firebaseFCMService.sendMessageTo(fcmSendDto);
-//        return BaseResponse.res(ResponseStatus.SUCCESS,ResponseStatus.SUCCESS.getMessage());
-//    }
-
-
 }
