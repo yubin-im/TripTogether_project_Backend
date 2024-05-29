@@ -19,6 +19,24 @@ public class TripService {
     private final TripRepository tripRepository;
     private final TripCityService tripCityService;
 
+    public TripResDto getTrip(Long tripIdx) {
+        Trip trip = findByTripIdx(tripIdx);
+        CountryEntity country = tripCityService.getTripCountry(trip.getTripIdx());
+        return TripResDto.builder()
+                .teamIdx(trip.getTeam().getTeamIdx())
+                .teamName(trip.getTeam().getTeamName())
+                .tripIdx(trip.getTripIdx())
+                .tripDay(trip.getTripDay())
+                .tripContent(trip.getTripContent())
+                .tripGoalAmount(trip.getTripGoalAmount())
+                .tripName(trip.getTripName())
+                .tripStartDay(trip.getTripStartDay())
+                .countryIdx(country.getCountryIdx())
+                .countryNameKo(country.getCountryNameKo())
+                .countryNameEng(country.getCountryNameEng())
+                .build();
+    }
+
     public Trip findByTripIdx(Long tripIdx) {
         return tripRepository.findById(tripIdx).orElseThrow(()->new ApiException(ExceptionEnum.TRIP_NOT_FOUND));
     }
@@ -31,6 +49,8 @@ public class TripService {
             Long tripIdx = trip.getTripIdx();
             CountryEntity country = tripCityService.getTripCountry(tripIdx);
             dtos.add(TripResDto.builder()
+                    .teamIdx(trip.getTeam().getTeamIdx())
+                    .teamName(trip.getTeam().getTeamName())
                     .tripIdx(tripIdx)
                     .tripDay(trip.getTripDay())
                     .tripContent(trip.getTripContent())

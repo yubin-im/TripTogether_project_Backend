@@ -16,6 +16,11 @@ import java.util.List;
 public class TripController {
     private final TripService tripService;
 
+    @GetMapping("/{trip_idx}")
+    public TripResDto getTrip(@PathVariable("trip_idx") Long trip_idx) {
+        return tripService.getTrip(trip_idx);
+    }
+
     @GetMapping("/teams/{team_idx}")
     public List<TripResDto> getTrips(@PathVariable("team_idx") Long team_idx) {
         return tripService.getTripsByTeam(team_idx);

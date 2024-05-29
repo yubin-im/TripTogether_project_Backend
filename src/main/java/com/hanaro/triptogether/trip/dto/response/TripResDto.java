@@ -6,11 +6,12 @@ import lombok.Getter;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Date;
 
 @Getter
 @Builder
 public class TripResDto {
+    private Long teamIdx;
+    private String teamName;
     private Long tripIdx;
     private String tripName;
     private String tripContent;
