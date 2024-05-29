@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 import java.math.BigDecimal;
 
 @Entity
-@Table(name = "Exchange_rate_alarm")
+@Table(name = "exchange_rate_alarm")
 @Getter
 @Builder
 @NoArgsConstructor
