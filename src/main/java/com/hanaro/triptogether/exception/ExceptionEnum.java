@@ -9,6 +9,9 @@ public enum ExceptionEnum {
     //------member
     MEMBER_NOT_FOUND(HttpStatus.BAD_REQUEST, "MEMBER_NOT_FOUND","해당하는 멤버가 없습니다."),
 
+    // ----team
+    TEAM_NOT_FOUND(HttpStatus.BAD_REQUEST,"TEAM_NOT_FOUND","해당하는 모임이 없습니다."),
+
     //---------team member
     TEAM_MEMBER_NOT_FOUND(HttpStatus.BAD_REQUEST, "TEAM_MEMBER_NOT_FOUND","해당하는 팀원IDX가 없습니다."),
     INVALID_TEAM_MEMBER(HttpStatus.FORBIDDEN, "INVALID_TEAM_MEMBER","팀원이 아닙니다."),
