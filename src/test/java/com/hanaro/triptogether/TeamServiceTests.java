@@ -2,6 +2,7 @@ package com.hanaro.triptogether;
 
 import com.hanaro.triptogether.account.domain.Account;
 import com.hanaro.triptogether.account.domain.AccountRepository;
+import com.hanaro.triptogether.enumeration.PreferenceType;
 import com.hanaro.triptogether.member.domain.Member;
 import com.hanaro.triptogether.member.domain.MemberRepository;
 import com.hanaro.triptogether.team.domain.Team;
@@ -10,12 +11,14 @@ import com.hanaro.triptogether.team.dto.request.*;
 import com.hanaro.triptogether.team.dto.response.*;
 import com.hanaro.triptogether.team.service.impl.TeamServiceImpl;
 import com.hanaro.triptogether.teamMember.domain.TeamMemberRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -39,25 +42,49 @@ public class TeamServiceTests extends TriptogetherApplicationTests {
     @InjectMocks
     TeamServiceImpl teamService;
 
+    private Account account;
+    private Long accIdx = 1L;
+    private Team team;
+    private Long teamIdx = 1L;
+    private Member member;
+    private Long memberIdx = 1L;
+
+    @BeforeEach
+    void setUp() {
+        member = Member.builder()
+                .memberIdx(memberIdx)
+                .memberId("testId")
+                .memberPw("testPw")
+                .alarmStatus(true)
+                .memberLoginPw("123456")
+                .memberName("memberName")
+                .createdAt(LocalDateTime.now())
+                .build();
+
+        account = Account.builder()
+                .accIdx(accIdx)
+                .member(member)
+                .accNumber("12345")
+                .accBalance(BigDecimal.valueOf(1000.00))
+                .cardStatus(false)
+                .accName("Acc Name")
+                .createdAt(LocalDateTime.now())
+                .build();
+
+        team = Team.builder()
+                .teamIdx(teamIdx)
+                .account(account)
+                .teamName("Team Name")
+                .preferenceType(PreferenceType.해외)
+                .teamNotice("Team Notice")
+                .createdAt(LocalDateTime.now())
+                .build();
+    }
+
     @Test
     @DisplayName("모임서비스 상세 테스트")
     void detailTeam() {
         // Given
-        Long accIdx = 1L;
-
-        Account account = Account.builder()
-                .accIdx(accIdx)
-                .accNumber("12345")
-                .accBalance(BigDecimal.valueOf(1000.00))
-                .build();
-
-        Team team = Team.builder()
-                .teamIdx(1L)
-                .teamNotice("Team Notice")
-                .teamName("Team Name")
-                .account(account)
-                .build();
-
         when(accountRepository.findById(any())).thenReturn(Optional.of(account));
         when(teamRepository.findTeamByAccount(any())).thenReturn(team);
 
@@ -80,26 +107,9 @@ public class TeamServiceTests extends TriptogetherApplicationTests {
     @DisplayName("모임서비스 관리 테스트")
     void manageTeam() {
         // Given
-        Long teamIdx = 1L;
-
         ManageTeamReqDto manageTeamReqDto = ManageTeamReqDto.builder()
                 .teamIdx(teamIdx)
-                .memberIdx(1L)
-                .build();
-
-        Member member = Member.builder()
-                .alarmStatus(true)
-                .build();
-
-        Account account = Account.builder()
-                .accNumber("12345")
-                .accBalance(BigDecimal.valueOf(1000.00))
-                .member(member)
-                .build();
-
-        Team team = Team.builder()
-                .teamName("Team Name")
-                .account(account)
+                .memberIdx(memberIdx)
                 .build();
 
         when(teamRepository.findById(anyLong())).thenReturn(Optional.of(team));
@@ -121,21 +131,9 @@ public class TeamServiceTests extends TriptogetherApplicationTests {
     @DisplayName("모임서비스 초대하기 테스트")
     void generateInviteLink() {
         // Given
-        Long teamIdx = 1L;
-        Long memberIdx = 1L;
-
         InviteTeamReqDto inviteTeamReqDto = InviteTeamReqDto.builder()
                 .memberIdx(memberIdx)
                 .teamIdx(teamIdx)
-                .build();
-
-        Member member = Member.builder()
-                .memberName("memberName")
-                .build();
-
-        Team team = Team.builder()
-                .teamIdx(teamIdx)
-                .teamName("Team Name")
                 .build();
 
         when(teamRepository.findById(anyLong())).thenReturn(Optional.of(team));
@@ -160,12 +158,12 @@ public class TeamServiceTests extends TriptogetherApplicationTests {
         String inviter = "memberName";
         Long teamNo = 1L;
 
-        Team team = Team.builder()
+        Team team2 = Team.builder()
                 .teamIdx(teamNo)
                 .teamName("Team Name")
                 .build();
 
-        when(teamRepository.findById(anyLong())).thenReturn(Optional.of(team));
+        when(teamRepository.findById(anyLong())).thenReturn(Optional.of(team2));
 
         // When
         InviteTeamResDto result = teamService.inviteTeam(inviter, teamNo);
