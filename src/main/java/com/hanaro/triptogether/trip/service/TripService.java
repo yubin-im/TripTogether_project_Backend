@@ -1,11 +1,13 @@
 package com.hanaro.triptogether.trip.service;
 
+import com.hanaro.triptogether.city.dto.City;
 import com.hanaro.triptogether.country.domain.CountryEntity;
 import com.hanaro.triptogether.exception.ApiException;
 import com.hanaro.triptogether.exception.ExceptionEnum;
 import com.hanaro.triptogether.trip.domain.Trip;
 import com.hanaro.triptogether.trip.domain.TripRepository;
 import com.hanaro.triptogether.trip.dto.response.TripResDto;
+import com.hanaro.triptogether.tripCity.domain.TripCity;
 import com.hanaro.triptogether.tripCity.service.TripCityService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,7 +23,25 @@ public class TripService {
 
     public TripResDto getTrip(Long tripIdx) {
         Trip trip = findByTripIdx(tripIdx);
-        CountryEntity country = tripCityService.getTripCountry(trip.getTripIdx());
+        return toTripResDto(trip);
+    }
+
+    public Trip findByTripIdx(Long tripIdx) {
+        return tripRepository.findById(tripIdx).orElseThrow(() -> new ApiException(ExceptionEnum.TRIP_NOT_FOUND));
+    }
+
+    public List<TripResDto> getTripsByTeam(Long teamIdx) {
+        List<Trip> trips = tripRepository.findAllByTeam_TeamIdx(teamIdx);
+        List<TripResDto> dtos = new ArrayList<>();
+        for (Trip trip : trips) {
+            dtos.add(toTripResDto(trip));
+        }
+        return dtos;
+    }
+
+    private TripResDto toTripResDto(Trip trip) {
+        List<TripCity> tripCities = tripCityService.getTripCountry(trip.getTripIdx());
+        List<City> cities = tripCities.stream().map(tripCity -> tripCity.getCity().toCity()).toList();
         return TripResDto.builder()
                 .teamIdx(trip.getTeam().getTeamIdx())
                 .teamName(trip.getTeam().getTeamName())
@@ -31,37 +51,7 @@ public class TripService {
                 .tripGoalAmount(trip.getTripGoalAmount())
                 .tripName(trip.getTripName())
                 .tripStartDay(trip.getTripStartDay())
-                .countryIdx(country.getCountryIdx())
-                .countryNameKo(country.getCountryNameKo())
-                .countryNameEng(country.getCountryNameEng())
+                .cities(cities)
                 .build();
-    }
-
-    public Trip findByTripIdx(Long tripIdx) {
-        return tripRepository.findById(tripIdx).orElseThrow(()->new ApiException(ExceptionEnum.TRIP_NOT_FOUND));
-    }
-
-    public List<TripResDto> getTripsByTeam(Long teamIdx) {
-
-        List<Trip> trips = tripRepository.findAllByTeam_TeamIdx(teamIdx);
-        List<TripResDto> dtos = new ArrayList<>();
-        for(Trip trip:trips){
-            Long tripIdx = trip.getTripIdx();
-            CountryEntity country = tripCityService.getTripCountry(tripIdx);
-            dtos.add(TripResDto.builder()
-                    .teamIdx(trip.getTeam().getTeamIdx())
-                    .teamName(trip.getTeam().getTeamName())
-                    .tripIdx(tripIdx)
-                    .tripDay(trip.getTripDay())
-                    .tripContent(trip.getTripContent())
-                    .tripGoalAmount(trip.getTripGoalAmount())
-                    .tripName(trip.getTripName())
-                    .tripStartDay(trip.getTripStartDay())
-                    .countryIdx(country.getCountryIdx())
-                    .countryNameKo(country.getCountryNameKo())
-                    .countryNameEng(country.getCountryNameEng())
-                    .build());
-        }
-        return dtos;
     }
 }
