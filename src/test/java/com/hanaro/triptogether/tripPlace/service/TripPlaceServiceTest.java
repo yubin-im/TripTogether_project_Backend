@@ -113,7 +113,6 @@ class TripPlaceServiceTest {
         trip = Trip.builder()
                 .tripIdx(1L)
                 .team(team)
-                .country(country)
                 .tripName("tripName")
                 .tripContent("tripContent")
                 .tripGoalAmount(BigDecimal.valueOf(100))

@@ -28,10 +28,6 @@ public class Trip {
     @JoinColumn(name = "team_idx", nullable = false)
     private Team team;
 
-    @ManyToOne
-    @JoinColumn(name = "country_idx", nullable = false)
-    private CountryEntity country;
-
     @Column(nullable = false, length = 30)
     private String tripName;
 
