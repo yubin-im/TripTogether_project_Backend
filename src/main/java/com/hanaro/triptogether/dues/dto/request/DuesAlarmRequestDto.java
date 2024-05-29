@@ -10,6 +10,7 @@ import java.util.List;
 @Setter
 public class DuesAlarmRequestDto {
 
+    private Long teamIdx;
     private BigDecimal duesAmount;
     private List<RequestMemberInfo> memberInfos;
 

@@ -11,16 +11,26 @@ import com.google.firebase.messaging.FirebaseMessagingException;
 import com.google.firebase.messaging.MulticastMessage;
 import com.hanaro.triptogether.common.response.BaseResponse;
 import com.hanaro.triptogether.common.response.ResponseStatus;
+import com.hanaro.triptogether.dues.dto.request.DuesAlarmRequestDto;
+import com.hanaro.triptogether.dues.dto.response.DuesRequestResponseDto;
+import com.hanaro.triptogether.exception.ApiException;
+import com.hanaro.triptogether.exception.ExceptionEnum;
 import com.hanaro.triptogether.exchangeRate.dto.request.FcmMessageDto;
 import com.hanaro.triptogether.exchangeRate.dto.request.FcmSendDto;
+import com.hanaro.triptogether.member.domain.Member;
+import com.hanaro.triptogether.member.domain.MemberRepository;
+import com.hanaro.triptogether.team.domain.Team;
+import com.hanaro.triptogether.team.domain.TeamRepository;
 import lombok.RequiredArgsConstructor;
 import okhttp3.*;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -29,6 +39,9 @@ public class FirebaseFCMService {
 
     private final String API_URL = "https://fcm.googleapis.com/v1/projects/triptogether-e7bac/messages:send";
     String firebaseConfigPath = "triptogether-e7bac-firebase-adminsdk-peiki-127517aa66.json";
+
+    private final TeamRepository teamRepository;
+    private final MemberRepository memberRepository;
 
 
     private String getAccessToken() throws IOException {
@@ -89,9 +102,14 @@ public class FirebaseFCMService {
 
         FirebaseApp.initializeApp(options);
     }
-    public BaseResponse notificationAlarm(String title, String body, List<String> tokenList) throws  IOException, FirebaseMessagingException{
+    public BaseResponse notificationAlarm(String title, String body, DuesAlarmRequestDto duesAlarmRequestDto) throws IOException, FirebaseMessagingException {
 
         firebaseCreateOption();
+
+        List<String> tokenList = new ArrayList<>();
+        for (DuesAlarmRequestDto.RequestMemberInfo memberInfo:duesAlarmRequestDto.getMemberInfos()) {
+            tokenList.add(memberInfo.getFcmToken());
+        }
 
         MulticastMessage message = MulticastMessage.builder()
                 .putData("fcm_type","NOTIFICATION")
@@ -102,6 +120,15 @@ public class FirebaseFCMService {
 
         BatchResponse response = FirebaseMessaging.getInstance().sendEachForMulticast(message);
 
-        return BaseResponse.res(ResponseStatus.SUCCESS,ResponseStatus.SUCCESS.getMessage());
+        Team team =teamRepository.findById(duesAlarmRequestDto.getTeamIdx()).orElseThrow(()->new ApiException(ExceptionEnum.TEAM_NOT_FOUND));
+
+        List<String> memberNames = new ArrayList<>();
+        for (DuesAlarmRequestDto.RequestMemberInfo memberInfo: duesAlarmRequestDto.getMemberInfos()){
+            Member member = memberRepository.findById(memberInfo.getMemberIdx()).orElseThrow(()->new ApiException(ExceptionEnum.MEMBER_NOT_FOUND));
+            memberNames.add(member.getMemberName());
+        }
+        // 모임 이름, 요청 대상, 요청 금액
+        DuesRequestResponseDto responseDto = new DuesRequestResponseDto(team.getTeamName(),memberNames,duesAlarmRequestDto.getDuesAmount());
+        return BaseResponse.res(ResponseStatus.SUCCESS,ResponseStatus.SUCCESS.getMessage(),responseDto);
     }
 }

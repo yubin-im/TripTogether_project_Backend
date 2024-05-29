@@ -39,11 +39,7 @@ public class DuesController {
 
     @PostMapping("/request")
     public BaseResponse requestDuesToMember(@RequestBody DuesAlarmRequestDto duesAlarmRequestDto) throws IOException, FirebaseMessagingException {
-        List<String> tokenList = new ArrayList<>();
-        for (DuesAlarmRequestDto.RequestMemberInfo memberInfo:duesAlarmRequestDto.getMemberInfos()) {
-            tokenList.add(memberInfo.getFcmToken());
-        }
-        return firebaseFCMService.notificationAlarm("회비 요청 알림",duesAlarmRequestDto.getDuesAmount().toString(),tokenList);
+        return firebaseFCMService.notificationAlarm("회비 요청 알림",duesAlarmRequestDto.getDuesAmount().toString(),duesAlarmRequestDto);
     }
 
 
