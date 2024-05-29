@@ -4,6 +4,7 @@ package com.hanaro.triptogether.tripReply.service;
 import com.hanaro.triptogether.enumeration.TeamMemberState;
 import com.hanaro.triptogether.exception.ApiException;
 import com.hanaro.triptogether.exception.ExceptionEnum;
+import com.hanaro.triptogether.member.domain.Member;
 import com.hanaro.triptogether.team.domain.Team;
 import com.hanaro.triptogether.teamMember.domain.TeamMember;
 import com.hanaro.triptogether.teamMember.service.impl.TeamMemberServiceImpl;
@@ -14,12 +15,16 @@ import com.hanaro.triptogether.tripReply.domain.TripReplyRepository;
 import com.hanaro.triptogether.tripReply.dto.request.TripReplyDeleteReqDto;
 import com.hanaro.triptogether.tripReply.dto.request.TripReplyReqDto;
 import com.hanaro.triptogether.tripReply.dto.request.TripReplyUpdateReqDto;
+import com.hanaro.triptogether.tripReply.dto.response.TripReplyResDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
 
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
+import static com.hanaro.triptogether.util.Constants.DELETED_MEMBER;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
@@ -234,6 +239,44 @@ class TripReplyServiceTest {
         // then
         then(tripReplyRepository).should(times(1)).deleteById(dto.getTrip_reply_idx());
     }
+
+    @Test
+    void getReply_invalidTripPlace() {
+        // given
+        given(tripPlaceService.checkTripPlaceExists(anyLong())).willThrow(new ApiException(ExceptionEnum.TRIP_PLACE_NOT_FOUND));
+        //when
+        ApiException exception = assertThrows(ApiException.class, ()->tripReplyService.getReply(anyLong()));
+
+        //then
+        assertEquals( ExceptionEnum.TRIP_PLACE_NOT_FOUND.getMessage(), exception.getMessage());
+        then(tripReplyRepository).should(never()).save(any(TripReply.class));
+    }
+
+    @Test
+    void getReply_success() {
+        // given
+        Long trip_place_idx = 1L;
+        mockValidTripPlaceAndTeamMember(trip_place_idx, 1L);
+        TeamMember teamMember = TeamMember.builder()
+                .teamMemberIdx(1L).member(Member.builder().memberIdx(1L).memberName("test").build()).build();
+        TeamMember teamMember2 = TeamMember.builder()
+                .teamMemberIdx(2L).member(Member.builder().memberIdx(2L).memberName("test").deletedAt(LocalDateTime.now()).build()).build();
+
+        TripReply tripReply1 = createTripReply(teamMember);
+        TripReply tripReply2 = createTripReply(teamMember2);
+        given(tripReplyRepository
+                .findAllByTripPlace_TripPlaceIdxOrderByCreatedAtAsc(trip_place_idx)).willReturn(List.of(tripReply1, tripReply2));
+
+        // when
+        List<TripReplyResDto> res = tripReplyService.getReply(trip_place_idx);
+
+        // then
+        assertEquals(2, res.size());
+        assertEquals(tripReply1.getTeamMember().getTeamMemberIdx(), res.get(0).getTeam_member_idx());
+        assertEquals(tripReply2.getTeamMember().getTeamMemberIdx(), res.get(1).getTeam_member_idx());
+        assertEquals(DELETED_MEMBER, res.get(1).getTeam_member_nickname()); //탈퇴한 멤버 닉네임 확인
+    }
+
     private TripReplyReqDto createTripReplyReqDto() {
         return TripReplyReqDto.builder()
                 .trip_reply_content("test")
