@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
 
@@ -39,7 +40,7 @@ public class Trip {
     @Column(nullable = false)
     private Integer tripDay = 1;
 
-    private Date tripStartDay;
+    private LocalDate tripStartDay;
 
     @Column(nullable = false)
     private LocalDateTime createdAt;
