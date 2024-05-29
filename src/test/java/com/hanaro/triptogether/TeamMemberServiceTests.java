@@ -92,7 +92,7 @@ public class TeamMemberServiceTests extends TriptogetherApplicationTests {
 
     @Test
     @DisplayName("모임원 전체 출력 테스트")
-    void teamMembers() {
+    void testTeamMembers() {
         // Given
         when(teamRepository.findById(anyLong())).thenReturn(Optional.of(team));
         when(teamMemberRepository.findTeamMembersByTeam(any(Team.class)))

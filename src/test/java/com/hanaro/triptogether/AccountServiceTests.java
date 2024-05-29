@@ -133,7 +133,7 @@ public class AccountServiceTests extends TriptogetherApplicationTests {
 
     @Test
     @DisplayName("전체 계좌 조회 테스트")
-    void accounts() {
+    void testAccounts() {
         // Given
         when(memberRepository.findById(memberIdx)).thenReturn(Optional.of(member));
         when(accountRepository.findAccountsByMember(any(Member.class))).thenReturn(Arrays.asList(account1, account2));

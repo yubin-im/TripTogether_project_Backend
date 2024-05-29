@@ -83,7 +83,7 @@ public class TeamServiceTests extends TriptogetherApplicationTests {
 
     @Test
     @DisplayName("모임서비스 상세 테스트")
-    void detailTeam() {
+    void testDetailTeam() {
         // Given
         when(accountRepository.findById(any())).thenReturn(Optional.of(account));
         when(teamRepository.findTeamByAccount(any())).thenReturn(team);
@@ -105,7 +105,7 @@ public class TeamServiceTests extends TriptogetherApplicationTests {
 
     @Test
     @DisplayName("모임서비스 관리 테스트")
-    void manageTeam() {
+    void testManageTeam() {
         // Given
         ManageTeamReqDto manageTeamReqDto = ManageTeamReqDto.builder()
                 .teamIdx(teamIdx)
@@ -129,7 +129,7 @@ public class TeamServiceTests extends TriptogetherApplicationTests {
 
     @Test
     @DisplayName("모임서비스 초대하기 테스트")
-    void generateInviteLink() {
+    void testGenerateInviteLink() {
         // Given
         InviteTeamReqDto inviteTeamReqDto = InviteTeamReqDto.builder()
                 .memberIdx(memberIdx)
@@ -153,7 +153,7 @@ public class TeamServiceTests extends TriptogetherApplicationTests {
 
     @Test
     @DisplayName("모임 초대받은 화면 테스트")
-    void inviteTeam() {
+    void testInviteTeam() {
         // Given
         String inviter = "memberName";
         Long teamNo = 1L;
