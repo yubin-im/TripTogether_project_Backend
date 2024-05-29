@@ -11,6 +11,7 @@ import com.hanaro.triptogether.tripPlace.domain.TripPlace;
 import com.hanaro.triptogether.tripPlace.service.TripPlaceService;
 import com.hanaro.triptogether.tripReply.domain.TripReply;
 import com.hanaro.triptogether.tripReply.domain.TripReplyRepository;
+import com.hanaro.triptogether.tripReply.dto.request.TripReplyDeleteReqDto;
 import com.hanaro.triptogether.tripReply.dto.request.TripReplyReqDto;
 import com.hanaro.triptogether.tripReply.dto.request.TripReplyUpdateReqDto;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,8 +20,7 @@ import org.mockito.*;
 
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
 class TripReplyServiceTest {
@@ -223,10 +223,85 @@ class TripReplyServiceTest {
         given(teamMemberService.findTeamMemberByTeamMemberIdx(team_member_idx)).willReturn(teamMember);
     }
     @Test
-    void deleteReply() {
+    void deleteReply_invalidTripPlace() {
+        // given
+        Long trip_place_idx = 1L;
+        TripReplyDeleteReqDto dto = TripReplyDeleteReqDto.builder()
+                                .trip_reply_idx(1L)
+                                .team_member_idx(1L).build();
+
+        given(tripPlaceService.checkTripPlaceExists(trip_place_idx)).willThrow(new ApiException(ExceptionEnum.TRIP_PLACE_NOT_FOUND));
+
+        // when
+        ApiException exception = assertThrows(ApiException.class, () -> tripReplyService.deleteReply(trip_place_idx, dto));
+
+        // then
+        assertEquals(ExceptionEnum.TRIP_PLACE_NOT_FOUND.getMessage(), exception.getMessage());
+        then(tripReplyRepository).should(never()).deleteById(dto.getTrip_reply_idx());
     }
 
     @Test
-    void getReply() {
+    void deleteReply_notFoundReply() {
+        // given
+        Long trip_place_idx = 1L;
+        TripReplyDeleteReqDto dto = TripReplyDeleteReqDto.builder()
+                .trip_reply_idx(1L)
+                .team_member_idx(1L).build();
+        mockValidTripPlaceAndTeamMember(trip_place_idx, dto.getTeam_member_idx());
+        given(tripReplyRepository.findById(dto.getTrip_reply_idx())).willReturn(Optional.empty());
+
+        // when
+        ApiException exception = assertThrows(ApiException.class, () -> tripReplyService.deleteReply(trip_place_idx, dto));
+
+        // then
+        assertEquals(ExceptionEnum.TRIP_REPLY_NOT_FOUND.getMessage(), exception.getMessage());
+        then(tripReplyRepository).should(never()).deleteById(dto.getTrip_reply_idx());
+    }
+
+    @Test
+    void deleteReply_notSameMember() {
+        // given
+        Long trip_place_idx = 1L;
+        TripReplyDeleteReqDto dto = TripReplyDeleteReqDto.builder()
+                .trip_reply_idx(1L)
+                .team_member_idx(1L).build();
+        TripReply tripReply = TripReply.builder()
+                .tripReplyContent("original content")
+                .teamMember(TeamMember.builder().teamMemberIdx(2L).build()) // 다른 작성자
+                .build();
+        mockValidTripPlaceAndTeamMember(trip_place_idx, dto.getTeam_member_idx());
+        given(tripReplyRepository.findById(dto.getTrip_reply_idx())).willReturn(Optional.of(tripReply));
+
+        // when
+        ApiException exception = assertThrows(ApiException.class, () -> tripReplyService.deleteReply(trip_place_idx, dto));
+
+        // then
+        assertEquals(ExceptionEnum.TRIP_REPLY_MEMBER_NOT_MATCH.getMessage(), exception.getMessage());
+        then(tripReplyRepository).should(never()).deleteById(dto.getTrip_reply_idx());
+    }
+
+    @Test
+    void deleteReply_success() {
+        // given
+        Long trip_place_idx = 1L;
+        TripReplyDeleteReqDto dto = TripReplyDeleteReqDto.builder()
+                .trip_reply_idx(1L)
+                .team_member_idx(1L).build();
+        TeamMember teamMember = TeamMember.builder()
+                .teamMemberIdx(1L)
+                .team(Mockito.mock(Team.class))
+                .build();
+        TripReply tripReply = TripReply.builder()
+                .tripReplyContent("original content")
+                .teamMember(teamMember)
+                .build();
+        mockValidTripPlaceAndTeamMember(trip_place_idx, dto.getTeam_member_idx());
+        given(tripReplyRepository.findById(dto.getTrip_reply_idx())).willReturn(Optional.of(tripReply));
+
+        // when
+        tripReplyService.deleteReply(trip_place_idx, dto);
+
+        // then
+        then(tripReplyRepository).should(times(1)).deleteById(dto.getTrip_reply_idx());
     }
 }
