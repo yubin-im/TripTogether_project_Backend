@@ -9,6 +9,7 @@ import com.hanaro.triptogether.member.domain.Member;
 import com.hanaro.triptogether.member.domain.MemberRepository;
 import com.hanaro.triptogether.team.domain.Team;
 import com.hanaro.triptogether.team.domain.TeamRepository;
+import com.hanaro.triptogether.team.service.impl.TeamServiceImpl;
 import com.hanaro.triptogether.trip.domain.Trip;
 import com.hanaro.triptogether.trip.domain.TripRepository;
 import com.hanaro.triptogether.trip.dto.request.TripReqDto;
