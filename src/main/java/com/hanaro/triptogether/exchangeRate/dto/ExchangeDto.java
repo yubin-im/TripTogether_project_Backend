@@ -2,7 +2,8 @@ package com.hanaro.triptogether.exchangeRate.dto;
 
 import com.hanaro.triptogether.common.BigDecimalConverter;
 import com.hanaro.triptogether.exchangeRate.domain.entity.ExchangeRate;
-import com.hanaro.triptogether.exchangeRate.dto.request.ExchangeRateResponseDto;
+import com.hanaro.triptogether.exchangeRate.dto.request.ExchangeRateInfoResponseDto;
+import com.hanaro.triptogether.exchangeRate.dto.request.ExchangeRateResponse;
 import lombok.*;
 
 @Getter
@@ -24,8 +25,8 @@ public class ExchangeDto {
     private String kftc_deal_bas_r; // 서울외국환중개장부가격
 
 
-    public ExchangeRateResponseDto toDto() {
-        return ExchangeRateResponseDto.builder()
+    public ExchangeRateResponse toDto() {
+        return ExchangeRateResponse.builder()
                 .cur_unit(cur_unit)
                 .cur_name(cur_nm)
                 .deal_bas_r(deal_bas_r)
