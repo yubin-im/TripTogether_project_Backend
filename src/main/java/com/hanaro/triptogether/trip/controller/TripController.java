@@ -1,14 +1,15 @@
 package com.hanaro.triptogether.trip.controller;
 
+import com.hanaro.triptogether.trip.dto.request.TripReqDto;
 import com.hanaro.triptogether.trip.dto.response.TripResDto;
 import com.hanaro.triptogether.trip.service.TripService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @RestController
 @RequiredArgsConstructor
@@ -25,4 +26,38 @@ public class TripController {
     public List<TripResDto> getTrips(@PathVariable("team_idx") Long team_idx) {
         return tripService.getTripsByTeam(team_idx);
     }
+
+    @PostMapping
+    public ResponseEntity<?> createTrip(@RequestBody TripReqDto reqDto) {
+        try {
+            tripService.createTrip(reqDto);
+
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } catch (NoSuchElementException ex) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
+
+    @PutMapping("/{trip_idx}")
+    public ResponseEntity<?> updateTrip(@PathVariable("trip_idx") Long trip_idx, @RequestBody TripReqDto reqDto) {
+        try {
+            tripService.updateTrip(trip_idx, reqDto);
+
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } catch (NoSuchElementException ex) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
+
+    @DeleteMapping("/{trip_idx}")
+    public ResponseEntity<?> deleteTrip(@PathVariable("trip_idx") Long trip_idx) {
+        try {
+            tripService.deleteTrip(trip_idx);
+
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } catch (NoSuchElementException ex) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
+
 }

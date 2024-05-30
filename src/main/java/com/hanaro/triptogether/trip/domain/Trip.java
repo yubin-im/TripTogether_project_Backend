@@ -1,22 +1,22 @@
 package com.hanaro.triptogether.trip.domain;
 
-import com.hanaro.triptogether.country.domain.CountryEntity;
 import com.hanaro.triptogether.member.domain.Member;
 import com.hanaro.triptogether.team.domain.Team;
+import com.hanaro.triptogether.trip.dto.response.TripResDto;
+import com.hanaro.triptogether.tripCity.domain.TripCity;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "trip")
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -40,9 +40,15 @@ public class Trip {
     @Column(nullable = false)
     private Integer tripDay = 1;
 
+    private Integer tripImg;
+
     private LocalDate tripStartDay;
 
+    @OneToMany(mappedBy = "trip", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<TripCity> tripCities;
+
     @Column(nullable = false)
+    @CreationTimestamp
     private LocalDateTime createdAt;
 
     @ManyToOne
@@ -59,4 +65,39 @@ public class Trip {
     @ManyToOne
     @JoinColumn(name = "deleted_by")
     private Member deletedBy;
+
+    public TripResDto toTrip() {
+        return TripResDto.builder()
+                .teamIdx(this.getTeam().getTeamIdx())
+                .teamName(this.getTeam().getTeamName())
+                .tripIdx(this.getTripIdx())
+                .tripDay(this.getTripDay())
+                .tripContent(this.getTripContent())
+                .tripGoalAmount(this.getTripGoalAmount())
+                .tripName(this.getTripName())
+                .tripStartDay(this.getTripStartDay())
+                .build();
+    }
+
+    public void update(String tripName,
+                       String tripContent,
+                       BigDecimal tripGoalAmount,
+                       Integer tripDay,
+                       Integer tripImg,
+                       LocalDate tripStartDay,
+                       List<TripCity> tripCities,
+                       Member member) {
+        this.tripName = tripName;
+        this.tripContent = tripContent;
+        this.tripGoalAmount = tripGoalAmount;
+        this.tripDay = tripDay;
+        this.tripImg = tripImg;
+        this.tripStartDay = tripStartDay;
+        this.lastModifiedAt = LocalDateTime.now();
+        this.lastModifiedBy = member;
+
+        // 기존 TripCity 목록을 업데이트합니다.
+        this.tripCities.clear();
+        this.tripCities.addAll(tripCities);
+    }
 }
