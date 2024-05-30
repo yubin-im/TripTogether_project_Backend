@@ -41,7 +41,7 @@ public class MemberServiceImpl implements MemberService {
     @Transactional
     @Override
     public void setAlarm(Long memberIdx) {
-        Member member = memberRepository.findById(memberIdx).orElse(null);
+        Member member = memberRepository.findById(memberIdx).orElseThrow(() -> new ApiException(ExceptionEnum.MEMBER_NOT_FOUND));
         Boolean alarmStatus = member.getAlarmStatus();
 
         if (alarmStatus == true) {
