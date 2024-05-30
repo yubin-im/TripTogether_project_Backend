@@ -11,5 +11,5 @@ public class TripPlaceUpdateReqDto {
     private Long place_idx;
     private BigDecimal place_amount;
     private String place_memo;
-    private String member_id; //수정자 id
+    private Long member_idx; //수정자 idx
 }

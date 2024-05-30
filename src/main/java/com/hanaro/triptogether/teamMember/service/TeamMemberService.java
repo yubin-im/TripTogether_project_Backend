@@ -34,7 +34,7 @@ public interface TeamMemberService {
     TeamMember findTeamMemberByTeamMemberIdx(Long team_member_idx);
 
     //멤버id로 팀 검색
-    List<TeamMember> findTeamMemberByMemberId(String member_id);
+    List<TeamMember> findTeamMemberByMemberIdx(Long member_idx);
 
     // 모임원인지 확인
     TeamMember checkIsMyTeam(Team dtoTeam, List<TeamMember> teamMembers);

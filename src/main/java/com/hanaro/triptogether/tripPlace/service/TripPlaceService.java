@@ -39,11 +39,11 @@ public class TripPlaceService {
     @Transactional
     public void addPlace(TripPlaceAddReqDto dto) {
         Trip trip =  tripService.findByTripIdx(dto.getTrip_idx());
-        validateTeamMember(trip.getTeam(), dto.getMember_id());
+        validateTeamMember(trip.getTeam(), dto.getMember_idx());
         validateTripDate(trip, dto.getTrip_date());
 
         PlaceEntity place = placeService.findByPlaceIdx(dto.getPlace_idx());
-        Member member = memberService.findByMemberId(dto.getMember_id());
+        Member member = memberService.findByMemberIdx(dto.getMember_idx());
         int placeOrder = tripPlaceRepository.countByTripId(dto.getTrip_idx(), dto.getTrip_date())+ 1;
 
         TripPlace tripPlace = TripPlace.builder()
@@ -62,10 +62,10 @@ public class TripPlaceService {
     @Transactional
     public void updatePlace(Long trip_place_idx, TripPlaceUpdateReqDto dto) {
         TripPlace tripPlace = checkTripPlaceExists(trip_place_idx);
-        validateTeamMember(tripPlace.getTrip().getTeam(), dto.getMember_id());
+        validateTeamMember(tripPlace.getTrip().getTeam(), dto.getMember_idx());
 
         PlaceEntity place = placeService.findByPlaceIdx(dto.getPlace_idx());
-        Member member = memberService.findByMemberId(dto.getMember_id());
+        Member member = memberService.findByMemberIdx(dto.getMember_idx());
         tripPlace.update(place, dto.getPlace_amount(), dto.getPlace_memo(), member);
     }
 
@@ -74,11 +74,11 @@ public class TripPlaceService {
 
         Trip trip = tripService.findByTripIdx(trip_idx);
 
-        validateTeamMember(trip.getTeam(), dto.getMember_id());
+        validateTeamMember(trip.getTeam(), dto.getMember_idx());
         validateTripDate(trip, dto.getTrip_date());
 
         List<TripPlaceOrderReqDto> dtos = dto.getOrders();
-        Member member = memberService.findByMemberId(dto.getMember_id());
+        Member member = memberService.findByMemberIdx(dto.getMember_idx());
         int num = tripPlaceRepository.countByTripId(trip_idx, dto.getTrip_date());
         if (dtos.stream().map(TripPlaceOrderReqDto::getTrip_place_idx).distinct().count() != num){ //중복 및 사이즈 체크
             throw new ApiException(ExceptionEnum.INVALID_ORDER_LIST);
@@ -124,9 +124,9 @@ public class TripPlaceService {
                 .getTeamIdx();
     }
 
-    void validateTeamMember(Team team, String member_id) {
+    void validateTeamMember(Team team, Long member_idx) {
         //내 팀 리스트 리턴
-        List<TeamMember> teamMembers = teamMemberService.findTeamMemberByMemberId(member_id);
+        List<TeamMember> teamMembers = teamMemberService.findTeamMemberByMemberIdx(member_idx);
         //팀 멤버 여부 확인
         TeamMember teamMember = teamMemberService.checkIsMyTeam(team, teamMembers);
         //유효한 상태인지 확인
