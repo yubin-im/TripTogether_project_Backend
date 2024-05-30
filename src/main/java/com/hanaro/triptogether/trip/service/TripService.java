@@ -4,6 +4,8 @@ import com.hanaro.triptogether.city.dto.City;
 import com.hanaro.triptogether.country.domain.CountryEntity;
 import com.hanaro.triptogether.exception.ApiException;
 import com.hanaro.triptogether.exception.ExceptionEnum;
+import com.hanaro.triptogether.team.domain.Team;
+import com.hanaro.triptogether.team.service.impl.TeamServiceImpl;
 import com.hanaro.triptogether.trip.domain.Trip;
 import com.hanaro.triptogether.trip.domain.TripRepository;
 import com.hanaro.triptogether.trip.dto.response.TripResDto;
@@ -20,6 +22,7 @@ import java.util.List;
 public class TripService {
     private final TripRepository tripRepository;
     private final TripCityService tripCityService;
+    private final TeamServiceImpl teamService;
 
     public TripResDto getTrip(Long tripIdx) {
         Trip trip = findByTripIdx(tripIdx);
@@ -31,6 +34,7 @@ public class TripService {
     }
 
     public List<TripResDto> getTripsByTeam(Long teamIdx) {
+        teamService.findTeamByTeamIdx(teamIdx); // 팀 확인
         List<Trip> trips = tripRepository.findAllByTeam_TeamIdx(teamIdx);
         List<TripResDto> dtos = new ArrayList<>();
         for (Trip trip : trips) {

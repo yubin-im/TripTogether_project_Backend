@@ -2,6 +2,8 @@ package com.hanaro.triptogether.team.service.impl;
 
 import com.hanaro.triptogether.account.domain.Account;
 import com.hanaro.triptogether.account.domain.AccountRepository;
+import com.hanaro.triptogether.exception.ApiException;
+import com.hanaro.triptogether.exception.ExceptionEnum;
 import com.hanaro.triptogether.member.domain.Member;
 import com.hanaro.triptogether.member.domain.MemberRepository;
 import com.hanaro.triptogether.team.domain.Team;
@@ -137,5 +139,10 @@ public class TeamServiceImpl implements TeamService {
                 .build();
 
         return inviteTeamResDto;
+    }
+
+    @Override
+    public Team findTeamByTeamIdx(Long teamIdx) {
+        return teamRepository.findById(teamIdx).orElseThrow(()->new ApiException(ExceptionEnum.TEAM_NOT_FOUND));
     }
 }
