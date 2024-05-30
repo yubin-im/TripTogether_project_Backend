@@ -32,7 +32,10 @@ public enum ExceptionEnum {
     //----------trip place reply
     TRIP_REPLY_NOT_FOUND(HttpStatus.BAD_REQUEST, "TRIP_REPLY_NOT_FOUND","해당하는 댓글이 없습니다."),
     TRIP_REPLY_MEMBER_NOT_MATCH(HttpStatus.BAD_REQUEST, "TRIP_REPLY_MEMBER_NOT_MATCH","댓글 수정 및 삭제는 본인만 가능합니다"),
-    TRIP_INFO_NOT_MATCH(HttpStatus.FORBIDDEN, "TRIP_INFO_NOT_MATCH","팀 정보가 일치하지 않습니다.");
+    TRIP_INFO_NOT_MATCH(HttpStatus.FORBIDDEN, "TRIP_INFO_NOT_MATCH","팀 정보가 일치하지 않습니다."),
+
+    //---------account
+    ACCOUNT_NOT_FOUND(HttpStatus.BAD_REQUEST, "ACCOUNT_NOT_FOUND", "해당하는 계좌가 없습니다.");
 
     private final HttpStatus status;
     private final String code;
