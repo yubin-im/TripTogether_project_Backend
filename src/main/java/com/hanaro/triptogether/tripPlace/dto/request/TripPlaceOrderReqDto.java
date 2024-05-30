@@ -6,5 +6,5 @@ import lombok.Getter;
 @Getter
 @Builder
 public class TripPlaceOrderReqDto {
-    private Long trip_placeIdx;
+    private Long tripPlaceIdx;
 }
