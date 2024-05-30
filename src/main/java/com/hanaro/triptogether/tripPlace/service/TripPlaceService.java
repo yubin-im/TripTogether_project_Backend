@@ -80,11 +80,11 @@ public class TripPlaceService {
         List<TripPlaceOrderReqDto> dtos = dto.getOrders();
         Member member = memberService.findByMemberIdx(dto.getMemberIdx());
         int num = tripPlaceRepository.countByTripId(tripIdx, dto.getTripDate());
-        if (dtos.stream().map(TripPlaceOrderReqDto::getTrip_placeIdx).distinct().count() != num){ //중복 및 사이즈 체크
+        if (dtos.stream().map(TripPlaceOrderReqDto::getTripPlaceIdx).distinct().count() != num){ //중복 및 사이즈 체크
             throw new ApiException(ExceptionEnum.INVALID_ORDER_LIST);
         }
         for(int i=0;i<dtos.size();i++){
-            TripPlace tripPlace = checkTripPlaceExists(dtos.get(i).getTrip_placeIdx());
+            TripPlace tripPlace = checkTripPlaceExists(dtos.get(i).getTripPlaceIdx());
             if(!Objects.equals(tripPlace.getTrip().getTripIdx(), tripIdx)){
                 throw new ApiException(ExceptionEnum.TEAM_NOT_MATCH);
             }
