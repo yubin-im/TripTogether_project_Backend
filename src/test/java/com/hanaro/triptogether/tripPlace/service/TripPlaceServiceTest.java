@@ -30,6 +30,7 @@ import org.mockito.*;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -118,7 +119,7 @@ class TripPlaceServiceTest {
                 .tripContent("tripContent")
                 .tripGoalAmount(BigDecimal.valueOf(100))
                 .tripDay(3)
-                .tripStartDay(dateFormat.parse("2025-01-01"))
+                .tripStartDay(LocalDate.of(2025, 1, 1))
                 .createdAt(LocalDateTime.now())
                 .createdBy(member1)
                 .build();
