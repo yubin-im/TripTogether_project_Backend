@@ -6,7 +6,7 @@ import lombok.Getter;
 @Getter
 @Builder
 public class TripReplyUpdateReqDto {
-    private Long team_member_idx;
-    private Long trip_reply_idx;
-    private String trip_reply_content;
+    private Long teamMemberIdx;
+    private Long tripReplyIdx;
+    private String tripReplyContent;
 }

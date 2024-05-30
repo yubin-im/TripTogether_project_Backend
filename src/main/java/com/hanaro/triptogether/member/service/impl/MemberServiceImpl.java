@@ -4,6 +4,7 @@ import com.hanaro.triptogether.exception.ApiException;
 import com.hanaro.triptogether.exception.ExceptionEnum;
 import com.hanaro.triptogether.member.domain.Member;
 import com.hanaro.triptogether.member.domain.MemberRepository;
+import com.hanaro.triptogether.member.dto.response.LoginResDto;
 import com.hanaro.triptogether.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,24 +18,32 @@ public class MemberServiceImpl implements MemberService {
     // 간편 로그인
     @Transactional
     @Override
-    public String login(Long memberIdx, String memberLoginPw) {
+    public LoginResDto login(Long memberIdx, String memberLoginPw) {
         Member member = memberRepository.findMemberByMemberIdxAndMemberLoginPw(memberIdx, memberLoginPw);
 
         if(member == null) {
-            return "비밀번호가 맞지 않습니다.";
+            return LoginResDto.builder()
+                    .message("비밀번호가 맞지 않습니다.")
+                    .memberName("비회원")
+                    .build();
         }
 
         if (!memberLoginPw.equals(member.getMemberLoginPw())) {
-            return "비밀번호가 맞지 않습니다.";
+            return LoginResDto.builder()
+                    .message("비밀번호가 맞지 않습니다.")
+                    .memberName("비회원")
+                    .build();
         } else {
-
-            return "로그인이 완료되었습니다!";
+            return LoginResDto.builder()
+                    .message("로그인이 완료되었습니다!")
+                    .memberName(member.getMemberName())
+                    .build();
         }
     }
 
     @Override
-    public Member findByMemberId(String memberId) {
-        return memberRepository.findMemberByMemberId(memberId).orElseThrow(()->new ApiException(ExceptionEnum.MEMBER_NOT_FOUND));
+    public Member findByMemberIdx(Long memberIdx) {
+        return memberRepository.findById(memberIdx).orElseThrow(()->new ApiException(ExceptionEnum.MEMBER_NOT_FOUND));
     }
 
     // 알림설정 (on/off)
