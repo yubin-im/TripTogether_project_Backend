@@ -2,6 +2,7 @@ package com.hanaro.triptogether;
 
 import com.hanaro.triptogether.member.domain.Member;
 import com.hanaro.triptogether.member.domain.MemberRepository;
+import com.hanaro.triptogether.member.dto.response.LoginResDto;
 import com.hanaro.triptogether.member.service.impl.MemberServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -43,10 +44,11 @@ public class MemberServiceTests extends TriptogetherApplicationTests {
         when(memberRepository.findMemberByMemberIdxAndMemberLoginPw(1L, "123456")).thenReturn(member);
 
         // When
-        String result = memberService.login(1L, "123456");
+        LoginResDto result = memberService.login(1L, "123456");
 
         // Then
-        assertEquals("로그인이 완료되었습니다!", result);
+        assertEquals("로그인이 완료되었습니다!", result.getMessage());
+        assertEquals(member.getMemberName(), result.getMemberName());
     }
 
     @Test
@@ -56,9 +58,9 @@ public class MemberServiceTests extends TriptogetherApplicationTests {
         when(memberRepository.findMemberByMemberIdxAndMemberLoginPw(1L, "123456")).thenReturn(member);
 
         // When
-        String result = memberService.login(1L, "456789");
+        LoginResDto result = memberService.login(1L, "456789");
 
         // Then
-        assertEquals("비밀번호가 맞지 않습니다.", result);
+        assertEquals("비밀번호가 맞지 않습니다.", result.getMessage());
     }
 }

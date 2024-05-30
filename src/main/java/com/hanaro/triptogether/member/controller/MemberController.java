@@ -1,6 +1,7 @@
 package com.hanaro.triptogether.member.controller;
 
 import com.hanaro.triptogether.member.dto.request.LoginReqDto;
+import com.hanaro.triptogether.member.dto.response.LoginResDto;
 import com.hanaro.triptogether.member.service.MemberService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -19,7 +20,7 @@ public class MemberController {
 
     // 간편 로그인
     @PostMapping("/login")
-    public String login(@RequestBody LoginReqDto loginReqDto, HttpServletRequest request) {
+    public LoginResDto login(@RequestBody LoginReqDto loginReqDto, HttpServletRequest request) {
         Long memberIdx = loginReqDto.getMemberIdx();
         String memberLoginPw = loginReqDto.getMemberLoginPw();
 
