@@ -66,8 +66,8 @@ class TripReplyServiceTest {
         Long trip_place_idx=1L;
         TripReplyReqDto dto = createTripReplyReqDto();
         TeamMember teamMember = createTeamMember(1L,Mockito.mock(Team.class), TeamMemberState.요청중);
-        given(teamMemberService.findTeamMemberByTeamMemberIdx(dto.getTeam_member_idx())).willReturn(teamMember);
-        given(tripReplyService.validateAndReturn(trip_place_idx, dto.getTeam_member_idx())).willThrow(new ApiException(ExceptionEnum.INVALID_TEAM_MEMBER_ROLE));
+        given(teamMemberService.findTeamMemberByTeamMemberIdx(dto.getTeamMemberIdx())).willReturn(teamMember);
+        given(tripReplyService.validateAndReturn(trip_place_idx, dto.getTeamMemberIdx())).willThrow(new ApiException(ExceptionEnum.INVALID_TEAM_MEMBER_ROLE));
         //when
         ApiException exception = assertThrows(ApiException.class, ()->tripReplyService.createReply(trip_place_idx, dto));
 
@@ -84,7 +84,7 @@ class TripReplyServiceTest {
         Team team1 = createTeam(1L);
         Team team2 = createTeam(2L);
         TeamMember teamMember = createTeamMember(1L, team1, TeamMemberState.총무);
-        given(teamMemberService.findTeamMemberByTeamMemberIdx(dto.getTeam_member_idx())).willReturn(teamMember);
+        given(teamMemberService.findTeamMemberByTeamMemberIdx(dto.getTeamMemberIdx())).willReturn(teamMember);
         given(tripPlaceService.findTeamIdByTripPlaceIdx(trip_place_idx)).willReturn(team2.getTeamIdx());
 
         //when
@@ -100,7 +100,7 @@ class TripReplyServiceTest {
         Long trip_place_idx=1L;
         TripReplyReqDto dto = createTripReplyReqDto();
         TeamMember teamMember = createTeamMember(1L,Mockito.mock(Team.class), TeamMemberState.총무);
-        given(teamMemberService.findTeamMemberByTeamMemberIdx(dto.getTeam_member_idx())).willReturn(teamMember);
+        given(teamMemberService.findTeamMemberByTeamMemberIdx(dto.getTeamMemberIdx())).willReturn(teamMember);
 
         //when
         tripReplyService.createReply(trip_place_idx, dto);
@@ -129,8 +129,8 @@ class TripReplyServiceTest {
         // given
         Long trip_place_idx = 1L;
         TripReplyUpdateReqDto dto = createTripReplyUpdateReqDto();
-        mockValidTripPlaceAndTeamMember(trip_place_idx, dto.getTeam_member_idx());
-        given(tripReplyRepository.findById(dto.getTrip_reply_idx())).willReturn(Optional.empty());
+        mockValidTripPlaceAndTeamMember(trip_place_idx, dto.getTeamMemberIdx());
+        given(tripReplyRepository.findById(dto.getTripReplyIdx())).willReturn(Optional.empty());
 
         // when
         ApiException exception = assertThrows(ApiException.class, () -> tripReplyService.updateReply(trip_place_idx, dto));
@@ -146,8 +146,8 @@ class TripReplyServiceTest {
         Long trip_place_idx = 1L;
         TripReplyUpdateReqDto dto = createTripReplyUpdateReqDto();
         TripReply tripReply = createTripReply(createTeamMember(2L));
-        mockValidTripPlaceAndTeamMember(trip_place_idx, dto.getTeam_member_idx());
-        given(tripReplyRepository.findById(dto.getTrip_reply_idx())).willReturn(Optional.of(tripReply));
+        mockValidTripPlaceAndTeamMember(trip_place_idx, dto.getTeamMemberIdx());
+        given(tripReplyRepository.findById(dto.getTripReplyIdx())).willReturn(Optional.of(tripReply));
 
         // when
         ApiException exception = assertThrows(ApiException.class, () -> tripReplyService.updateReply(trip_place_idx, dto));
@@ -164,15 +164,15 @@ class TripReplyServiceTest {
         TripReplyUpdateReqDto dto = createTripReplyUpdateReqDto();
         TeamMember teamMember = createTeamMember(1L);
         TripReply tripReply = createTripReply(teamMember);
-        mockValidTripPlaceAndTeamMember(trip_place_idx, dto.getTeam_member_idx());
-        given(tripReplyRepository.findById(dto.getTrip_reply_idx())).willReturn(Optional.of(tripReply));
+        mockValidTripPlaceAndTeamMember(trip_place_idx, dto.getTeamMemberIdx());
+        given(tripReplyRepository.findById(dto.getTripReplyIdx())).willReturn(Optional.of(tripReply));
 
         // when
         tripReplyService.updateReply(trip_place_idx, dto);
 
         // then
         assertEquals("updated content", tripReply.getTripReplyContent());
-        assertEquals("updated content", tripReplyRepository.findById(dto.getTrip_reply_idx()).get().getTripReplyContent());
+        assertEquals("updated content", tripReplyRepository.findById(dto.getTripReplyIdx()).get().getTripReplyContent());
     }
 
     @Test
@@ -187,7 +187,7 @@ class TripReplyServiceTest {
 
         // then
         assertEquals(ExceptionEnum.TRIP_PLACE_NOT_FOUND.getMessage(), exception.getMessage());
-        then(tripReplyRepository).should(never()).deleteById(dto.getTrip_reply_idx());
+        then(tripReplyRepository).should(never()).deleteById(dto.getTripReplyIdx());
     }
 
     @Test
@@ -195,15 +195,15 @@ class TripReplyServiceTest {
         // given
         Long trip_place_idx = 1L;
         TripReplyDeleteReqDto dto = createTripReplyDeleteReqDto();
-        mockValidTripPlaceAndTeamMember(trip_place_idx, dto.getTeam_member_idx());
-        given(tripReplyRepository.findById(dto.getTrip_reply_idx())).willReturn(Optional.empty());
+        mockValidTripPlaceAndTeamMember(trip_place_idx, dto.getTeamMemberIdx());
+        given(tripReplyRepository.findById(dto.getTripReplyIdx())).willReturn(Optional.empty());
 
         // when
         ApiException exception = assertThrows(ApiException.class, () -> tripReplyService.deleteReply(trip_place_idx, dto));
 
         // then
         assertEquals(ExceptionEnum.TRIP_REPLY_NOT_FOUND.getMessage(), exception.getMessage());
-        then(tripReplyRepository).should(never()).deleteById(dto.getTrip_reply_idx());
+        then(tripReplyRepository).should(never()).deleteById(dto.getTripReplyIdx());
     }
 
     @Test
@@ -212,15 +212,15 @@ class TripReplyServiceTest {
         Long trip_place_idx = 1L;
         TripReplyDeleteReqDto dto = createTripReplyDeleteReqDto();
         TripReply tripReply = createTripReply(createTeamMember(2L));
-        mockValidTripPlaceAndTeamMember(trip_place_idx, dto.getTeam_member_idx());
-        given(tripReplyRepository.findById(dto.getTrip_reply_idx())).willReturn(Optional.of(tripReply));
+        mockValidTripPlaceAndTeamMember(trip_place_idx, dto.getTeamMemberIdx());
+        given(tripReplyRepository.findById(dto.getTripReplyIdx())).willReturn(Optional.of(tripReply));
 
         // when
         ApiException exception = assertThrows(ApiException.class, () -> tripReplyService.deleteReply(trip_place_idx, dto));
 
         // then
         assertEquals(ExceptionEnum.TRIP_REPLY_MEMBER_NOT_MATCH.getMessage(), exception.getMessage());
-        then(tripReplyRepository).should(never()).deleteById(dto.getTrip_reply_idx());
+        then(tripReplyRepository).should(never()).deleteById(dto.getTripReplyIdx());
     }
 
     @Test
@@ -230,14 +230,14 @@ class TripReplyServiceTest {
         TripReplyDeleteReqDto dto = createTripReplyDeleteReqDto();
         TeamMember teamMember = createTeamMember(1L);
         TripReply tripReply = createTripReply(teamMember);
-        mockValidTripPlaceAndTeamMember(trip_place_idx, dto.getTeam_member_idx());
-        given(tripReplyRepository.findById(dto.getTrip_reply_idx())).willReturn(Optional.of(tripReply));
+        mockValidTripPlaceAndTeamMember(trip_place_idx, dto.getTeamMemberIdx());
+        given(tripReplyRepository.findById(dto.getTripReplyIdx())).willReturn(Optional.of(tripReply));
 
         // when
         tripReplyService.deleteReply(trip_place_idx, dto);
 
         // then
-        then(tripReplyRepository).should(times(1)).deleteById(dto.getTrip_reply_idx());
+        then(tripReplyRepository).should(times(1)).deleteById(dto.getTripReplyIdx());
     }
 
     @Test
@@ -272,30 +272,30 @@ class TripReplyServiceTest {
 
         // then
         assertEquals(2, res.size());
-        assertEquals(tripReply1.getTeamMember().getTeamMemberIdx(), res.get(0).getTeam_member_idx());
-        assertEquals(tripReply2.getTeamMember().getTeamMemberIdx(), res.get(1).getTeam_member_idx());
-        assertEquals(DELETED_MEMBER, res.get(1).getTeam_member_nickname()); //탈퇴한 멤버 닉네임 확인
+        assertEquals(tripReply1.getTeamMember().getTeamMemberIdx(), res.get(0).getTeamMemberIdx());
+        assertEquals(tripReply2.getTeamMember().getTeamMemberIdx(), res.get(1).getTeamMemberIdx());
+        assertEquals(DELETED_MEMBER, res.get(1).getTeamMemberNickname()); //탈퇴한 멤버 닉네임 확인
     }
 
     private TripReplyReqDto createTripReplyReqDto() {
         return TripReplyReqDto.builder()
-                .trip_reply_content("test")
-                .team_member_idx(1L)
+                .tripReplyContent("test")
+                .teamMemberIdx(1L)
                 .build();
     }
 
     private TripReplyUpdateReqDto createTripReplyUpdateReqDto() {
         return TripReplyUpdateReqDto.builder()
-                .trip_reply_idx(1L)
-                .trip_reply_content("updated content")
-                .team_member_idx(1L)
+                .tripReplyIdx(1L)
+                .tripReplyContent("updated content")
+                .teamMemberIdx(1L)
                 .build();
     }
 
     private TripReplyDeleteReqDto createTripReplyDeleteReqDto() {
         return TripReplyDeleteReqDto.builder()
-                .trip_reply_idx(1L)
-                .team_member_idx(1L)
+                .tripReplyIdx(1L)
+                .teamMemberIdx(1L)
                 .build();
     }
 
