@@ -7,6 +7,7 @@ import com.hanaro.triptogether.exception.ApiException;
 import com.hanaro.triptogether.exception.ExceptionEnum;
 import com.hanaro.triptogether.member.domain.Member;
 import com.hanaro.triptogether.team.domain.Team;
+import com.hanaro.triptogether.team.service.impl.TeamServiceImpl;
 import com.hanaro.triptogether.trip.domain.Trip;
 import com.hanaro.triptogether.trip.domain.TripRepository;
 import com.hanaro.triptogether.trip.dto.response.TripResDto;
@@ -26,14 +27,19 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
 class TripServiceTest {
     @Mock
     private TripRepository tripRepository;
+
     @Mock
     private TripCityService tripCityService;
+
+    @Mock
+    private TeamServiceImpl teamService;
 
     @Spy
     @InjectMocks
@@ -63,7 +69,7 @@ class TripServiceTest {
                 .build();
 
         team = Team.builder()
-                .teamIdx(tripIdx)
+                .teamIdx(1L)
                 .teamName("teamName")
                 .account(mock(Account.class))
                 .teamType(TeamType.여행)
@@ -132,5 +138,16 @@ class TripServiceTest {
         assertEquals(2, dtos.size());
         assertEquals(trip.getTripIdx(), dtos.get(0).getTripIdx());
         assertEquals(trip2.getTripIdx(), dtos.get(1).getTripIdx());
+    }
+    @Test
+    void getTripsByTeam_invalidTeamIdx() {
+        //given
+        given(teamService.findTeamByTeamIdx(anyLong())).willThrow(new ApiException(ExceptionEnum.TEAM_NOT_FOUND));
+
+        // when
+        ApiException exception = assertThrows(ApiException.class, () -> tripService.getTripsByTeam(anyLong()));
+
+        // then
+        assertEquals(ExceptionEnum.TEAM_NOT_FOUND.getMessage(), exception.getError().getMessage());
     }
 }
