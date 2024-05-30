@@ -176,8 +176,8 @@ public class TeamMemberServiceImpl implements TeamMemberService {
 
     //내 모임 검색
     @Override
-    public List<TeamMember> findTeamMemberByMemberId(String member_id) {
-        return teamMemberRepository.findTeamMemberByMember_MemberId(member_id);
+    public List<TeamMember> findTeamMemberByMemberIdx(Long member_idx) {
+        return teamMemberRepository.findTeamMemberByMember_MemberIdx(member_idx);
     }
 
     // 모임 가입
