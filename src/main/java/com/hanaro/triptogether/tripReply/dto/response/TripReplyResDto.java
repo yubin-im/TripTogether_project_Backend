@@ -8,20 +8,20 @@ import java.time.LocalDateTime;
 
 @Getter
 public class TripReplyResDto {
-    private Long trip_reply_idx;
-    private Long team_member_idx;
-    private String team_member_nickname;
-    private String trip_reply_content;
-    private LocalDateTime created_at;
-    private LocalDateTime last_modified_at;
+    private Long tripReplyIdx;
+    private Long teamMemberIdx;
+    private String teamMemberNickname;
+    private String tripReplyContent;
+    private LocalDateTime createdAt;
+    private LocalDateTime lastModifiedAt;
 
     @Builder
-    public TripReplyResDto(TripReply reply, String team_member_nickname) {
-        this.team_member_nickname = team_member_nickname; //탈퇴한 멤버일 경우, 대체하기 위해
-        this.trip_reply_idx = reply.getTripReplyIdx();
-        this.team_member_idx=reply.getTeamMember().getTeamMemberIdx();
-        this.trip_reply_content=reply.getTripReplyContent();
-        this.created_at=reply.getCreatedAt();
-        this.last_modified_at=reply.getLastModifiedAt();
+    public TripReplyResDto(TripReply reply, String teamMemberNickname) {
+        this.teamMemberNickname = teamMemberNickname; //탈퇴한 멤버일 경우, 대체하기 위해
+        this.tripReplyIdx = reply.getTripReplyIdx();
+        this.teamMemberIdx=reply.getTeamMember().getTeamMemberIdx();
+        this.tripReplyContent=reply.getTripReplyContent();
+        this.createdAt=reply.getCreatedAt();
+        this.lastModifiedAt=reply.getLastModifiedAt();
     }
 }

@@ -8,7 +8,7 @@ import java.util.List;
 @Getter
 @Builder
 public class UpdateOrderReqDto {
-    private Long member_idx;
-    private Integer trip_date;
+    private Long memberIdx;
+    private Integer tripDate;
     private List<TripPlaceOrderReqDto> orders;
 }

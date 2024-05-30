@@ -33,32 +33,32 @@ public class TripReplyService {
     public void createReply(Long trip_place_idx, TripReplyReqDto dto) {
         TripPlace tripplace = tripPlaceService.checkTripPlaceExists(trip_place_idx);
 
-        TeamMember teamMember = validateAndReturn(trip_place_idx, dto.getTeam_member_idx());
+        TeamMember teamMember = validateAndReturn(trip_place_idx, dto.getTeamMemberIdx());
 
-        tripReplyRepository.save(dto.toEntity(tripplace, teamMember, dto.getTrip_reply_content()));
+        tripReplyRepository.save(dto.toEntity(tripplace, teamMember, dto.getTripReplyContent()));
     }
     @Transactional
     public void updateReply(Long trip_place_idx, TripReplyUpdateReqDto dto) {
         tripPlaceService.checkTripPlaceExists(trip_place_idx);
 
-        validateAndReturn(trip_place_idx, dto.getTeam_member_idx());
+        validateAndReturn(trip_place_idx, dto.getTeamMemberIdx());
 
-        TripReply tripReply = checkTripReplyExist(dto.getTrip_reply_idx());
-        checkSameMember(tripReply.getTeamMember().getTeamMemberIdx(),dto.getTeam_member_idx());
+        TripReply tripReply = checkTripReplyExist(dto.getTripReplyIdx());
+        checkSameMember(tripReply.getTeamMember().getTeamMemberIdx(),dto.getTeamMemberIdx());
 
-        tripReply.update(dto.getTrip_reply_content());
+        tripReply.update(dto.getTripReplyContent());
     }
 
     @Transactional
     public void deleteReply(Long trip_place_idx, TripReplyDeleteReqDto dto) {
         tripPlaceService.checkTripPlaceExists(trip_place_idx);
 
-        validateAndReturn(trip_place_idx, dto.getTeam_member_idx());
+        validateAndReturn(trip_place_idx, dto.getTeamMemberIdx());
 
-        TripReply tripReply = checkTripReplyExist(dto.getTrip_reply_idx());
-        checkSameMember(tripReply.getTeamMember().getTeamMemberIdx(),dto.getTeam_member_idx());
+        TripReply tripReply = checkTripReplyExist(dto.getTripReplyIdx());
+        checkSameMember(tripReply.getTeamMember().getTeamMemberIdx(),dto.getTeamMemberIdx());
 
-        tripReplyRepository.deleteById(dto.getTrip_reply_idx());
+        tripReplyRepository.deleteById(dto.getTripReplyIdx());
     }
 
     public List<TripReplyResDto> getReply(Long trip_place_idx) {

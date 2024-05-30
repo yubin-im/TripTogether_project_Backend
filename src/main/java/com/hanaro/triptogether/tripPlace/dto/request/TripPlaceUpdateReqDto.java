@@ -8,8 +8,8 @@ import java.math.BigDecimal;
 @Getter
 @Builder
 public class TripPlaceUpdateReqDto {
-    private Long place_idx;
-    private BigDecimal place_amount;
-    private String place_memo;
-    private Long member_idx; //수정자 idx
+    private Long placeIdx;
+    private BigDecimal placeAmount;
+    private String placeMemo;
+    private Long memberIdx; //수정자 idx
 }
