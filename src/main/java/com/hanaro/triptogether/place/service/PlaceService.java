@@ -1,18 +1,12 @@
 package com.hanaro.triptogether.place.service;
 
-import com.hanaro.triptogether.exception.ApiException;
-import com.hanaro.triptogether.exception.ExceptionEnum;
-import com.hanaro.triptogether.place.domain.Place;
-import com.hanaro.triptogether.place.domain.PlaceRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
+import com.hanaro.triptogether.place.domain.PlaceEntity;
+import com.hanaro.triptogether.place.dto.Place;
 
-@Service
-@RequiredArgsConstructor
-public class PlaceService {
-    private final PlaceRepository placeRepository;
+import java.util.List;
 
-    public Place findByPlaceIdx(Long placeIdx) {
-        return placeRepository.findById(placeIdx).orElseThrow(()->new ApiException(ExceptionEnum.PLACE_NOT_FOUND));
-    }
+public interface PlaceService {
+    public List<Place> getAll();
+    public List<Place> getPlacesByCategoryId(Long categoryId);
+    PlaceEntity findByPlaceIdx(Long placeIdx);
 }

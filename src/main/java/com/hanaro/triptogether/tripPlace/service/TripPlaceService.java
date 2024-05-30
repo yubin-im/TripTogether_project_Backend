@@ -4,7 +4,7 @@ import com.hanaro.triptogether.exception.ApiException;
 import com.hanaro.triptogether.exception.ExceptionEnum;
 import com.hanaro.triptogether.member.domain.Member;
 import com.hanaro.triptogether.member.service.impl.MemberServiceImpl;
-import com.hanaro.triptogether.place.domain.Place;
+import com.hanaro.triptogether.place.domain.PlaceEntity;
 import com.hanaro.triptogether.place.service.PlaceService;
 import com.hanaro.triptogether.team.domain.Team;
 import com.hanaro.triptogether.teamMember.domain.TeamMember;
@@ -22,6 +22,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -41,7 +42,7 @@ public class TripPlaceService {
         validateTeamMember(trip.getTeam(), dto.getMember_id());
         validateTripDate(trip, dto.getTrip_date());
 
-        Place place = placeService.findByPlaceIdx(dto.getPlace_idx());
+        PlaceEntity place = placeService.findByPlaceIdx(dto.getPlace_idx());
         Member member = memberService.findByMemberId(dto.getMember_id());
         int placeOrder = tripPlaceRepository.countByTripId(dto.getTrip_idx(), dto.getTrip_date())+ 1;
 
@@ -52,7 +53,8 @@ public class TripPlaceService {
                 .place(place)
                 .placeAmount(dto.getPlace_amount())
                 .placeMemo(dto.getPlace_memo())
-                .member(member)
+                .createdAt(LocalDateTime.now())
+                .createdBy(member)
                 .build();
         tripPlaceRepository.save(tripPlace);
     }
@@ -62,7 +64,7 @@ public class TripPlaceService {
         TripPlace tripPlace = checkTripPlaceExists(trip_place_idx);
         validateTeamMember(tripPlace.getTrip().getTeam(), dto.getMember_id());
 
-        Place place = placeService.findByPlaceIdx(dto.getPlace_idx());
+        PlaceEntity place = placeService.findByPlaceIdx(dto.getPlace_idx());
         Member member = memberService.findByMemberId(dto.getMember_id());
         tripPlace.update(place, dto.getPlace_amount(), dto.getPlace_memo(), member);
     }
@@ -77,7 +79,10 @@ public class TripPlaceService {
 
         List<TripPlaceOrderReqDto> dtos = dto.getOrders();
         Member member = memberService.findByMemberId(dto.getMember_id());
-
+        int num = tripPlaceRepository.countByTripId(trip_idx, dto.getTrip_date());
+        if (dtos.stream().map(TripPlaceOrderReqDto::getTrip_place_idx).distinct().count() != num){ //중복 및 사이즈 체크
+            throw new ApiException(ExceptionEnum.INVALID_ORDER_LIST);
+        }
         for(int i=0;i<dtos.size();i++){
             TripPlace tripPlace = checkTripPlaceExists(dtos.get(i).getTrip_place_idx());
             if(!Objects.equals(tripPlace.getTrip().getTripIdx(), trip_idx)){
@@ -95,8 +100,15 @@ public class TripPlaceService {
 
     @Transactional
     public void deleteTripPlace(Long trip_place_idx) {
-        checkTripPlaceExists(trip_place_idx);
+        TripPlace tripPlaceToDelete = checkTripPlaceExists(trip_place_idx);
+        Integer deletedPlaceOrder = tripPlaceToDelete.getPlaceOrder();
+        Long tripId = tripPlaceToDelete.getTrip().getTripIdx();
+
+        // 삭제할 일정 삭제
         tripPlaceRepository.deleteById(trip_place_idx);
+
+        // placeOrder 감소
+        tripPlaceRepository.decrementPlaceOrderAfter(tripId, deletedPlaceOrder);
     }
 
     public TripPlace checkTripPlaceExists(Long trip_place_idx){
@@ -112,7 +124,7 @@ public class TripPlaceService {
                 .getTeamIdx();
     }
 
-    private void validateTeamMember(Team team, String member_id) {
+    void validateTeamMember(Team team, String member_id) {
         //내 팀 리스트 리턴
         List<TeamMember> teamMembers = teamMemberService.findTeamMemberByMemberId(member_id);
         //팀 멤버 여부 확인
@@ -121,7 +133,7 @@ public class TripPlaceService {
         teamMemberService.validateTeamMemberState(teamMember);
     }
 
-    private void validateTripDate(Trip trip, int trip_date) {
+    void validateTripDate(Trip trip, int trip_date) {
         //여행 일자 범위 확인
         if (trip.getTripDay() < trip_date) {
             throw new ApiException(ExceptionEnum.INVALID_TRIP_DATE);

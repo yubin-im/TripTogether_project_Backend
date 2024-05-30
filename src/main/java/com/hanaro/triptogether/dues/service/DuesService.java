@@ -28,8 +28,6 @@ public class DuesService {
     }
 
 
-
-
     public List<DuesListResponseDto> getDuesList(Long teamIdx,Long accIdx, YearMonth date,Boolean paid){
         if(paid) return accountTransactionDetailsRepository.findUsersWithTransAmountGreaterThanOrEqual(accIdx,date.getYear(),date.getMonthValue(),getTeamDuesAmount(teamIdx));
         else return accountTransactionDetailsRepository.findUsersWithTransAmountLessThan(accIdx,date.getYear(),date.getMonthValue(),getTeamDuesAmount(teamIdx));
