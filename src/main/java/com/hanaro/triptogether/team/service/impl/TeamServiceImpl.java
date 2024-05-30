@@ -34,7 +34,7 @@ public class TeamServiceImpl implements TeamService {
     @Transactional
     @Override
     public void addTeam(AddTeamReqDto addTeamReqDto) {
-        Account account = accountRepository.findById(addTeamReqDto.getAccIdx()).orElse(null);
+        Account account = accountRepository.findById(addTeamReqDto.getAccIdx()).orElseThrow(() -> new ApiException(ExceptionEnum.ACCOUNT_NOT_FOUND));
 
         Team team = Team.builder()
                 .account(account)
@@ -42,7 +42,7 @@ public class TeamServiceImpl implements TeamService {
                 .teamName(addTeamReqDto.getTeamName())
                 .preferenceType(addTeamReqDto.getPreferenceType())
                 .createdAt(LocalDateTime.now())
-                .createdBy(memberRepository.findById(addTeamReqDto.getMemberIdx()).get())
+                .createdBy(memberRepository.findById(addTeamReqDto.getMemberIdx()).orElseThrow(() -> new ApiException(ExceptionEnum.MEMBER_NOT_FOUND)))
                 .build();
 
         teamRepository.save(team);
@@ -52,7 +52,7 @@ public class TeamServiceImpl implements TeamService {
     @Transactional
     @Override
     public DetailTeamResDto detailTeam(Long accIdx) {
-        Account account = accountRepository.findById(accIdx).orElse(null);
+        Account account = accountRepository.findById(accIdx).orElseThrow(() -> new ApiException(ExceptionEnum.ACCOUNT_NOT_FOUND));
         Team team = teamRepository.findTeamByAccount(account);
 
         DetailTeamResDto detailTeamResDto = DetailTeamResDto.builder()
@@ -70,7 +70,7 @@ public class TeamServiceImpl implements TeamService {
     @Transactional
     @Override
     public void exportTeam(ExportTeamReqDto exportTeamReqDto) {
-        Team team = teamRepository.findById(exportTeamReqDto.getTeamIdx()).orElse(null);
+        Team team = teamRepository.findById(exportTeamReqDto.getTeamIdx()).orElseThrow(() -> new ApiException(ExceptionEnum.TEAM_NOT_FOUND));
         List<TeamMember> teamMembers = teamMemberRepository.findTeamMembersByTeam(team);
 
         // 전체 내보내기
@@ -80,7 +80,7 @@ public class TeamServiceImpl implements TeamService {
         }
 
         // 모임 삭제
-        team.delete(LocalDateTime.now(), memberRepository.findById(exportTeamReqDto.getMemberIdx()).get());
+        team.delete(LocalDateTime.now(), memberRepository.findById(exportTeamReqDto.getMemberIdx()).orElseThrow(() -> new ApiException(ExceptionEnum.MEMBER_NOT_FOUND)));
         teamRepository.save(team);
     }
 
@@ -88,7 +88,7 @@ public class TeamServiceImpl implements TeamService {
     @Transactional
     @Override
     public ManageTeamResDto manageTeam(ManageTeamReqDto manageTeamReqDto) {
-        Team team = teamRepository.findById(manageTeamReqDto.getTeamIdx()).orElse(null);
+        Team team = teamRepository.findById(manageTeamReqDto.getTeamIdx()).orElseThrow(()->new ApiException(ExceptionEnum.TEAM_NOT_FOUND));
         Account account = team.getAccount();
         Member member = account.getMember();
 
@@ -106,7 +106,7 @@ public class TeamServiceImpl implements TeamService {
     @Transactional
     @Override
     public void updateTeamNotice(UpdateTeamNoticeReq updateTeamNoticeReq) {
-        Team team = teamRepository.findById(updateTeamNoticeReq.getTeamIdx()).orElse(null);
+        Team team = teamRepository.findById(updateTeamNoticeReq.getTeamIdx()).orElseThrow(() -> new ApiException(ExceptionEnum.TEAM_NOT_FOUND));
 
         team.updateTeamNotice(updateTeamNoticeReq.getTeamNotice());
         teamRepository.save(team);
@@ -116,8 +116,8 @@ public class TeamServiceImpl implements TeamService {
     @Transactional
     @Override
     public String generateInviteLink(InviteTeamReqDto inviteTeamReqDto) {
-        Team team = teamRepository.findById(inviteTeamReqDto.getTeamIdx()).orElse(null);
-        Member member = memberRepository.findById(inviteTeamReqDto.getMemberIdx()).orElse(null);
+        Team team = teamRepository.findById(inviteTeamReqDto.getTeamIdx()).orElseThrow(() -> new ApiException(ExceptionEnum.TEAM_NOT_FOUND));
+        Member member = memberRepository.findById(inviteTeamReqDto.getMemberIdx()).orElseThrow(() -> new ApiException(ExceptionEnum.MEMBER_NOT_FOUND));
 
         String inviter = member.getMemberName();
         Long teamIdx = team.getTeamIdx();
@@ -130,7 +130,7 @@ public class TeamServiceImpl implements TeamService {
     @Transactional
     @Override
     public InviteTeamResDto inviteTeam(String inviter, Long teamNo) {
-        Team team = teamRepository.findById(teamNo).orElse(null);
+        Team team = teamRepository.findById(teamNo).orElseThrow(() -> new ApiException(ExceptionEnum.TEAM_NOT_FOUND));
 
         InviteTeamResDto inviteTeamResDto = InviteTeamResDto.builder()
                 .inviter(inviter)
