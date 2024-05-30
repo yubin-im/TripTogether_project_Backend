@@ -30,6 +30,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -95,12 +96,35 @@ public class FirebaseFCMService {
 
 
     private void firebaseCreateOption() throws IOException {
-        FileInputStream refreshToken = new FileInputStream(firebaseConfigPath);
-        FirebaseOptions options = FirebaseOptions.builder()
-                .setCredentials(GoogleCredentials.fromStream(refreshToken))
-                .build();
+        try {
+            InputStream refreshToken = new ClassPathResource(firebaseConfigPath).getInputStream();
 
-        FirebaseApp.initializeApp(options);
+            FirebaseApp firebaseApp = null;
+            List firebaseApps = FirebaseApp.getApps();
+
+            if(firebaseApps != null && !firebaseApps.isEmpty()){
+
+                for(Object app : firebaseApps){
+                    if (app instanceof FirebaseApp) {
+                        FirebaseApp apps = (FirebaseApp) app;
+                        if (apps.getName().equals(FirebaseApp.DEFAULT_APP_NAME)) {
+                            firebaseApp = (FirebaseApp) app;
+                        }
+                    }
+                }
+
+            }else{
+                FirebaseOptions options = FirebaseOptions.builder()
+                        .setCredentials(GoogleCredentials.fromStream(refreshToken)).build();
+
+                FirebaseApp.initializeApp(options);
+            }
+
+
+        } catch (IOException e) {
+            throw new RuntimeException(e.getMessage());
+        }
+
     }
     public BaseResponse notificationAlarm(String title, String body, DuesAlarmRequestDto duesAlarmRequestDto) throws IOException, FirebaseMessagingException {
 
@@ -118,7 +142,14 @@ public class FirebaseFCMService {
                 .addAllTokens(tokenList)
                 .build();
 
-        BatchResponse response = FirebaseMessaging.getInstance().sendEachForMulticast(message);
+        try {
+            BatchResponse response = FirebaseMessaging.getInstance().sendEachForMulticast(message);
+            System.out.println("FCMsendsuccess-"+response);
+        } catch (FirebaseMessagingException e) {
+            System.out.println("FCMsend-"+e.getMessage());
+        }
+
+        //BatchResponse response = FirebaseMessaging.getInstance().sendEachForMulticast(message);
 
         Team team =teamRepository.findById(duesAlarmRequestDto.getTeamIdx()).orElseThrow(()->new ApiException(ExceptionEnum.TEAM_NOT_FOUND));
 

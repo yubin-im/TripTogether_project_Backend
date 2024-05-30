@@ -27,6 +27,7 @@ public class ExchangeDto {
     public ExchangeRateResponseDto toDto() {
         return ExchangeRateResponseDto.builder()
                 .cur_unit(cur_unit)
+                .cur_name(cur_nm)
                 .deal_bas_r(deal_bas_r)
                 .build();
     }
@@ -35,6 +36,7 @@ public class ExchangeDto {
         return ExchangeRate.builder()
                 .rate(BigDecimalConverter.convertStringToBigDecimal(deal_bas_r))
                 .curCd(cur_unit)
+                .curName(cur_nm)
                 .build();
     }
 }

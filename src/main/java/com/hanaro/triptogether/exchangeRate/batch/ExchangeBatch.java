@@ -49,9 +49,7 @@ public class ExchangeBatch {
             List<ExchangeDto> exchangeDtoList = exchangeUtils.getExchangeDataAsDtoList();
 
             for(ExchangeDto exchangeDto: exchangeDtoList){
-                System.out.println("통화코드 :" + exchangeDto.getCur_unit());
-                System.out.println("환율 : "+ exchangeDto.getDeal_bas_r());
-                exchangeService.saveExchangeRate(exchangeDto.getCur_unit(),exchangeDto.getDeal_bas_r());
+                exchangeService.saveExchangeRate(exchangeDto.getCur_unit(),exchangeDto.getDeal_bas_r(),exchangeDto.getCur_nm());
 
             }
 

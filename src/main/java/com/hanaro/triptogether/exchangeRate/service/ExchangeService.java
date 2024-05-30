@@ -47,7 +47,7 @@ public class ExchangeService {
     }
 
     @Transactional
-    public void saveExchangeRate(String curCode, String curRate) {
+    public void saveExchangeRate(String curCode, String curRate,String curName) {
         ExchangeRate existingExchangeRate = exchangeRateRepository.findExchangeRateByCurCd(curCode);
 
         if (existingExchangeRate != null) {
@@ -56,7 +56,7 @@ public class ExchangeService {
 
         }else {
 
-            exchangeRateRepository.save(ExchangeRate.builder().rate(BigDecimalConverter.convertStringToBigDecimal(curRate)).curCd(curCode).build());
+            exchangeRateRepository.save(ExchangeRate.builder().rate(BigDecimalConverter.convertStringToBigDecimal(curRate)).curCd(curCode).curName(curName).build());
         }
     }
 
