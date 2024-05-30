@@ -43,7 +43,8 @@ public class ExchangeService {
         List<ExchangeDto> exchangeDtoList = exchangeUtils.getExchangeDataAsDtoList();
         List<ExchangeRateResponse> exchangeRateResponseDtos = new ArrayList<>();
         for(ExchangeDto exchangeDto: exchangeDtoList){
-            exchangeRateResponseDtos.add(exchangeDto.toDto());
+            ExchangeRate exchangeRate = exchangeRateRepository.findExchangeRateByCurCd(exchangeDto.getCur_unit());
+            exchangeRateResponseDtos.add(exchangeDto.toDto(exchangeRate.getCurIcon()));
 
         }
         return ExchangeRateInfoResponseDto.builder().exchangeRateTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"))).exchangeRates(exchangeRateResponseDtos).build();

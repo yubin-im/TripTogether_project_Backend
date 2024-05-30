@@ -25,10 +25,11 @@ public class ExchangeDto {
     private String kftc_deal_bas_r; // 서울외국환중개장부가격
 
 
-    public ExchangeRateResponse toDto() {
+    public ExchangeRateResponse toDto(String cur_icon) {
         return ExchangeRateResponse.builder()
                 .cur_unit(cur_unit)
                 .cur_name(cur_nm)
+                .cur_icon(cur_icon)
                 .deal_bas_r(deal_bas_r)
                 .build();
     }
