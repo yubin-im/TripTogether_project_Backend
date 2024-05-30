@@ -14,7 +14,6 @@ public class WebConfig implements WebMvcConfigurer {
                 .addMapping("/**")
                 .allowedHeaders("*")
                 .allowedMethods("*")
-                .allowedOrigins("*")
-                .allowCredentials(true);
+                .allowedOrigins("*");
     }
 }
