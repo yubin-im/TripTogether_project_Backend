@@ -19,6 +19,6 @@ public class LoginUserAuditorAware implements AuditorAware<Long> {
     @Override
     public Optional<Long> getCurrentAuditor() {
         Member member = (Member)httpSession.getAttribute("loginUserIdx");
-        return Optional.ofNullable(member != null? member.getMemberIdx():null);
+        return Optional.ofNullable(1L);
     }
 }

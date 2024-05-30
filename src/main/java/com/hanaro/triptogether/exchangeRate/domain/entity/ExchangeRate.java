@@ -24,6 +24,12 @@ public class ExchangeRate {
     @Column(nullable = false, length = 10)
     private String curCd;
 
+    @Column(nullable = false, length = 10)
+    private String curName;
+
+    @Column(nullable = false, length = 10)
+    private String curIcon;
+
     @Column(nullable = false, precision = 20, scale = 2)
     private BigDecimal rate;
 

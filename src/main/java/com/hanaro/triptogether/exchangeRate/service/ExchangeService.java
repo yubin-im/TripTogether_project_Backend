@@ -9,7 +9,8 @@ import com.hanaro.triptogether.exchangeRate.domain.repository.ExchangeRateAlarmR
 import com.hanaro.triptogether.exchangeRate.domain.repository.ExchangeRateRepository;
 import com.hanaro.triptogether.exchangeRate.dto.ExchangeDto;
 import com.hanaro.triptogether.exchangeRate.dto.request.ExchangeRateAlarmRequestDto;
-import com.hanaro.triptogether.exchangeRate.dto.request.ExchangeRateResponseDto;
+import com.hanaro.triptogether.exchangeRate.dto.request.ExchangeRateInfoResponseDto;
+import com.hanaro.triptogether.exchangeRate.dto.request.ExchangeRateResponse;
 import com.hanaro.triptogether.exchangeRate.dto.request.FcmSendDto;
 import com.hanaro.triptogether.exchangeRate.exception.EntityNotFoundException;
 import com.hanaro.triptogether.exchangeRate.utils.ExchangeUtils;
@@ -21,6 +22,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,19 +38,20 @@ public class ExchangeService {
     private final ExchangeUtils exchangeUtils;
     private FirebaseFCMService firebaseFCMService;
 
-    public List<ExchangeRateResponseDto> getExchangeRate(){
+    public ExchangeRateInfoResponseDto getExchangeRate(){
 
         List<ExchangeDto> exchangeDtoList = exchangeUtils.getExchangeDataAsDtoList();
-        List<ExchangeRateResponseDto> exchangeRateResponseDtos = new ArrayList<>();
+        List<ExchangeRateResponse> exchangeRateResponseDtos = new ArrayList<>();
         for(ExchangeDto exchangeDto: exchangeDtoList){
-            exchangeRateResponseDtos.add(exchangeDto.toDto());
+            ExchangeRate exchangeRate = exchangeRateRepository.findExchangeRateByCurCd(exchangeDto.getCur_unit());
+            exchangeRateResponseDtos.add(exchangeDto.toDto(exchangeRate.getCurIcon()));
 
         }
-        return  exchangeRateResponseDtos;
+        return ExchangeRateInfoResponseDto.builder().exchangeRateTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"))).exchangeRates(exchangeRateResponseDtos).build();
     }
 
     @Transactional
-    public void saveExchangeRate(String curCode, String curRate) {
+    public void saveExchangeRate(String curCode, String curRate,String curName) {
         ExchangeRate existingExchangeRate = exchangeRateRepository.findExchangeRateByCurCd(curCode);
 
         if (existingExchangeRate != null) {
@@ -56,7 +60,7 @@ public class ExchangeService {
 
         }else {
 
-            exchangeRateRepository.save(ExchangeRate.builder().rate(BigDecimalConverter.convertStringToBigDecimal(curRate)).curCd(curCode).build());
+            exchangeRateRepository.save(ExchangeRate.builder().rate(BigDecimalConverter.convertStringToBigDecimal(curRate)).curCd(curCode).curName(curName).build());
         }
     }
 
