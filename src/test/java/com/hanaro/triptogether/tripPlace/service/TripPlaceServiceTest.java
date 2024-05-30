@@ -30,6 +30,7 @@ import org.mockito.*;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -118,7 +119,7 @@ class TripPlaceServiceTest {
                 .tripContent("tripContent")
                 .tripGoalAmount(BigDecimal.valueOf(100))
                 .tripDay(3)
-                .tripStartDay(dateFormat.parse("2025-01-01"))
+                .tripStartDay(LocalDate.of(2025, 1, 1))
                 .createdAt(LocalDateTime.now())
                 .createdBy(member1)
                 .build();
@@ -149,15 +150,15 @@ class TripPlaceServiceTest {
     void addPlace_TripNotFound() {
         // given
         TripPlaceAddReqDto tripPlaceAddReqDto = TripPlaceAddReqDto.builder()
-                .trip_idx(1L)
-                .member_id("member1")
-                .trip_date(1)
-                .place_idx(1L)
-                .place_amount(BigDecimal.valueOf(100))
-                .place_memo("Memo")
+                .tripIdx(1L)
+                .memberIdx(1L)
+                .tripDate(1)
+                .placeIdx(1L)
+                .placeAmount(BigDecimal.valueOf(100))
+                .placeMemo("Memo")
                 .build();
 
-        given(tripService.findByTripIdx(tripPlaceAddReqDto.getTrip_idx())).willThrow(new ApiException(ExceptionEnum.TRIP_NOT_FOUND));
+        given(tripService.findByTripIdx(tripPlaceAddReqDto.getTripIdx())).willThrow(new ApiException(ExceptionEnum.TRIP_NOT_FOUND));
 
         ApiException exception = assertThrows(ApiException.class, () -> tripPlaceService.addPlace(tripPlaceAddReqDto));
 
@@ -169,17 +170,17 @@ class TripPlaceServiceTest {
     void addPlace_InvalidTeamMember() {
         // given
         TripPlaceAddReqDto tripPlaceAddReqDto = TripPlaceAddReqDto.builder()
-                .trip_idx(1L)
-                .member_id("member1")
-                .trip_date(1)
-                .place_idx(1L)
-                .place_amount(BigDecimal.valueOf(100))
-                .place_memo("Memo")
+                .tripIdx(1L)
+                .memberIdx(1L)
+                .tripDate(1)
+                .placeIdx(1L)
+                .placeAmount(BigDecimal.valueOf(100))
+                .placeMemo("Memo")
                 .build();
 
-        given(tripService.findByTripIdx(tripPlaceAddReqDto.getTrip_idx())).willReturn(trip);
+        given(tripService.findByTripIdx(tripPlaceAddReqDto.getTripIdx())).willReturn(trip);
         willThrow(new ApiException(ExceptionEnum.INVALID_TEAM_MEMBER))
-                .given(teamMemberService).findTeamMemberByMemberId(anyString());
+                .given(teamMemberService).findTeamMemberByMemberIdx(anyLong());
 
         // when
         ApiException exception = assertThrows(ApiException.class, () -> tripPlaceService.addPlace(tripPlaceAddReqDto));
@@ -193,15 +194,15 @@ class TripPlaceServiceTest {
     void addPlace_InvalidTripDate() {
         // given
         TripPlaceAddReqDto tripPlaceAddReqDto = TripPlaceAddReqDto.builder()
-                .trip_idx(1L)
-                .member_id("member1")
-                .trip_date(4) // trip_date가 tripDay보다 큼
-                .place_idx(1L)
-                .place_amount(BigDecimal.valueOf(100))
-                .place_memo("Memo")
+                .tripIdx(1L)
+                .memberIdx(1L)
+                .tripDate(4) // tripDate가 tripDay보다 큼
+                .placeIdx(1L)
+                .placeAmount(BigDecimal.valueOf(100))
+                .placeMemo("Memo")
                 .build();
 
-        given(tripService.findByTripIdx(tripPlaceAddReqDto.getTrip_idx())).willReturn(trip);
+        given(tripService.findByTripIdx(tripPlaceAddReqDto.getTripIdx())).willReturn(trip);
 
         // when
         ApiException exception = assertThrows(ApiException.class, () -> tripPlaceService.addPlace(tripPlaceAddReqDto));
@@ -215,16 +216,16 @@ class TripPlaceServiceTest {
     void addPlace_PlaceNotFound() {
         // given
         TripPlaceAddReqDto tripPlaceAddReqDto = TripPlaceAddReqDto.builder()
-                .trip_idx(1L)
-                .member_id("member1")
-                .trip_date(1)
-                .place_idx(1L)
-                .place_amount(BigDecimal.valueOf(100))
-                .place_memo("Memo")
+                .tripIdx(1L)
+                .memberIdx(1L)
+                .tripDate(1)
+                .placeIdx(1L)
+                .placeAmount(BigDecimal.valueOf(100))
+                .placeMemo("Memo")
                 .build();
 
-        given(tripService.findByTripIdx(tripPlaceAddReqDto.getTrip_idx())).willReturn(trip);
-        given(placeService.findByPlaceIdx(tripPlaceAddReqDto.getPlace_idx()))
+        given(tripService.findByTripIdx(tripPlaceAddReqDto.getTripIdx())).willReturn(trip);
+        given(placeService.findByPlaceIdx(tripPlaceAddReqDto.getPlaceIdx()))
                 .willThrow(new ApiException(ExceptionEnum.PLACE_NOT_FOUND));
 
         // when
@@ -239,17 +240,17 @@ class TripPlaceServiceTest {
     void addPlace_MemberNotFound() {
         // given
         TripPlaceAddReqDto tripPlaceAddReqDto = TripPlaceAddReqDto.builder()
-                .trip_idx(1L)
-                .member_id("member1")
-                .trip_date(1)
-                .place_idx(1L)
-                .place_amount(BigDecimal.valueOf(100))
-                .place_memo("Memo")
+                .tripIdx(1L)
+                .memberIdx(1L)
+                .tripDate(1)
+                .placeIdx(1L)
+                .placeAmount(BigDecimal.valueOf(100))
+                .placeMemo("Memo")
                 .build();
 
-        given(tripService.findByTripIdx(tripPlaceAddReqDto.getTrip_idx())).willReturn(trip);
-        given(placeService.findByPlaceIdx(tripPlaceAddReqDto.getPlace_idx())).willReturn(place);
-        given(memberService.findByMemberId(tripPlaceAddReqDto.getMember_id()))
+        given(tripService.findByTripIdx(tripPlaceAddReqDto.getTripIdx())).willReturn(trip);
+        given(placeService.findByPlaceIdx(tripPlaceAddReqDto.getPlaceIdx())).willReturn(place);
+        given(memberService.findByMemberIdx(tripPlaceAddReqDto.getMemberIdx()))
                 .willThrow(new ApiException(ExceptionEnum.MEMBER_NOT_FOUND));
 
         // when
@@ -264,27 +265,27 @@ class TripPlaceServiceTest {
     void addPlace_Success() {
         // given
         TripPlaceAddReqDto tripPlaceAddReqDto = TripPlaceAddReqDto.builder()
-                .trip_idx(1L)
-                .member_id("member1")
-                .trip_date(1)
-                .place_idx(1L)
-                .place_amount(BigDecimal.valueOf(100))
-                .place_memo("Memo")
+                .tripIdx(1L)
+                .memberIdx(1L)
+                .tripDate(1)
+                .placeIdx(1L)
+                .placeAmount(BigDecimal.valueOf(100))
+                .placeMemo("Memo")
                 .build();
 
-        given(tripService.findByTripIdx(tripPlaceAddReqDto.getTrip_idx())).willReturn(trip);
-        given(placeService.findByPlaceIdx(tripPlaceAddReqDto.getPlace_idx())).willReturn(place);
-        given(memberService.findByMemberId(tripPlaceAddReqDto.getMember_id())).willReturn(member1);
-        given(tripPlaceRepository.countByTripId(tripPlaceAddReqDto.getTrip_idx(), tripPlaceAddReqDto.getTrip_date()))
+        given(tripService.findByTripIdx(tripPlaceAddReqDto.getTripIdx())).willReturn(trip);
+        given(placeService.findByPlaceIdx(tripPlaceAddReqDto.getPlaceIdx())).willReturn(place);
+        given(memberService.findByMemberIdx(tripPlaceAddReqDto.getMemberIdx())).willReturn(member1);
+        given(tripPlaceRepository.countByTripId(tripPlaceAddReqDto.getTripIdx(), tripPlaceAddReqDto.getTripDate()))
                 .willReturn(0);
 
         // when
         tripPlaceService.addPlace(tripPlaceAddReqDto);
 
         // then
-        then(tripService).should(times(1)).findByTripIdx(tripPlaceAddReqDto.getTrip_idx());
-        then(placeService).should(times(1)).findByPlaceIdx(tripPlaceAddReqDto.getPlace_idx());
-        then(memberService).should(times(1)).findByMemberId(tripPlaceAddReqDto.getMember_id());
+        then(tripService).should(times(1)).findByTripIdx(tripPlaceAddReqDto.getTripIdx());
+        then(placeService).should(times(1)).findByPlaceIdx(tripPlaceAddReqDto.getPlaceIdx());
+        then(memberService).should(times(1)).findByMemberIdx(tripPlaceAddReqDto.getMemberIdx());
         then(tripPlaceRepository).should(times(1)).save(any(TripPlace.class));
 
         ArgumentCaptor<TripPlace> tripPlaceCaptor = ArgumentCaptor.forClass(TripPlace.class);
@@ -292,11 +293,11 @@ class TripPlaceServiceTest {
         TripPlace capturedTripPlace = tripPlaceCaptor.getValue();
 
         assertEquals(trip, capturedTripPlace.getTrip());
-        assertEquals(tripPlaceAddReqDto.getTrip_date(), capturedTripPlace.getTripDate());
+        assertEquals(tripPlaceAddReqDto.getTripDate(), capturedTripPlace.getTripDate());
         assertEquals(1, capturedTripPlace.getPlaceOrder());
         assertEquals(place, capturedTripPlace.getPlace());
-        assertEquals(tripPlaceAddReqDto.getPlace_amount(), capturedTripPlace.getPlaceAmount());
-        assertEquals(tripPlaceAddReqDto.getPlace_memo(), capturedTripPlace.getPlaceMemo());
+        assertEquals(tripPlaceAddReqDto.getPlaceAmount(), capturedTripPlace.getPlaceAmount());
+        assertEquals(tripPlaceAddReqDto.getPlaceMemo(), capturedTripPlace.getPlaceMemo());
         assertEquals(member1, capturedTripPlace.getCreatedBy());
     }
 
@@ -316,16 +317,16 @@ class TripPlaceServiceTest {
         // given
         Long tripPlaceIdx = 1L; // 수정할 일정 idx
         TripPlaceUpdateReqDto dto = TripPlaceUpdateReqDto.builder()
-                .place_idx(2L)
-                .place_amount(BigDecimal.valueOf(100))
-                .place_memo("Memo")
-                .member_id("member2")
+                .placeIdx(2L)
+                .placeAmount(BigDecimal.valueOf(100))
+                .placeMemo("Memo")
+                .memberIdx(2L)
                 .build();
 
         TripPlace tripPlace = createMockTripPlace(tripPlaceIdx); // 가짜 TripPlace 객체 생성
 
         given(tripPlaceRepository.findById(tripPlaceIdx)).willReturn(Optional.of(tripPlace));
-        given(placeService.findByPlaceIdx(dto.getPlace_idx())).willReturn(
+        given(placeService.findByPlaceIdx(dto.getPlaceIdx())).willReturn(
                 PlaceEntity.builder()
                 .placeIdx(2L)
                 .city(city)
@@ -333,7 +334,7 @@ class TripPlaceServiceTest {
                 .createdAt(LocalDateTime.now())
                 .createdBy(member1)
                 .build());
-        given(memberService.findByMemberId(dto.getMember_id())).willReturn(member2);
+        given(memberService.findByMemberIdx(dto.getMemberIdx())).willReturn(member2);
 
         // when
         tripPlaceService.updatePlace(tripPlaceIdx, dto);
@@ -342,27 +343,27 @@ class TripPlaceServiceTest {
         // 수정된 값을 다시 DB에서 가져와서 확인
         TripPlace updatedTripPlace = tripPlaceRepository.findById(tripPlaceIdx).orElse(null);
         assertNotNull(updatedTripPlace);
-        assertEquals(dto.getPlace_idx(), updatedTripPlace.getPlace().toPlace().getPlaceIdx());
-        assertEquals(dto.getPlace_amount(), updatedTripPlace.getPlaceAmount());
-        assertEquals(dto.getPlace_memo(), updatedTripPlace.getPlaceMemo());
-        assertEquals(dto.getMember_id(), updatedTripPlace.getLastModifiedBy().getMemberId());
+        assertEquals(dto.getPlaceIdx(), updatedTripPlace.getPlace().toPlace().getPlaceIdx());
+        assertEquals(dto.getPlaceAmount(), updatedTripPlace.getPlaceAmount());
+        assertEquals(dto.getPlaceMemo(), updatedTripPlace.getPlaceMemo());
+        assertEquals(dto.getMemberIdx(), updatedTripPlace.getLastModifiedBy().getMemberIdx());
     }
 
     @Test
     void updatePlace_tripPlaceNotFound() {
         // given
-        Long trip_place_idx = 100L; // 없는 trip_place_idx
+        Long tripPlaceIdx = 100L; // 없는 tripPlaceIdx
         TripPlaceUpdateReqDto tripPlaceUpdateReqDto = TripPlaceUpdateReqDto.builder()
-                .place_idx(1L)
-                .place_amount(BigDecimal.valueOf(100))
-                .place_memo("Memo")
-                .member_id("member1")
+                .placeIdx(1L)
+                .placeAmount(BigDecimal.valueOf(100))
+                .placeMemo("Memo")
+                .memberIdx(1L)
                 .build();
 
-        given(tripPlaceRepository.findById(trip_place_idx)).willThrow(new ApiException(ExceptionEnum.TRIP_PLACE_NOT_FOUND));
+        given(tripPlaceRepository.findById(tripPlaceIdx)).willThrow(new ApiException(ExceptionEnum.TRIP_PLACE_NOT_FOUND));
 
         // when
-        ApiException exception = assertThrows(ApiException.class, () -> tripPlaceService.updatePlace(trip_place_idx, tripPlaceUpdateReqDto));
+        ApiException exception = assertThrows(ApiException.class, () -> tripPlaceService.updatePlace(tripPlaceIdx, tripPlaceUpdateReqDto));
 
         // then
         assertEquals(ExceptionEnum.TRIP_PLACE_NOT_FOUND.getMessage(), exception.getError().getMessage());
@@ -372,18 +373,18 @@ class TripPlaceServiceTest {
         // given
         Long tripPlaceIdx = 1L; // 수정할 일정 idx
         TripPlaceUpdateReqDto dto = TripPlaceUpdateReqDto.builder()
-                .place_idx(2L)
-                .place_amount(BigDecimal.valueOf(100))
-                .place_memo("Memo")
-                .member_id("nonMember")
+                .placeIdx(2L)
+                .placeAmount(BigDecimal.valueOf(100))
+                .placeMemo("Memo")
+                .memberIdx(1L)
                 .build();
 
         TripPlace tripPlace = createMockTripPlace(tripPlaceIdx); // 가짜 TripPlace 객체 생성
 
         given(tripPlaceRepository.findById(tripPlaceIdx)).willReturn(Optional.of(tripPlace));
-        given(memberService.findByMemberId(dto.getMember_id())).willReturn(member2); // `member2`가 팀의 멤버가 아님을 가정
+        given(memberService.findByMemberIdx(dto.getMemberIdx())).willReturn(member2); // `member2`가 팀의 멤버가 아님을 가정
 
-        doThrow(new ApiException(ExceptionEnum.INVALID_TEAM_MEMBER)).when(tripPlaceService).validateTeamMember(any(Team.class), eq(dto.getMember_id()));
+        doThrow(new ApiException(ExceptionEnum.INVALID_TEAM_MEMBER)).when(tripPlaceService).validateTeamMember(any(Team.class), eq(dto.getMemberIdx()));
 
         // when
         ApiException exception = assertThrows(ApiException.class, () -> tripPlaceService.updatePlace(tripPlaceIdx, dto));
@@ -397,17 +398,17 @@ class TripPlaceServiceTest {
         // given
         Long tripPlaceIdx = 1L; // 수정할 일정 idx
         TripPlaceUpdateReqDto dto = TripPlaceUpdateReqDto.builder()
-                .place_idx(2L)
-                .place_amount(BigDecimal.valueOf(100))
-                .place_memo("Memo")
-                .member_id("member2")
+                .placeIdx(2L)
+                .placeAmount(BigDecimal.valueOf(100))
+                .placeMemo("Memo")
+                .memberIdx(2L)
                 .build();
 
         TripPlace tripPlace = createMockTripPlace(tripPlaceIdx); // 가짜 TripPlace 객체 생성
 
         given(tripPlaceRepository.findById(tripPlaceIdx)).willReturn(Optional.of(tripPlace));
-        given(placeService.findByPlaceIdx(dto.getPlace_idx())).willThrow(new ApiException(ExceptionEnum.PLACE_NOT_FOUND));
-        given(memberService.findByMemberId(dto.getMember_id())).willReturn(member2);
+        given(placeService.findByPlaceIdx(dto.getPlaceIdx())).willThrow(new ApiException(ExceptionEnum.PLACE_NOT_FOUND));
+        given(memberService.findByMemberIdx(dto.getMemberIdx())).willReturn(member2);
 
         // when
         ApiException exception = assertThrows(ApiException.class, () -> tripPlaceService.updatePlace(tripPlaceIdx, dto));
@@ -421,16 +422,16 @@ class TripPlaceServiceTest {
         // given
         Long tripPlaceIdx = 1L; // 수정할 일정 idx
         TripPlaceUpdateReqDto dto = TripPlaceUpdateReqDto.builder()
-                .place_idx(2L)
-                .place_amount(BigDecimal.valueOf(100))
-                .place_memo("Memo")
-                .member_id("nonExistingMember")
+                .placeIdx(2L)
+                .placeAmount(BigDecimal.valueOf(100))
+                .placeMemo("Memo")
+                .memberIdx(10L)
                 .build();
 
         TripPlace tripPlace = createMockTripPlace(tripPlaceIdx); // 가짜 TripPlace 객체 생성
 
         given(tripPlaceRepository.findById(tripPlaceIdx)).willReturn(Optional.of(tripPlace));
-        given(placeService.findByPlaceIdx(dto.getPlace_idx())).willReturn(
+        given(placeService.findByPlaceIdx(dto.getPlaceIdx())).willReturn(
                 PlaceEntity.builder()
                         .placeIdx(2L)
                         .city(city)
@@ -438,7 +439,7 @@ class TripPlaceServiceTest {
                         .createdAt(LocalDateTime.now())
                         .createdBy(member1)
                         .build());
-        given(memberService.findByMemberId(dto.getMember_id())).willThrow(new ApiException(ExceptionEnum.INVALID_TEAM_MEMBER));
+        given(memberService.findByMemberIdx(dto.getMemberIdx())).willThrow(new ApiException(ExceptionEnum.INVALID_TEAM_MEMBER));
 
         // when
         ApiException exception = assertThrows(ApiException.class, () -> tripPlaceService.updatePlace(tripPlaceIdx, dto));
@@ -466,11 +467,11 @@ class TripPlaceServiceTest {
         Long tripPlaceIdx2 = 2L;
         int tripDate = 1;
 
-        TripPlaceOrderReqDto orderDto1 = TripPlaceOrderReqDto.builder().trip_place_idx(tripPlaceIdx1).build();
-        TripPlaceOrderReqDto orderDto2 = TripPlaceOrderReqDto.builder().trip_place_idx(tripPlaceIdx2).build();
+        TripPlaceOrderReqDto orderDto1 = TripPlaceOrderReqDto.builder().tripPlaceIdx(tripPlaceIdx1).build();
+        TripPlaceOrderReqDto orderDto2 = TripPlaceOrderReqDto.builder().tripPlaceIdx(tripPlaceIdx2).build();
         UpdateOrderReqDto updateOrderReqDto = UpdateOrderReqDto.builder()
-                .trip_date(tripDate)
-                .member_id("member1")
+                .tripDate(tripDate)
+                .memberIdx(1L)
                 .orders(List.of(orderDto1, orderDto2))
                 .build();
 
@@ -478,9 +479,9 @@ class TripPlaceServiceTest {
         TripPlace tripPlace2 = createMockTripPlace(tripPlaceIdx2, 2);
 
         given(tripService.findByTripIdx(tripIdx)).willReturn(trip);
-        willDoNothing().given(tripPlaceService).validateTeamMember(any(), anyString());
+        willDoNothing().given(tripPlaceService).validateTeamMember(any(),anyLong());
         willDoNothing().given(tripPlaceService).validateTripDate(any(), anyInt());
-        given(memberService.findByMemberId("member1")).willReturn(member1);
+        given(memberService.findByMemberIdx(1L)).willReturn(member1);
         given(tripPlaceRepository.countByTripId(tripIdx, tripDate)).willReturn(2);
         given(tripPlaceRepository.findById(tripPlaceIdx1)).willReturn(Optional.of(tripPlace1));
         given(tripPlaceRepository.findById(tripPlaceIdx2)).willReturn(Optional.of(tripPlace2));
@@ -490,9 +491,9 @@ class TripPlaceServiceTest {
 
         // then
         then(tripService).should().findByTripIdx(tripIdx);
-        then(tripPlaceService).should().validateTeamMember(any(), eq("member1"));
+        then(tripPlaceService).should().validateTeamMember(any(), eq(1L));
         then(tripPlaceService).should().validateTripDate(trip, tripDate);
-        then(memberService).should().findByMemberId("member1");
+        then(memberService).should().findByMemberIdx(1L);
         then(tripPlaceRepository).should().countByTripId(tripIdx, tripDate);
         then(tripPlaceRepository).should().findById(tripPlaceIdx1);
         then(tripPlaceRepository).should().findById(tripPlaceIdx2);
@@ -510,19 +511,19 @@ class TripPlaceServiceTest {
         Long tripPlaceIdx3 = 3L;
         int tripDate = 1;
 
-        TripPlaceOrderReqDto orderDto1 = TripPlaceOrderReqDto.builder().trip_place_idx(tripPlaceIdx1).build();
-        TripPlaceOrderReqDto orderDto2 = TripPlaceOrderReqDto.builder().trip_place_idx(tripPlaceIdx2).build();
-        TripPlaceOrderReqDto orderDto3 = TripPlaceOrderReqDto.builder().trip_place_idx(tripPlaceIdx3).build();
+        TripPlaceOrderReqDto orderDto1 = TripPlaceOrderReqDto.builder().tripPlaceIdx(tripPlaceIdx1).build();
+        TripPlaceOrderReqDto orderDto2 = TripPlaceOrderReqDto.builder().tripPlaceIdx(tripPlaceIdx2).build();
+        TripPlaceOrderReqDto orderDto3 = TripPlaceOrderReqDto.builder().tripPlaceIdx(tripPlaceIdx3).build();
         UpdateOrderReqDto updateOrderReqDto = UpdateOrderReqDto.builder()
-                .trip_date(tripDate)
-                .member_id("member1")
+                .tripDate(tripDate)
+                .memberIdx(1L)
                 .orders(List.of(orderDto1, orderDto2, orderDto3)) // 잘못된 길이
                 .build();
 
         given(tripService.findByTripIdx(tripIdx)).willReturn(trip);
-        willDoNothing().given(tripPlaceService).validateTeamMember(any(), anyString());
+        willDoNothing().given(tripPlaceService).validateTeamMember(any(), anyLong());
         willDoNothing().given(tripPlaceService).validateTripDate(any(), anyInt());
-        given(memberService.findByMemberId("member1")).willReturn(member1);
+        given(memberService.findByMemberIdx(1L)).willReturn(member1);
         given(tripPlaceRepository.countByTripId(tripIdx, tripDate)).willReturn(2);
 
         // when
@@ -539,17 +540,17 @@ class TripPlaceServiceTest {
         Long tripPlaceIdx1 = 1L;
         int tripDate = 1;
 
-        TripPlaceOrderReqDto orderDto1 = TripPlaceOrderReqDto.builder().trip_place_idx(tripPlaceIdx1).build();
+        TripPlaceOrderReqDto orderDto1 = TripPlaceOrderReqDto.builder().tripPlaceIdx(tripPlaceIdx1).build();
         UpdateOrderReqDto updateOrderReqDto = UpdateOrderReqDto.builder()
-                .trip_date(tripDate)
-                .member_id("member1")
+                .tripDate(tripDate)
+                .memberIdx(1L)
                 .orders(List.of(orderDto1, orderDto1)) // 중복된 트립 플레이스
                 .build();
 
         given(tripService.findByTripIdx(tripIdx)).willReturn(trip);
-        willDoNothing().given(tripPlaceService).validateTeamMember(any(), anyString());
+        willDoNothing().given(tripPlaceService).validateTeamMember(any(), anyLong());
         willDoNothing().given(tripPlaceService).validateTripDate(any(), anyInt());
-        given(memberService.findByMemberId("member1")).willReturn(member1);
+        given(memberService.findByMemberIdx(1L)).willReturn(member1);
         given(tripPlaceRepository.countByTripId(tripIdx, tripDate)).willReturn(2);
 
         // when
@@ -567,11 +568,11 @@ class TripPlaceServiceTest {
         Long tripPlaceIdx2 = 2L;
         int tripDate = 1;
 
-        TripPlaceOrderReqDto orderDto1 = TripPlaceOrderReqDto.builder().trip_place_idx(tripPlaceIdx1).build();
-        TripPlaceOrderReqDto orderDto2 = TripPlaceOrderReqDto.builder().trip_place_idx(tripPlaceIdx2).build();
+        TripPlaceOrderReqDto orderDto1 = TripPlaceOrderReqDto.builder().tripPlaceIdx(tripPlaceIdx1).build();
+        TripPlaceOrderReqDto orderDto2 = TripPlaceOrderReqDto.builder().tripPlaceIdx(tripPlaceIdx2).build();
         UpdateOrderReqDto updateOrderReqDto = UpdateOrderReqDto.builder()
-                .trip_date(tripDate)
-                .member_id("member1")
+                .tripDate(tripDate)
+                .memberIdx(1L)
                 .orders(List.of(orderDto1, orderDto2))
                 .build();
 
@@ -584,9 +585,9 @@ class TripPlaceServiceTest {
         given(trip.getTripIdx()).willReturn(999L);
 
         given(tripService.findByTripIdx(tripIdx)).willReturn(trip);
-        willDoNothing().given(tripPlaceService).validateTeamMember(any(), anyString());
+        willDoNothing().given(tripPlaceService).validateTeamMember(any(), anyLong());
         willDoNothing().given(tripPlaceService).validateTripDate(any(), anyInt());
-        given(memberService.findByMemberId("member1")).willReturn(member1);
+        given(memberService.findByMemberIdx(1L)).willReturn(member1);
         given(tripPlaceRepository.countByTripId(tripIdx, tripDate)).willReturn(2);
         given(tripPlaceRepository.findById(tripPlaceIdx1)).willReturn(Optional.of(tripPlace1));
         given(tripPlaceRepository.findById(tripPlaceIdx2)).willReturn(Optional.of(tripPlace2));
@@ -621,18 +622,18 @@ class TripPlaceServiceTest {
     @Test
     void getTripPlace_success() {
         // given
-        Long trip_idx = 1L;
+        Long tripIdx = 1L;
         TripPlace tripPlace1 = createMockTripPlace(1L);
         TripPlace tripPlace2 = createMockTripPlace(2L);
-        given(tripPlaceRepository.findAllByTrip_TripIdxOrderByTripDateAscPlaceOrderAsc(trip_idx)).willReturn(List.of(tripPlace1, tripPlace2));
+        given(tripPlaceRepository.findAllByTrip_TripIdxOrderByTripDateAscPlaceOrderAsc(tripIdx)).willReturn(List.of(tripPlace1, tripPlace2));
 
         // when
-        List<TripPlaceResDto> tripPlaces = tripPlaceService.getPlace(trip_idx);
+        List<TripPlaceResDto> tripPlaces = tripPlaceService.getPlace(tripIdx);
 
         //then
         assertEquals(2, tripPlaces.size());
-        assertEquals(tripPlace1.getTripPlaceIdx(), tripPlaces.get(0).getTrip_place_idx());
-        assertEquals(tripPlace2.getTripPlaceIdx(), tripPlaces.get(1).getTrip_place_idx());
+        assertEquals(tripPlace1.getTripPlaceIdx(), tripPlaces.get(0).getTripPlaceIdx());
+        assertEquals(tripPlace2.getTripPlaceIdx(), tripPlaces.get(1).getTripPlaceIdx());
 
     }
 

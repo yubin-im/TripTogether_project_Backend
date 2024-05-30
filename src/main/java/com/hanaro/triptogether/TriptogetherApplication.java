@@ -7,9 +7,9 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
-@EnableScheduling
+//@EnableScheduling
 @EnableJpaAuditing
-@EnableBatchProcessing
+//@EnableBatchProcessing
 public class TriptogetherApplication {
 
 	public static void main(String[] args) {

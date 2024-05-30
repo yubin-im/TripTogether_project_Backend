@@ -1,5 +1,6 @@
 package com.hanaro.triptogether.team.service;
 
+import com.hanaro.triptogether.team.domain.Team;
 import com.hanaro.triptogether.team.dto.request.*;
 import com.hanaro.triptogether.team.dto.response.DetailTeamResDto;
 import com.hanaro.triptogether.team.dto.response.InviteTeamResDto;
@@ -26,4 +27,7 @@ public interface TeamService {
 
     // 모임에 초대받은 화면
     InviteTeamResDto inviteTeam(String inviter, Long teamNo);
+
+    //모임 검색
+    Team findTeamByTeamIdx(Long teamIdx);
 }

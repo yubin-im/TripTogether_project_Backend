@@ -107,10 +107,7 @@ public class AccountServiceTests extends TriptogetherApplicationTests {
     @DisplayName("모임서비스 전체 조회 테스트")
     void testTeamServiceList() {
         // Given
-        when(memberRepository.findById(memberIdx)).thenReturn(Optional.of(member));
-        when(accountRepository.findAccountsByMember(any(Member.class))).thenReturn(Arrays.asList(account1, account2));
-        when(teamRepository.findTeamByAccount(account1)).thenReturn(team1);
-        when(teamRepository.findTeamByAccount(account2)).thenReturn(team2);
+        when(teamRepository.findTeamsByMemberIdx(memberIdx)).thenReturn(Arrays.asList(team1, team2));
 
         // When
         List<TeamServiceListResDto> result = accountService.teamServiceList(memberIdx);
@@ -119,16 +116,18 @@ public class AccountServiceTests extends TriptogetherApplicationTests {
         assertEquals(2, result.size());
 
         TeamServiceListResDto dto1 = result.get(0);
-        assertEquals(account1.getAccIdx(), dto1.getAccIdx());
-        assertEquals(account1.getAccNumber(), dto1.getAccNumber());
-        assertEquals(account1.getAccBalance(), dto1.getAccBalance());
+        assertEquals(team1.getAccount().getAccIdx(), dto1.getAccIdx());
+        assertEquals(team1.getAccount().getAccNumber(), dto1.getAccNumber());
+        assertEquals(team1.getAccount().getAccBalance(), dto1.getAccBalance());
         assertEquals(team1.getTeamName(), dto1.getTeamName());
+        assertEquals(team1.getTeamIdx(), dto1.getTeamIdx());
 
         TeamServiceListResDto dto2 = result.get(1);
-        assertEquals(account2.getAccIdx(), dto2.getAccIdx());
-        assertEquals(account2.getAccNumber(), dto2.getAccNumber());
-        assertEquals(account2.getAccBalance(), dto2.getAccBalance());
+        assertEquals(team2.getAccount().getAccIdx(), dto2.getAccIdx());
+        assertEquals(team2.getAccount().getAccNumber(), dto2.getAccNumber());
+        assertEquals(team2.getAccount().getAccBalance(), dto2.getAccBalance());
         assertEquals(team2.getTeamName(), dto2.getTeamName());
+        assertEquals(team2.getTeamIdx(), dto2.getTeamIdx());
     }
 
     @Test

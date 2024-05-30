@@ -6,8 +6,11 @@ import com.hanaro.triptogether.account.dto.request.UpdateAccBalanceReq;
 import com.hanaro.triptogether.account.dto.response.AccountsResDto;
 import com.hanaro.triptogether.account.dto.response.TeamServiceListResDto;
 import com.hanaro.triptogether.account.service.AccountService;
+import com.hanaro.triptogether.exception.ApiException;
+import com.hanaro.triptogether.exception.ExceptionEnum;
 import com.hanaro.triptogether.member.domain.Member;
 import com.hanaro.triptogether.member.domain.MemberRepository;
+import com.hanaro.triptogether.team.domain.Team;
 import com.hanaro.triptogether.team.domain.TeamRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -30,15 +33,15 @@ public class AccountServiceImpl implements AccountService {
     public List<TeamServiceListResDto> teamServiceList(Long memberIdx) {
         List<TeamServiceListResDto> teamServiceListResDtos = new ArrayList<>();
 
-        Member member = memberRepository.findById(memberIdx).orElse(null);
-        List<Account> accounts = accountRepository.findAccountsByMember(member);
+        List<Team> teams = teamRepository.findTeamsByMemberIdx(memberIdx);
 
-        for(int i = 0; i < accounts.size(); i++) {
+        for(int i = 0; i < teams.size(); i++) {
             TeamServiceListResDto teamServiceListResDto = TeamServiceListResDto.builder()
-                    .accIdx(accounts.get(i).getAccIdx())
-                    .accNumber(accounts.get(i).getAccNumber())
-                    .accBalance(accounts.get(i).getAccBalance())
-                    .teamName(teamRepository.findTeamByAccount(accounts.get(i)).getTeamName())
+                    .accIdx(teams.get(i).getAccount().getAccIdx())
+                    .accNumber(teams.get(i).getAccount().getAccNumber())
+                    .accBalance(teams.get(i).getAccount().getAccBalance())
+                    .teamName(teams.get(i).getTeamName())
+                    .teamIdx(teams.get(i).getTeamIdx())
                     .build();
 
             teamServiceListResDtos.add(teamServiceListResDto);
@@ -53,7 +56,7 @@ public class AccountServiceImpl implements AccountService {
     public List<AccountsResDto> accounts(Long memberIdx) {
         List<AccountsResDto> accountsResDtos = new ArrayList<>();
 
-        Member member = memberRepository.findById(memberIdx).orElse(null);
+        Member member = memberRepository.findById(memberIdx).orElseThrow(() -> new ApiException(ExceptionEnum.MEMBER_NOT_FOUND));
         List<Account> accounts = accountRepository.findAccountsByMember(member);
 
         for(int i = 0; i < accounts.size(); i++) {
@@ -73,7 +76,7 @@ public class AccountServiceImpl implements AccountService {
     @Transactional
     @Override
     public void depositAcc(UpdateAccBalanceReq updateAccBalanceReq) {
-        Account account = accountRepository.findById(updateAccBalanceReq.getAccIdx()).orElse(null);
+        Account account = accountRepository.findById(updateAccBalanceReq.getAccIdx()).orElseThrow(() -> new ApiException(ExceptionEnum.ACCOUNT_NOT_FOUND));
 
         account.updateAccBalance(account.getAccBalance().add(updateAccBalanceReq.getAmount()));
         account.updateModifiedAt(LocalDateTime.now());
@@ -84,7 +87,7 @@ public class AccountServiceImpl implements AccountService {
     @Transactional
     @Override
     public void withdrawAcc(UpdateAccBalanceReq updateAccBalanceReq) {
-        Account account = accountRepository.findById(updateAccBalanceReq.getAccIdx()).orElse(null);
+        Account account = accountRepository.findById(updateAccBalanceReq.getAccIdx()).orElseThrow(() -> new ApiException(ExceptionEnum.ACCOUNT_NOT_FOUND));
 
         account.updateAccBalance(account.getAccBalance().subtract(updateAccBalanceReq.getAmount()));
         account.updateModifiedAt(LocalDateTime.now());

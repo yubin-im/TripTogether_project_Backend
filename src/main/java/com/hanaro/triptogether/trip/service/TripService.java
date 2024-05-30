@@ -37,6 +37,7 @@ public class TripService {
     private final CityRepository cityRepository;
     private final MemberRepository memberRepository;
     private final TripCityService tripCityService;
+    private final TeamServiceImpl teamService;
 
     public TripResDto getTrip(Long tripIdx) {
         Trip trip = findByTripIdx(tripIdx);
@@ -48,6 +49,7 @@ public class TripService {
     }
 
     public List<TripResDto> getTripsByTeam(Long teamIdx) {
+        teamService.findTeamByTeamIdx(teamIdx); // 팀 확인
         List<Trip> trips = tripRepository.findAllByTeam_TeamIdx(teamIdx);
         List<TripResDto> dtos = new ArrayList<>();
         for (Trip trip : trips) {

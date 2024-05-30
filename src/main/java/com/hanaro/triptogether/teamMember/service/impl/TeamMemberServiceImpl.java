@@ -33,7 +33,7 @@ public class TeamMemberServiceImpl implements TeamMemberService {
     public List<TeamMembersResDto> teamMembers(Long teamIdx) {
         List<TeamMembersResDto> teamMembersResDtos = new ArrayList<>();
 
-        Team team = teamRepository.findById(teamIdx).orElse(null);
+        Team team = teamRepository.findById(teamIdx).orElseThrow(() -> new ApiException(ExceptionEnum.TEAM_NOT_FOUND));
         List<TeamMember> teamMembers = teamMemberRepository.findTeamMembersByTeam(team);
 
         for(int i = 0; i < teamMembers.size(); i++) {
@@ -54,7 +54,7 @@ public class TeamMemberServiceImpl implements TeamMemberService {
     @Transactional
     @Override
     public void changeOwner(ChangeOwnerReqDto changeOwnerReqDto) {
-        Team team = teamRepository.findById(changeOwnerReqDto.getTeamIdx()).orElse(null);
+        Team team = teamRepository.findById(changeOwnerReqDto.getTeamIdx()).orElseThrow(() -> new ApiException(ExceptionEnum.TEAM_NOT_FOUND));
         List<TeamMember> teamMembers = teamMemberRepository.findTeamMembersByTeam(team);
 
         for(int i = 0; i < teamMembers.size(); i++) {
@@ -78,7 +78,7 @@ public class TeamMemberServiceImpl implements TeamMemberService {
     @Transactional
     @Override
     public void acceptTeamMember(AcceptTeamMemberReqDto acceptTeamMemberReqDto) {
-        Team team = teamRepository.findById(acceptTeamMemberReqDto.getTeamIdx()).orElse(null);
+        Team team = teamRepository.findById(acceptTeamMemberReqDto.getTeamIdx()).orElseThrow(() -> new ApiException(ExceptionEnum.TEAM_NOT_FOUND));
         List<TeamMember> teamMembers = teamMemberRepository.findTeamMembersByTeam(team);
 
         for(int i = 0; i < teamMembers.size(); i++) {
@@ -94,7 +94,7 @@ public class TeamMemberServiceImpl implements TeamMemberService {
     @Transactional
     @Override
     public void acceptTeamMembers(AcceptTeamMembersReqDto acceptTeamMembersReqDto) {
-        Team team = teamRepository.findById(acceptTeamMembersReqDto.getTeamIdx()).orElse(null);
+        Team team = teamRepository.findById(acceptTeamMembersReqDto.getTeamIdx()).orElseThrow(() -> new ApiException(ExceptionEnum.TEAM_NOT_FOUND));
         List<TeamMember> teamMembers = teamMemberRepository.findTeamMembersByTeam(team);
 
         for(int i = 0; i < teamMembers.size(); i++) {
@@ -111,7 +111,7 @@ public class TeamMemberServiceImpl implements TeamMemberService {
     @Transactional
     @Override
     public void rejectTeamMember(AcceptTeamMemberReqDto acceptTeamMemberReqDto) {
-        Team team = teamRepository.findById(acceptTeamMemberReqDto.getTeamIdx()).orElse(null);
+        Team team = teamRepository.findById(acceptTeamMemberReqDto.getTeamIdx()).orElseThrow(() -> new ApiException(ExceptionEnum.TEAM_NOT_FOUND));
         List<TeamMember> teamMembers = teamMemberRepository.findTeamMembersByTeam(team);
 
         for(int i = 0; i < teamMembers.size(); i++) {
@@ -126,7 +126,7 @@ public class TeamMemberServiceImpl implements TeamMemberService {
     @Transactional
     @Override
     public void rejectTeamMembers(RejectTeamMembersReqDto rejectTeamMembersReqDto) {
-        Team team = teamRepository.findById(rejectTeamMembersReqDto.getTeamIdx()).orElse(null);
+        Team team = teamRepository.findById(rejectTeamMembersReqDto.getTeamIdx()).orElseThrow(() -> new ApiException(ExceptionEnum.TEAM_NOT_FOUND));
         List<TeamMember> teamMembers = teamMemberRepository.findTeamMembersByTeam(team);
 
         for(int i = 0; i < teamMembers.size(); i++) {
@@ -141,7 +141,7 @@ public class TeamMemberServiceImpl implements TeamMemberService {
     @Transactional
     @Override
     public void exportTeamMembers(RejectTeamMembersReqDto rejectTeamMembersReqDto) {
-        Team team = teamRepository.findById(rejectTeamMembersReqDto.getTeamIdx()).orElse(null);
+        Team team = teamRepository.findById(rejectTeamMembersReqDto.getTeamIdx()).orElseThrow(() -> new ApiException(ExceptionEnum.TEAM_NOT_FOUND));
         List<TeamMember> teamMembers = teamMemberRepository.findTeamMembersByTeam(team);
 
         for(int i = 0; i < teamMembers.size(); i++) {
@@ -176,16 +176,16 @@ public class TeamMemberServiceImpl implements TeamMemberService {
 
     //내 모임 검색
     @Override
-    public List<TeamMember> findTeamMemberByMemberId(String member_id) {
-        return teamMemberRepository.findTeamMemberByMember_MemberId(member_id);
+    public List<TeamMember> findTeamMemberByMemberIdx(Long member_idx) {
+        return teamMemberRepository.findTeamMemberByMember_MemberIdx(member_idx);
     }
 
     // 모임 가입
     @Transactional
     @Override
     public void joinTeamMember(JoinTeamMemberReq joinTeamMemberReq) {
-        Member member = memberRepository.findById(joinTeamMemberReq.getMemberIdx()).orElse(null);
-        Team team = teamRepository.findById(joinTeamMemberReq.getTeamIdx()).orElse(null);
+        Member member = memberRepository.findById(joinTeamMemberReq.getMemberIdx()).orElseThrow(() -> new ApiException(ExceptionEnum.MEMBER_NOT_FOUND));
+        Team team = teamRepository.findById(joinTeamMemberReq.getTeamIdx()).orElseThrow(() -> new ApiException(ExceptionEnum.TEAM_NOT_FOUND));
 
         TeamMember teamMember = TeamMember.builder()
                 .team(team)

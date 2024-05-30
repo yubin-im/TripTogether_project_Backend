@@ -8,20 +8,20 @@ import java.math.BigDecimal;
 
 @Getter
 public class TripPlaceResDto {
-    private Long trip_place_idx;
-    private Integer trip_date;
-    private Integer place_order;
-    private Long place_idx;
-    private BigDecimal place_amount;
-    private String place_memo;
+    private Long tripPlaceIdx;
+    private Integer tripDate;
+    private Integer placeOrder;
+    private Long placeIdx;
+    private BigDecimal placeAmount;
+    private String placeMemo;
 
     @Builder
     public TripPlaceResDto(TripPlace tripPlace) {
-        this.trip_place_idx = tripPlace.getTripPlaceIdx();
-        this.trip_date = tripPlace.getTripDate();
-        this.place_order = tripPlace.getPlaceOrder();
-        this.place_idx = tripPlace.getPlace().toPlace().getPlaceIdx();
-        this.place_amount = tripPlace.getPlaceAmount();
-        this.place_memo = tripPlace.getPlaceMemo();
+        this.tripPlaceIdx = tripPlace.getTripPlaceIdx();
+        this.tripDate = tripPlace.getTripDate();
+        this.placeOrder = tripPlace.getPlaceOrder();
+        this.placeIdx = tripPlace.getPlace().toPlace().getPlaceIdx();
+        this.placeAmount = tripPlace.getPlaceAmount();
+        this.placeMemo = tripPlace.getPlaceMemo();
     }
 }
