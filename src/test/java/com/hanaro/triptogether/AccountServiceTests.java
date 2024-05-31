@@ -6,10 +6,13 @@ import com.hanaro.triptogether.account.dto.response.AccountsResDto;
 import com.hanaro.triptogether.account.dto.response.TeamServiceListResDto;
 import com.hanaro.triptogether.account.service.impl.AccountServiceImpl;
 import com.hanaro.triptogether.enumeration.PreferenceType;
+import com.hanaro.triptogether.enumeration.TeamMemberState;
 import com.hanaro.triptogether.member.domain.Member;
 import com.hanaro.triptogether.member.domain.MemberRepository;
 import com.hanaro.triptogether.team.domain.Team;
 import com.hanaro.triptogether.team.domain.TeamRepository;
+import com.hanaro.triptogether.teamMember.domain.TeamMember;
+import com.hanaro.triptogether.teamMember.domain.TeamMemberRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -29,6 +32,9 @@ import static org.mockito.Mockito.when;
 public class AccountServiceTests extends TriptogetherApplicationTests {
     @Mock
     private AccountRepository accountRepository;
+
+    @Mock
+    private TeamMemberRepository teamMemberRepository;
 
     @Mock
     private MemberRepository memberRepository;
@@ -51,6 +57,8 @@ public class AccountServiceTests extends TriptogetherApplicationTests {
     private Team team2;
     private Long teamIdx1 = 1L;
     private Long teamIdx2 = 2L;
+    private TeamMember teamMember1;
+    private TeamMember teamMember2;
 
     @BeforeEach
     void setUp() {
@@ -101,6 +109,18 @@ public class AccountServiceTests extends TriptogetherApplicationTests {
                 .teamNotice("Team Notice2")
                 .createdAt(LocalDateTime.now())
                 .build();
+        teamMember1 = TeamMember.builder()
+                .teamMemberIdx(1L)
+                .member(member)
+                .team(team1)
+                .teamMemberState(TeamMemberState.총무)
+                .build();
+        teamMember2= TeamMember.builder()
+                .teamMemberIdx(2L)
+                .member(member)
+                .team(team2)
+                .teamMemberState(TeamMemberState.모임원)
+                .build();
     }
 
     @Test
@@ -108,6 +128,8 @@ public class AccountServiceTests extends TriptogetherApplicationTests {
     void testTeamServiceList() {
         // Given
         when(teamRepository.findTeamsByMemberIdx(memberIdx)).thenReturn(Arrays.asList(team1, team2));
+        when(teamMemberRepository.findTeamMemberByMember_MemberIdxAndTeam_TeamIdx(memberIdx, team1.getTeamIdx())).thenReturn(Optional.of(teamMember1));
+        when(teamMemberRepository.findTeamMemberByMember_MemberIdxAndTeam_TeamIdx(memberIdx, team2.getTeamIdx())).thenReturn(Optional.of(teamMember2));
 
         // When
         List<TeamServiceListResDto> result = accountService.teamServiceList(memberIdx);
