@@ -1,6 +1,8 @@
 package com.hanaro.triptogether.trip.service;
 
 import com.hanaro.triptogether.account.domain.Account;
+import com.hanaro.triptogether.city.domain.CityEntity;
+import com.hanaro.triptogether.country.domain.CountryEntity;
 import com.hanaro.triptogether.enumeration.PreferenceType;
 import com.hanaro.triptogether.enumeration.TeamType;
 import com.hanaro.triptogether.exception.ApiException;
@@ -11,6 +13,7 @@ import com.hanaro.triptogether.team.service.impl.TeamServiceImpl;
 import com.hanaro.triptogether.trip.domain.Trip;
 import com.hanaro.triptogether.trip.domain.TripRepository;
 import com.hanaro.triptogether.trip.dto.response.TripResDto;
+import com.hanaro.triptogether.tripCity.domain.TripCity;
 import com.hanaro.triptogether.tripCity.service.TripCityService;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -54,6 +57,9 @@ class TripServiceTest {
     private static Trip trip2;
     private static Team team;
     private static Member member1;
+    private static CountryEntity country;
+    private static CityEntity city;
+    private static TripCity tripCity;
 
     @BeforeAll
     static void init() {
@@ -77,7 +83,13 @@ class TripServiceTest {
                 .teamNotice("지각비 5만원")
                 .createdBy(member1)
                 .build();
-
+        country = CountryEntity.builder()
+                .countryIdx(1L)
+                .build();
+        city = CityEntity.builder()
+                .country(country).build();
+        tripCity = TripCity.builder()
+                .city(city).build();
         trip = Trip.builder()
                 .tripIdx(1L)
                 .team(team)
@@ -88,6 +100,7 @@ class TripServiceTest {
                 .tripStartDay(LocalDate.of(2025, 1, 1))
                 .createdAt(LocalDateTime.now())
                 .createdBy(member1)
+                .tripCities(List.of(tripCity))
                 .build();
         trip2 = Trip.builder()
                 .tripIdx(2L)
@@ -99,6 +112,7 @@ class TripServiceTest {
                 .tripStartDay(LocalDate.of(2025, 1, 1))
                 .createdAt(LocalDateTime.now())
                 .createdBy(member1)
+                .tripCities(List.of(tripCity))
                 .build();
     }
     @Test
@@ -128,7 +142,8 @@ class TripServiceTest {
     void getTripsByTeam_success() {
         //given
         given(tripRepository.findAllByTeam_TeamIdx(trip.getTeam().getTeamIdx())).willReturn(List.of(trip, trip2));
-
+        given(tripCityService.getTripCountry(trip.getTripIdx())).willReturn(trip.getTripCities());
+        given(tripCityService.getTripCountry(trip2.getTripIdx())).willReturn(trip2.getTripCities());
 
         //when
         List<TripResDto> dtos = tripService.getTripsByTeam(trip.getTeam().getTeamIdx());
