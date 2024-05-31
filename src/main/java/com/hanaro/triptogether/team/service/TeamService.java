@@ -11,7 +11,7 @@ public interface TeamService {
     void addTeam(AddTeamReqDto addTeamReqDto);
 
     // 모임서비스 상세
-    DetailTeamResDto detailTeam(Long accIdx);
+    DetailTeamResDto detailTeam(DetailTeamReqDto detailTeamReqDto);
 
     // 모임서비스 나가기 (전체 내보내기 후 모임 삭제)
     void exportTeam(ExportTeamReqDto exportTeamReqDto);

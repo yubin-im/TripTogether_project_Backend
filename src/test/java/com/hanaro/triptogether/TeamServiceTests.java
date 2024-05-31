@@ -10,6 +10,7 @@ import com.hanaro.triptogether.team.domain.TeamRepository;
 import com.hanaro.triptogether.team.dto.request.*;
 import com.hanaro.triptogether.team.dto.response.*;
 import com.hanaro.triptogether.team.service.impl.TeamServiceImpl;
+import com.hanaro.triptogether.teamMember.domain.TeamMember;
 import com.hanaro.triptogether.teamMember.domain.TeamMemberRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -23,7 +24,6 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 public class TeamServiceTests extends TriptogetherApplicationTests {
@@ -48,6 +48,8 @@ public class TeamServiceTests extends TriptogetherApplicationTests {
     private Long teamIdx = 1L;
     private Member member;
     private Long memberIdx = 1L;
+    private TeamMember teamMember;
+    private Long teamMemberIdx = 1L;
 
     @BeforeEach
     void setUp() {
@@ -79,28 +81,39 @@ public class TeamServiceTests extends TriptogetherApplicationTests {
                 .teamNotice("Team Notice")
                 .createdAt(LocalDateTime.now())
                 .build();
+
+        teamMember = TeamMember.builder()
+                .teamMemberIdx(teamMemberIdx)
+                .team(team)
+                .member(member)
+                .build();
     }
 
     @Test
     @DisplayName("모임서비스 상세 테스트")
     void testDetailTeam() {
         // Given
-        when(accountRepository.findById(any())).thenReturn(Optional.of(account));
-        when(teamRepository.findTeamByAccount(any())).thenReturn(team);
+        DetailTeamReqDto detailTeamReqDto = DetailTeamReqDto.builder()
+                .teamIdx(teamIdx)
+                .teamMemberIdx(teamMemberIdx)
+                .build();
+
+        when(teamRepository.findById(anyLong())).thenReturn(Optional.of(team));
+        when(teamMemberRepository.findById(anyLong())).thenReturn(Optional.of(teamMember));
 
         // When
-        DetailTeamResDto result = teamService.detailTeam(accIdx);
+        DetailTeamResDto result = teamService.detailTeam(detailTeamReqDto);
 
         // Then
         assertNotNull(result);
-        assertEquals(team.getTeamIdx(), result.getTeamIdx());
         assertEquals(team.getTeamNotice(), result.getTeamNotice());
         assertEquals(team.getTeamName(), result.getTeamName());
-        assertEquals(account.getAccNumber(), result.getAccNumber());
-        assertEquals(account.getAccBalance(), result.getAccBalance());
+        assertEquals(team.getAccount().getAccNumber(), result.getAccNumber());
+        assertEquals(team.getAccount().getAccBalance(), result.getAccBalance());
+        assertEquals(teamMember.getTeamMemberState(), result.getTeamMemberState());
 
-        verify(accountRepository, times(1)).findById(accIdx);
-        verify(teamRepository, times(1)).findTeamByAccount(account);
+        verify(teamRepository, times(1)).findById(teamIdx);
+        verify(teamMemberRepository, times(1)).findById(teamMemberIdx);
     }
 
     @Test

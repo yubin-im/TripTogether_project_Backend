@@ -23,9 +23,8 @@ public class TeamController {
 
     // 모임서비스 상세
     @PostMapping("/account/detail")
-    public DetailTeamResDto detailTeam(@RequestBody Map<String, Long> accIdxMap) {
-        Long accIdx = accIdxMap.get("accIdx");
-        return teamService.detailTeam(accIdx);
+    public DetailTeamResDto detailTeam(@RequestBody DetailTeamReqDto detailTeamReqDto) {
+        return teamService.detailTeam(detailTeamReqDto);
     }
 
     // 모임서비스 나가기 (전체 내보내기 후 모임 삭제)

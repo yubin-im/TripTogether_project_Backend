@@ -51,16 +51,16 @@ public class TeamServiceImpl implements TeamService {
     // 모임서비스 상세
     @Transactional
     @Override
-    public DetailTeamResDto detailTeam(Long accIdx) {
-        Account account = accountRepository.findById(accIdx).orElseThrow(() -> new ApiException(ExceptionEnum.ACCOUNT_NOT_FOUND));
-        Team team = teamRepository.findTeamByAccount(account);
+    public DetailTeamResDto detailTeam(DetailTeamReqDto detailTeamReqDto) {
+        Team team = teamRepository.findById(detailTeamReqDto.getTeamIdx()).orElseThrow(() -> new ApiException(ExceptionEnum.TEAM_NOT_FOUND));
+        TeamMember teamMember = teamMemberRepository.findById(detailTeamReqDto.getTeamMemberIdx()).orElseThrow(() -> new ApiException(ExceptionEnum.TEAM_MEMBER_NOT_FOUND));
 
         DetailTeamResDto detailTeamResDto = DetailTeamResDto.builder()
-                .teamIdx(team.getTeamIdx())
                 .teamNotice(team.getTeamNotice())
                 .teamName(team.getTeamName())
-                .accNumber(account.getAccNumber())
-                .accBalance(account.getAccBalance())
+                .accNumber(team.getAccount().getAccNumber())
+                .accBalance(team.getAccount().getAccBalance())
+                .teamMemberState(teamMember.getTeamMemberState())
                 .build();
 
         return detailTeamResDto;
