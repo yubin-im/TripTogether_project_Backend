@@ -50,6 +50,7 @@ public class AccountServiceImpl implements AccountService {
                         .teamName(teams.get(i).getTeamName())
                         .teamIdx(teams.get(i).getTeamIdx())
                         .teamMemberIdx(teamMemberIdx)
+                        .teamMemberState(teamMember.get().getTeamMemberState().name())
                         .build();
                 teamServiceListResDtos.add(teamServiceListResDto);
             }

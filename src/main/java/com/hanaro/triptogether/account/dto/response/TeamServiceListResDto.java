@@ -14,4 +14,5 @@ public class TeamServiceListResDto {
     private String teamName;
     private Long teamIdx;
     private Long teamMemberIdx;
+    private String teamMemberState;
 }
