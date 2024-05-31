@@ -37,6 +37,13 @@ jobs:
         key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
         restore-keys: |
           ${{ runner.os }}-gradle-
+
+    - name: make application.properties
+      run: |
+        cd ./src/main/resources 
+        touch ./application.properties 
+        echo "${{ secrets.PROPERTIES }}" > ./application.properties
+      shell: bash
       
     - name: Grant execute permission to Gradle wrapper
       run: chmod +x ./gradlew
