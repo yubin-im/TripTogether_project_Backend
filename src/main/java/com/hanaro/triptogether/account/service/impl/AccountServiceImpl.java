@@ -12,6 +12,7 @@ import com.hanaro.triptogether.member.domain.Member;
 import com.hanaro.triptogether.member.domain.MemberRepository;
 import com.hanaro.triptogether.team.domain.Team;
 import com.hanaro.triptogether.team.domain.TeamRepository;
+import com.hanaro.triptogether.teamMember.domain.TeamMemberRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -26,6 +27,7 @@ public class AccountServiceImpl implements AccountService {
     private final AccountRepository accountRepository;
     private final MemberRepository memberRepository;
     private final TeamRepository teamRepository;
+    private final TeamMemberRepository teamMemberRepository;
 
     // 모임서비스 전체 조회
     @Transactional
@@ -36,12 +38,14 @@ public class AccountServiceImpl implements AccountService {
         List<Team> teams = teamRepository.findTeamsByMemberIdx(memberIdx);
 
         for(int i = 0; i < teams.size(); i++) {
+            Long teamMemberIdx = teamMemberRepository.findTeamMemberByMember_MemberIdxAndTeam_TeamIdx(memberIdx, teams.get(i).getTeamIdx()).get().getTeamMemberIdx();
             TeamServiceListResDto teamServiceListResDto = TeamServiceListResDto.builder()
                     .accIdx(teams.get(i).getAccount().getAccIdx())
                     .accNumber(teams.get(i).getAccount().getAccNumber())
                     .accBalance(teams.get(i).getAccount().getAccBalance())
                     .teamName(teams.get(i).getTeamName())
                     .teamIdx(teams.get(i).getTeamIdx())
+                    .teamMemberIdx(teamMemberIdx)
                     .build();
 
             teamServiceListResDtos.add(teamServiceListResDto);
