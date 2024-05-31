@@ -7,4 +7,6 @@ import lombok.Getter;
 @Builder
 public class TripPlaceOrderReqDto {
     private Long tripPlaceIdx;
+    private Integer placeOrder;
+    private Integer tripDate;
 }

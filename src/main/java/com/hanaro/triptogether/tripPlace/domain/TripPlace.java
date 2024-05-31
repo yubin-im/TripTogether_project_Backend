@@ -77,8 +77,9 @@ public class TripPlace {
         this.lastModifiedAt = LocalDateTime.now();
         this.lastModifiedBy = member;
     }
-    public void updateOrder(Integer placeOrder, Member member){
+    public void updateOrder(Integer placeOrder, Integer tripDate, Member member){
         this.placeOrder=placeOrder;
+        this.tripDate=tripDate;
         this.lastModifiedAt = LocalDateTime.now();
         this.lastModifiedBy = member;
     }
