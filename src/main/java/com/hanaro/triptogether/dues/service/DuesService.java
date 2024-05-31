@@ -1,13 +1,12 @@
 package com.hanaro.triptogether.dues.service;
 
-import com.hanaro.triptogether.account.domain.AccountRepository;
 import com.hanaro.triptogether.account.domain.AccountTransactionDetailsRepository;
 import com.hanaro.triptogether.dues.domain.entity.Dues;
 import com.hanaro.triptogether.dues.domain.repository.DuesRepository;
 import com.hanaro.triptogether.dues.dto.request.DuesRuleRequestDto;
 import com.hanaro.triptogether.dues.dto.response.DuesListMemberResponseDto;
 import com.hanaro.triptogether.dues.dto.response.DuesListResponseDto;
-import com.hanaro.triptogether.team.domain.TeamRepository;
+import com.hanaro.triptogether.dues.dto.response.DuesRuleResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +23,14 @@ public class DuesService {
 
     public void setDuesRule(DuesRuleRequestDto duesRuleRequestDto){
         duesRepository.save(duesRuleRequestDto.toEntity());
+    }
+
+    public DuesRuleResponseDto getDuesRule(Long teamIdx){
+        Dues dues = duesRepository.findDuesByTeamIdx(teamIdx);
+        if (dues == null) {
+            return null;
+        }
+        return DuesRuleResponseDto.builder().duesDate(String.valueOf(dues.getDuesDate().getDayOfMonth())).duesAmount(dues.getDuesAmount()).build();
     }
 
 

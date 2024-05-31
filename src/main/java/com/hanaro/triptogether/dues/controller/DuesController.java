@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.time.YearMonth;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -23,10 +24,15 @@ public class DuesController {
     private final DuesService duesService;
     private final FirebaseFCMService firebaseFCMService;
 
-    @PostMapping("")
+    @PostMapping("/rule")
     public BaseResponse setDuesRule(@RequestBody DuesRuleRequestDto duesRuleRequestDto) {
         duesService.setDuesRule(duesRuleRequestDto);
         return BaseResponse.res(ResponseStatus.SUCCESS, ResponseStatus.SUCCESS.getMessage());
+    }
+
+    @GetMapping("/rule")
+    public BaseResponse getDuesRule(@RequestBody Map<String, Long> teamIdx) {
+        return BaseResponse.res(ResponseStatus.SUCCESS,ResponseStatus.SUCCESS.getMessage(),duesService.getDuesRule(teamIdx.get("teamIdx")));
     }
 
     @GetMapping("")
