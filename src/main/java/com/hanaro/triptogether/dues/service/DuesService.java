@@ -5,6 +5,7 @@ import com.hanaro.triptogether.account.domain.AccountTransactionDetailsRepositor
 import com.hanaro.triptogether.dues.domain.entity.Dues;
 import com.hanaro.triptogether.dues.domain.repository.DuesRepository;
 import com.hanaro.triptogether.dues.dto.request.DuesRuleRequestDto;
+import com.hanaro.triptogether.dues.dto.response.DuesListMemberResponseDto;
 import com.hanaro.triptogether.dues.dto.response.DuesListResponseDto;
 import com.hanaro.triptogether.team.domain.TeamRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,18 +20,24 @@ import java.util.List;
 public class DuesService {
 
     private final DuesRepository duesRepository;
-    private final AccountRepository accountRepository;
     private final AccountTransactionDetailsRepository accountTransactionDetailsRepository;
-    private final TeamRepository teamRepository;
 
     public void setDuesRule(DuesRuleRequestDto duesRuleRequestDto){
         duesRepository.save(duesRuleRequestDto.toEntity());
     }
 
 
-    public List<DuesListResponseDto> getDuesList(Long teamIdx,Long accIdx, YearMonth date,Boolean paid){
-        if(paid) return accountTransactionDetailsRepository.findUsersWithTransAmountGreaterThanOrEqual(accIdx,date.getYear(),date.getMonthValue(),getTeamDuesAmount(teamIdx));
-        else return accountTransactionDetailsRepository.findUsersWithTransAmountLessThan(accIdx,date.getYear(),date.getMonthValue(),getTeamDuesAmount(teamIdx));
+    public DuesListResponseDto getDuesList(Long teamIdx,Long accIdx, YearMonth date,Boolean paid){
+        List<DuesListMemberResponseDto> duesListMemberResponseDtos;
+        BigDecimal duesTotalAmount;
+        if(paid) {
+            duesListMemberResponseDtos = accountTransactionDetailsRepository.findUsersWithTransAmountGreaterThanOrEqual(accIdx, date.getYear(), date.getMonthValue(), getTeamDuesAmount(teamIdx));
+        }
+        else {
+            duesListMemberResponseDtos = accountTransactionDetailsRepository.findUsersWithTransAmountLessThan(accIdx, date.getYear(), date.getMonthValue(), getTeamDuesAmount(teamIdx));
+        }
+        duesTotalAmount = accountTransactionDetailsRepository.findTotalTransAmountByAccIdxAndYearAndMonth(accIdx,date.getYear(),date.getMonthValue());
+        return DuesListResponseDto.builder().duesTotalAmount(duesTotalAmount).memberResponseDtos(duesListMemberResponseDtos).build();
     }
 
     private BigDecimal getTeamDuesAmount(Long teamIdx){
