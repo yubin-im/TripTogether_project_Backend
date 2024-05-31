@@ -22,7 +22,7 @@ public class Account {
     @JoinColumn(name = "member_idx", nullable = false)
     private Member member;
 
-    @Column(nullable = false, length = 255)
+    @Column(nullable = false, length = 14)
     private String accNumber;
 
     @Column(nullable = false, precision = 20, scale = 2)
