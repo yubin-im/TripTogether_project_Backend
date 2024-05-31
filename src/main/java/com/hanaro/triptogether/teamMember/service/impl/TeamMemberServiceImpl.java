@@ -116,6 +116,7 @@ public class TeamMemberServiceImpl implements TeamMemberService {
 
         for(int i = 0; i < teamMembers.size(); i++) {
             if (acceptTeamMemberReqDto.getTeamMemberIdx().equals(teamMembers.get(i).getTeamMemberIdx())) {
+                teamMembers.get(i).updateTeamMemberState(TeamMemberState.거절);
                 teamMembers.get(i).delete(LocalDateTime.now(), acceptTeamMemberReqDto.getMemberIdx());
                 teamMemberRepository.save(teamMembers.get(i));
             }
@@ -131,6 +132,7 @@ public class TeamMemberServiceImpl implements TeamMemberService {
 
         for(int i = 0; i < teamMembers.size(); i++) {
             if(teamMembers.get(i).getTeamMemberState() == TeamMemberState.수락대기) {
+                teamMembers.get(i).updateTeamMemberState(TeamMemberState.거절);
                 teamMembers.get(i).delete(LocalDateTime.now(), rejectTeamMembersReqDto.getMemberIdx());
                 teamMemberRepository.save(teamMembers.get(i));
             }
@@ -146,6 +148,7 @@ public class TeamMemberServiceImpl implements TeamMemberService {
 
         for(int i = 0; i < teamMembers.size(); i++) {
             if(teamMembers.get(i).getTeamMemberState() == TeamMemberState.모임원) {
+                teamMembers.get(i).updateTeamMemberState(TeamMemberState.거절);
                 teamMembers.get(i).delete(LocalDateTime.now(), rejectTeamMembersReqDto.getMemberIdx());
                 teamMemberRepository.save(teamMembers.get(i));
             }
