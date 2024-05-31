@@ -43,9 +43,9 @@ public class DuesController {
 
     }
 
-    @GetMapping("/details/month")
-    public BaseResponse getDuesOfMonthAmount(@RequestBody DuesDetailOfMonthAmountRequestDto duesDetailOfMonthAmountRequestDto) {
-        return BaseResponse.res(ResponseStatus.SUCCESS,ResponseStatus.SUCCESS.getMessage(),duesService.getDuesDetailByMonthAmount(duesDetailOfMonthAmountRequestDto));
+    @GetMapping("/details/{accIdx}")
+    public BaseResponse getDuesOfMonthAmount(@PathVariable(value = "accIdx") Long accIdx, @RequestParam("memberIdx") Long memberIdx, @RequestParam("duesYear") String duesYear) {
+        return BaseResponse.res(ResponseStatus.SUCCESS,ResponseStatus.SUCCESS.getMessage(),duesService.getDuesDetailByMonthAmount(accIdx,memberIdx,duesYear));
     }
 
     @GetMapping("")

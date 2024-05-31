@@ -19,8 +19,7 @@ public interface AccountTransactionDetailsRepository extends JpaRepository<Accou
             "GROUP BY atd.member")
     DuesDetailTotalAmountResponseDto findSumOfTransAmountByMemberIdx(@Param("accIdx") Long accIdx, @Param("memberIdx") Long memberIdx);
 
-    @Query("SELECT new com.hanaro.triptogether.dues.dto.response.DuesDetailYearTotalAmountResponseDto(" +
-            "FUNCTION('MONTH', atd.transDate), SUM(atd.transAmount)) " +
+    @Query("SELECT new com.hanaro.triptogether.dues.dto.response.DuesDetailYearTotalAmountResponseDto(SUM(atd.transAmount),FUNCTION('MONTH', atd.transDate)) " +
             "FROM AccountTransactionDetails atd " +
             "WHERE atd.account.accIdx = :accIdx " +
             "AND atd.member.memberIdx = :memberIdx " +
@@ -35,27 +34,29 @@ public interface AccountTransactionDetailsRepository extends JpaRepository<Accou
 
 
 
-    @Query(value = "select NEW  com.hanaro.triptogether.dues.dto.response.DuesListMemberResponseDto(atd.account.member.memberIdx,atd.account.member.memberName,sum(atd.transAmount)) " +
-            "from AccountTransactionDetails atd where atd.account.accIdx = :accIdx" +
+    @Query(value = "select NEW  com.hanaro.triptogether.dues.dto.response.DuesListMemberResponseDto(atd.member.memberIdx,atd.member.memberName,sum(atd.transAmount)) " +
+            "from AccountTransactionDetails atd where atd.account.accIdx = :accIdx and atd.member.memberIdx = :memberIdx" +
             " AND FUNCTION('YEAR', atd.transDate) = :year " +
             "AND FUNCTION('MONTH', atd.transDate) = :month " +
-            "GROUP BY atd.account.accIdx " +
+            "GROUP BY atd.member.memberIdx " +
             "HAVING SUM(atd.transAmount) >= :duesAmount")
-    List<DuesListMemberResponseDto> findUsersWithTransAmountGreaterThanOrEqual(
+    DuesListMemberResponseDto findUsersWithTransAmountGreaterThanOrEqual(
             @Param("accIdx") Long accIdx,
+            @Param("memberIdx") Long memberIdx,
             @Param("year") int year,
             @Param("month") int month,
             @Param("duesAmount") BigDecimal duesAmount);
 
-    @Query("SELECT NEW com.hanaro.triptogether.dues.dto.response.DuesListMemberResponseDto(atd.account.member.memberIdx,atd.account.member.memberName, SUM(atd.transAmount)) " +
+    @Query("SELECT NEW com.hanaro.triptogether.dues.dto.response.DuesListMemberResponseDto(atd.member.memberIdx,atd.member.memberName, SUM(atd.transAmount)) " +
             "FROM AccountTransactionDetails atd " +
-            "WHERE atd.account.accIdx = :accIdx " +
-            "AND FUNCTION('YEAR', atd.transDate) = :year " +
+            "WHERE atd.account.accIdx = :accIdx and atd.member.memberIdx = :memberIdx" +
+            " AND FUNCTION('YEAR', atd.transDate) = :year " +
             "AND FUNCTION('MONTH', atd.transDate) = :month " +
-            "GROUP BY atd.account.accIdx " +
+            "GROUP BY atd.member.memberIdx " +
             "HAVING SUM(atd.transAmount) < :duesAmount")
-    List<DuesListMemberResponseDto> findUsersWithTransAmountLessThan(
+    DuesListMemberResponseDto findUsersWithTransAmountLessThan(
             @Param("accIdx") Long accIdx,
+            @Param("memberIdx") Long memberIdx,
             @Param("year") int year,
             @Param("month") int month,
             @Param("duesAmount") BigDecimal duesAmount);
