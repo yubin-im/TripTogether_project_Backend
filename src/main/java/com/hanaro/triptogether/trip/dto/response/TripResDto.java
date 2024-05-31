@@ -21,5 +21,8 @@ public class TripResDto {
     private Integer tripDay;
     private Integer tripImg;
     private LocalDate tripStartDay;
+    private Long countryIdx;
+    private String countryNameKo;
+    private String countryNameEng;
     private List<City> cities;
 }
