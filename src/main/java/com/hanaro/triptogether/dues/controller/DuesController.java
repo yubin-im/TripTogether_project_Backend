@@ -14,8 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.time.YearMonth;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -25,14 +24,19 @@ public class DuesController {
     private final DuesService duesService;
     private final FirebaseFCMService firebaseFCMService;
 
-    @PostMapping("")
+    @PostMapping("/rule")
     public BaseResponse setDuesRule(@RequestBody DuesRuleRequestDto duesRuleRequestDto) {
         duesService.setDuesRule(duesRuleRequestDto);
         return BaseResponse.res(ResponseStatus.SUCCESS, ResponseStatus.SUCCESS.getMessage());
     }
 
+    @GetMapping("/rule")
+    public BaseResponse getDuesRule(@RequestBody Map<String, Long> teamIdx) {
+        return BaseResponse.res(ResponseStatus.SUCCESS,ResponseStatus.SUCCESS.getMessage(),duesService.getDuesRule(teamIdx.get("teamIdx")));
+    }
+
     @GetMapping("")
-    public BaseResponse<List<DuesListResponseDto>> getDuesList(@RequestParam("teamIdx") Long teamIdx,@RequestParam("accIdx") Long accIdx, @RequestParam("paid") boolean paid, @RequestParam("date") @DateTimeFormat(pattern = "yyyy-MM") YearMonth date) {
+    public BaseResponse<DuesListResponseDto> getDuesList(@RequestParam("teamIdx") Long teamIdx,@RequestParam("accIdx") Long accIdx, @RequestParam("paid") boolean paid, @RequestParam("date") @DateTimeFormat(pattern = "yyyy-MM") YearMonth date) {
         return BaseResponse.res(ResponseStatus.SUCCESS, ResponseStatus.SUCCESS.getMessage(), duesService.getDuesList(teamIdx,accIdx, date, paid));
     }
 
