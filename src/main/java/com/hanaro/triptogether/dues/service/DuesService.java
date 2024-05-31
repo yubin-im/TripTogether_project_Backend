@@ -3,10 +3,12 @@ package com.hanaro.triptogether.dues.service;
 import com.hanaro.triptogether.account.domain.AccountTransactionDetailsRepository;
 import com.hanaro.triptogether.dues.domain.entity.Dues;
 import com.hanaro.triptogether.dues.domain.repository.DuesRepository;
+import com.hanaro.triptogether.dues.dto.request.DuesDetailOfMonthAmountRequestDto;
+import com.hanaro.triptogether.dues.dto.request.DuesDetailRequestDto;
 import com.hanaro.triptogether.dues.dto.request.DuesRuleRequestDto;
-import com.hanaro.triptogether.dues.dto.response.DuesListMemberResponseDto;
-import com.hanaro.triptogether.dues.dto.response.DuesListResponseDto;
-import com.hanaro.triptogether.dues.dto.response.DuesRuleResponseDto;
+import com.hanaro.triptogether.dues.dto.response.*;
+import com.hanaro.triptogether.teamMember.domain.TeamMember;
+import com.hanaro.triptogether.teamMember.domain.TeamMemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +22,16 @@ public class DuesService {
 
     private final DuesRepository duesRepository;
     private final AccountTransactionDetailsRepository accountTransactionDetailsRepository;
+    private final TeamMemberRepository teamMemberRepository;
+
+
+    public DuesDetailTotalAmountResponseDto getDuesDetailTotalAmount(DuesDetailRequestDto duesDetailRequestDto) {
+        return accountTransactionDetailsRepository.findSumOfTransAmountByMemberIdx(duesDetailRequestDto.getAccIdx(),duesDetailRequestDto.getMemberIdx());
+    }
+
+    public List<DuesDetailYearTotalAmountResponseDto> getDuesDetailByMonthAmount(DuesDetailOfMonthAmountRequestDto dto){
+        return accountTransactionDetailsRepository.findMonthlySumOfTransAmountByAccIdxAndMemberIdxAndYear(dto.getAccIdx(),dto.getMemberIdx(), Integer.parseInt(dto.getDuesYear()));
+    }
 
     public void setDuesRule(DuesRuleRequestDto duesRuleRequestDto){
         duesRepository.save(duesRuleRequestDto.toEntity());
@@ -37,6 +49,10 @@ public class DuesService {
     public DuesListResponseDto getDuesList(Long teamIdx,Long accIdx, YearMonth date,Boolean paid){
         List<DuesListMemberResponseDto> duesListMemberResponseDtos;
         BigDecimal duesTotalAmount;
+
+        List<TeamMember> teamMembers = teamMemberRepository.findAllByTeamIdx(teamIdx);
+
+
         if(paid) {
             duesListMemberResponseDtos = accountTransactionDetailsRepository.findUsersWithTransAmountGreaterThanOrEqual(accIdx, date.getYear(), date.getMonthValue(), getTeamDuesAmount(teamIdx));
         }

@@ -11,6 +11,7 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 public class DuesListMemberResponseDto {
 
+    private Long memberIdx;
     private String memberName;
     private BigDecimal memberAmount;
 }

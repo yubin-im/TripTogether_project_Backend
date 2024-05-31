@@ -3,6 +3,7 @@ package com.hanaro.triptogether.accountTransactionDetails;
 import com.hanaro.triptogether.account.domain.Account;
 import com.hanaro.triptogether.dues.domain.entity.BaseEntity;
 import com.hanaro.triptogether.enumeration.TransType;
+import com.hanaro.triptogether.member.domain.Member;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -28,7 +29,9 @@ public class AccountTransactionDetails extends BaseEntity {
     @Column(nullable = false)
     private LocalDateTime transDate;
 
-    private String transName;
+    @ManyToOne
+    @JoinColumn(name = "member_idx", nullable = false)
+    private Member member;
 
     @Column(nullable = false, length = 255)
     private String transFrom;
