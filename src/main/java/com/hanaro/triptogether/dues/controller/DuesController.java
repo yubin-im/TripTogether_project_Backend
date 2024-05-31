@@ -5,6 +5,8 @@ import com.hanaro.triptogether.common.firebase.FirebaseFCMService;
 import com.hanaro.triptogether.common.response.BaseResponse;
 import com.hanaro.triptogether.common.response.ResponseStatus;
 import com.hanaro.triptogether.dues.dto.request.DuesAlarmRequestDto;
+import com.hanaro.triptogether.dues.dto.request.DuesDetailOfMonthAmountRequestDto;
+import com.hanaro.triptogether.dues.dto.request.DuesDetailRequestDto;
 import com.hanaro.triptogether.dues.dto.request.DuesRuleRequestDto;
 import com.hanaro.triptogether.dues.dto.response.DuesListResponseDto;
 import com.hanaro.triptogether.dues.service.DuesService;
@@ -30,9 +32,20 @@ public class DuesController {
         return BaseResponse.res(ResponseStatus.SUCCESS, ResponseStatus.SUCCESS.getMessage());
     }
 
-    @GetMapping("/rule")
-    public BaseResponse getDuesRule(@RequestBody Map<String, Long> teamIdx) {
-        return BaseResponse.res(ResponseStatus.SUCCESS,ResponseStatus.SUCCESS.getMessage(),duesService.getDuesRule(teamIdx.get("teamIdx")));
+    @GetMapping("/rule/{teamIdx}")
+    public BaseResponse getDuesRule(@PathVariable(value ="teamIdx" ) Long teamIdx) {
+        return BaseResponse.res(ResponseStatus.SUCCESS,ResponseStatus.SUCCESS.getMessage(),duesService.getDuesRule(teamIdx));
+    }
+
+    @GetMapping("/details/amount")
+    public BaseResponse getDuesAllAmount(@RequestBody DuesDetailRequestDto duesDetailRequestDto){
+        return BaseResponse.res(ResponseStatus.SUCCESS,ResponseStatus.SUCCESS.getMessage(),duesService.getDuesDetailTotalAmount(duesDetailRequestDto));
+
+    }
+
+    @GetMapping("/details/month")
+    public BaseResponse getDuesOfMonthAmount(@RequestBody DuesDetailOfMonthAmountRequestDto duesDetailOfMonthAmountRequestDto) {
+        return BaseResponse.res(ResponseStatus.SUCCESS,ResponseStatus.SUCCESS.getMessage(),duesService.getDuesDetailByMonthAmount(duesDetailOfMonthAmountRequestDto));
     }
 
     @GetMapping("")
