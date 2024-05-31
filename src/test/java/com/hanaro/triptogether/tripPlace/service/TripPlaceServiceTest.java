@@ -276,7 +276,7 @@ class TripPlaceServiceTest {
         given(tripService.findByTripIdx(tripPlaceAddReqDto.getTripIdx())).willReturn(trip);
         given(placeService.findByPlaceIdx(tripPlaceAddReqDto.getPlaceIdx())).willReturn(place);
         given(memberService.findByMemberIdx(tripPlaceAddReqDto.getMemberIdx())).willReturn(member1);
-        given(tripPlaceRepository.countByTripId(tripPlaceAddReqDto.getTripIdx(), tripPlaceAddReqDto.getTripDate()))
+        given(tripPlaceRepository.countByTripIdAndTripDate(tripPlaceAddReqDto.getTripIdx(), tripPlaceAddReqDto.getTripDate()))
                 .willReturn(0);
 
         // when
@@ -467,12 +467,12 @@ class TripPlaceServiceTest {
         Long tripPlaceIdx2 = 2L;
         int tripDate = 1;
 
-        TripPlaceOrderReqDto orderDto1 = TripPlaceOrderReqDto.builder().tripPlaceIdx(tripPlaceIdx1).build();
-        TripPlaceOrderReqDto orderDto2 = TripPlaceOrderReqDto.builder().tripPlaceIdx(tripPlaceIdx2).build();
+        TripPlaceOrderReqDto orderDto1 = TripPlaceOrderReqDto.builder().tripPlaceIdx(tripPlaceIdx1).placeOrder(1).tripDate(1).build();
+        TripPlaceOrderReqDto orderDto2 = TripPlaceOrderReqDto.builder().tripPlaceIdx(tripPlaceIdx2).placeOrder(2).tripDate(1).build();
+        List<TripPlaceOrderReqDto> orders = List.of(orderDto1, orderDto2);
         UpdateOrderReqDto updateOrderReqDto = UpdateOrderReqDto.builder()
-                .tripDate(tripDate)
                 .memberIdx(1L)
-                .orders(List.of(orderDto1, orderDto2))
+                .orders(orders)
                 .build();
 
         TripPlace tripPlace1 = createMockTripPlace(tripPlaceIdx1, 1);
@@ -482,7 +482,7 @@ class TripPlaceServiceTest {
         willDoNothing().given(tripPlaceService).validateTeamMember(any(),anyLong());
         willDoNothing().given(tripPlaceService).validateTripDate(any(), anyInt());
         given(memberService.findByMemberIdx(1L)).willReturn(member1);
-        given(tripPlaceRepository.countByTripId(tripIdx, tripDate)).willReturn(2);
+        given(tripPlaceRepository.countByTripId(tripIdx)).willReturn(2);
         given(tripPlaceRepository.findById(tripPlaceIdx1)).willReturn(Optional.of(tripPlace1));
         given(tripPlaceRepository.findById(tripPlaceIdx2)).willReturn(Optional.of(tripPlace2));
 
@@ -492,9 +492,9 @@ class TripPlaceServiceTest {
         // then
         then(tripService).should().findByTripIdx(tripIdx);
         then(tripPlaceService).should().validateTeamMember(any(), eq(1L));
-        then(tripPlaceService).should().validateTripDate(trip, tripDate);
+        then(tripPlaceService).should(times(orders.size())).validateTripDate(trip, tripDate);
         then(memberService).should().findByMemberIdx(1L);
-        then(tripPlaceRepository).should().countByTripId(tripIdx, tripDate);
+        then(tripPlaceRepository).should().countByTripId(tripIdx);
         then(tripPlaceRepository).should().findById(tripPlaceIdx1);
         then(tripPlaceRepository).should().findById(tripPlaceIdx2);
 
@@ -511,11 +511,10 @@ class TripPlaceServiceTest {
         Long tripPlaceIdx3 = 3L;
         int tripDate = 1;
 
-        TripPlaceOrderReqDto orderDto1 = TripPlaceOrderReqDto.builder().tripPlaceIdx(tripPlaceIdx1).build();
-        TripPlaceOrderReqDto orderDto2 = TripPlaceOrderReqDto.builder().tripPlaceIdx(tripPlaceIdx2).build();
-        TripPlaceOrderReqDto orderDto3 = TripPlaceOrderReqDto.builder().tripPlaceIdx(tripPlaceIdx3).build();
+        TripPlaceOrderReqDto orderDto1 = TripPlaceOrderReqDto.builder().tripPlaceIdx(tripPlaceIdx1).placeOrder(1).tripDate(1).build();
+        TripPlaceOrderReqDto orderDto2 = TripPlaceOrderReqDto.builder().tripPlaceIdx(tripPlaceIdx2).placeOrder(2).tripDate(1).build();
+        TripPlaceOrderReqDto orderDto3 = TripPlaceOrderReqDto.builder().tripPlaceIdx(tripPlaceIdx3).placeOrder(3).tripDate(1).build();
         UpdateOrderReqDto updateOrderReqDto = UpdateOrderReqDto.builder()
-                .tripDate(tripDate)
                 .memberIdx(1L)
                 .orders(List.of(orderDto1, orderDto2, orderDto3)) // 잘못된 길이
                 .build();
@@ -524,7 +523,7 @@ class TripPlaceServiceTest {
         willDoNothing().given(tripPlaceService).validateTeamMember(any(), anyLong());
         willDoNothing().given(tripPlaceService).validateTripDate(any(), anyInt());
         given(memberService.findByMemberIdx(1L)).willReturn(member1);
-        given(tripPlaceRepository.countByTripId(tripIdx, tripDate)).willReturn(2);
+        given(tripPlaceRepository.countByTripId(tripIdx)).willReturn(2);
 
         // when
         ApiException exception = assertThrows(ApiException.class, () -> tripPlaceService.updatePlaceOrder(tripIdx, updateOrderReqDto));
@@ -540,9 +539,8 @@ class TripPlaceServiceTest {
         Long tripPlaceIdx1 = 1L;
         int tripDate = 1;
 
-        TripPlaceOrderReqDto orderDto1 = TripPlaceOrderReqDto.builder().tripPlaceIdx(tripPlaceIdx1).build();
+        TripPlaceOrderReqDto orderDto1 = TripPlaceOrderReqDto.builder().tripPlaceIdx(tripPlaceIdx1).placeOrder(1).tripDate(1).build();
         UpdateOrderReqDto updateOrderReqDto = UpdateOrderReqDto.builder()
-                .tripDate(tripDate)
                 .memberIdx(1L)
                 .orders(List.of(orderDto1, orderDto1)) // 중복된 트립 플레이스
                 .build();
@@ -551,7 +549,7 @@ class TripPlaceServiceTest {
         willDoNothing().given(tripPlaceService).validateTeamMember(any(), anyLong());
         willDoNothing().given(tripPlaceService).validateTripDate(any(), anyInt());
         given(memberService.findByMemberIdx(1L)).willReturn(member1);
-        given(tripPlaceRepository.countByTripId(tripIdx, tripDate)).willReturn(2);
+        given(tripPlaceRepository.countByTripId(tripIdx)).willReturn(2);
 
         // when
         ApiException exception = assertThrows(ApiException.class, () -> tripPlaceService.updatePlaceOrder(tripIdx, updateOrderReqDto));
@@ -568,10 +566,9 @@ class TripPlaceServiceTest {
         Long tripPlaceIdx2 = 2L;
         int tripDate = 1;
 
-        TripPlaceOrderReqDto orderDto1 = TripPlaceOrderReqDto.builder().tripPlaceIdx(tripPlaceIdx1).build();
-        TripPlaceOrderReqDto orderDto2 = TripPlaceOrderReqDto.builder().tripPlaceIdx(tripPlaceIdx2).build();
+        TripPlaceOrderReqDto orderDto1 = TripPlaceOrderReqDto.builder().tripPlaceIdx(tripPlaceIdx1).placeOrder(1).tripDate(1).build();
+        TripPlaceOrderReqDto orderDto2 = TripPlaceOrderReqDto.builder().tripPlaceIdx(tripPlaceIdx2).placeOrder(2).tripDate(1).build();
         UpdateOrderReqDto updateOrderReqDto = UpdateOrderReqDto.builder()
-                .tripDate(tripDate)
                 .memberIdx(1L)
                 .orders(List.of(orderDto1, orderDto2))
                 .build();
@@ -588,7 +585,7 @@ class TripPlaceServiceTest {
         willDoNothing().given(tripPlaceService).validateTeamMember(any(), anyLong());
         willDoNothing().given(tripPlaceService).validateTripDate(any(), anyInt());
         given(memberService.findByMemberIdx(1L)).willReturn(member1);
-        given(tripPlaceRepository.countByTripId(tripIdx, tripDate)).willReturn(2);
+        given(tripPlaceRepository.countByTripId(tripIdx)).willReturn(2);
         given(tripPlaceRepository.findById(tripPlaceIdx1)).willReturn(Optional.of(tripPlace1));
         given(tripPlaceRepository.findById(tripPlaceIdx2)).willReturn(Optional.of(tripPlace2));
 

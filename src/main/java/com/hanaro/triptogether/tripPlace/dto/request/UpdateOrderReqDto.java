@@ -9,6 +9,5 @@ import java.util.List;
 @Builder
 public class UpdateOrderReqDto {
     private Long memberIdx;
-    private Integer tripDate;
     private List<TripPlaceOrderReqDto> orders;
 }

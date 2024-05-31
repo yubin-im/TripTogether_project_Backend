@@ -44,7 +44,7 @@ public class TripPlaceService {
 
         PlaceEntity place = placeService.findByPlaceIdx(dto.getPlaceIdx());
         Member member = memberService.findByMemberIdx(dto.getMemberIdx());
-        int placeOrder = tripPlaceRepository.countByTripId(dto.getTripIdx(), dto.getTripDate())+ 1;
+        int placeOrder = tripPlaceRepository.countByTripIdAndTripDate(dto.getTripIdx(), dto.getTripDate())+ 1;
 
         TripPlace tripPlace = TripPlace.builder()
                 .trip(trip)
@@ -69,28 +69,51 @@ public class TripPlaceService {
         tripPlace.update(place, dto.getPlaceAmount(), dto.getPlaceMemo(), member);
     }
 
-    @Transactional
-    public void updatePlaceOrder(Long tripIdx, UpdateOrderReqDto dto) {
+//    @Transactional
+//    public void updatePlaceOrder(Long tripIdx, UpdateOrderReqDto dto) {
+//
+//        Trip trip = tripService.findByTripIdx(tripIdx);
+//
+//        validateTeamMember(trip.getTeam(), dto.getMemberIdx());
+//        validateTripDate(trip, dto.getTripDate());
+//
+//        List<TripPlaceOrderReqDto> dtos = dto.getOrders();
+//        Member member = memberService.findByMemberIdx(dto.getMemberIdx());
+//        int num = tripPlaceRepository.countByTripId(tripIdx, dto.getTripDate());
+//        if (dtos.stream().map(TripPlaceOrderReqDto::getTripPlaceIdx).distinct().count() != num){ //중복 및 사이즈 체크
+//            throw new ApiException(ExceptionEnum.INVALID_ORDER_LIST);
+//        }
+//        for(int i=0;i<dtos.size();i++){
+//            TripPlace tripPlace = checkTripPlaceExists(dtos.get(i).getTripPlaceIdx());
+//            if(!Objects.equals(tripPlace.getTrip().getTripIdx(), tripIdx)){
+//                throw new ApiException(ExceptionEnum.TEAM_NOT_MATCH);
+//            }
+//            tripPlace.updateOrder(i+1, member);
+//        }
+//    }
+@Transactional
+public void updatePlaceOrder(Long tripIdx, UpdateOrderReqDto reqDto) {
 
-        Trip trip = tripService.findByTripIdx(tripIdx);
+    Trip trip = tripService.findByTripIdx(tripIdx);
 
-        validateTeamMember(trip.getTeam(), dto.getMemberIdx());
-        validateTripDate(trip, dto.getTripDate());
+    validateTeamMember(trip.getTeam(), reqDto.getMemberIdx());
+    Member member = memberService.findByMemberIdx(reqDto.getMemberIdx());
+    List<TripPlaceOrderReqDto> dtos = reqDto.getOrders();
+    int num = tripPlaceRepository.countByTripId(tripIdx);
 
-        List<TripPlaceOrderReqDto> dtos = dto.getOrders();
-        Member member = memberService.findByMemberIdx(dto.getMemberIdx());
-        int num = tripPlaceRepository.countByTripId(tripIdx, dto.getTripDate());
-        if (dtos.stream().map(TripPlaceOrderReqDto::getTripPlaceIdx).distinct().count() != num){ //중복 및 사이즈 체크
-            throw new ApiException(ExceptionEnum.INVALID_ORDER_LIST);
-        }
-        for(int i=0;i<dtos.size();i++){
-            TripPlace tripPlace = checkTripPlaceExists(dtos.get(i).getTripPlaceIdx());
-            if(!Objects.equals(tripPlace.getTrip().getTripIdx(), tripIdx)){
-                throw new ApiException(ExceptionEnum.TEAM_NOT_MATCH);
-            }
-            tripPlace.updateOrder(i+1, member);
-        }
+    if (dtos.stream().map(TripPlaceOrderReqDto::getTripPlaceIdx).distinct().count() != num){ //중복 및 사이즈 체크
+        throw new ApiException(ExceptionEnum.INVALID_ORDER_LIST);
     }
+
+    for (TripPlaceOrderReqDto dto : dtos) {
+        validateTripDate(trip, dto.getTripDate());
+        TripPlace tripPlace = checkTripPlaceExists(dto.getTripPlaceIdx());
+        if (!Objects.equals(tripPlace.getTrip().getTripIdx(), tripIdx)) {
+            throw new ApiException(ExceptionEnum.TEAM_NOT_MATCH);
+        }
+        tripPlace.updateOrder(dto.getPlaceOrder(), dto.getTripDate(), member);
+    }
+}
 
 
     public List<TripPlaceResDto> getPlace(Long tripIdx) {
