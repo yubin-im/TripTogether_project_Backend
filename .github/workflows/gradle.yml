@@ -20,7 +20,12 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
-          
+
+      - name: Log event details
+        run: |
+          echo "Event name: ${{ github.event_name }}"
+          echo "Event action: ${{ github.event.action }}"
+
       - name: Setup MySQL
         uses: samin/mysql-action@v1
         with:
