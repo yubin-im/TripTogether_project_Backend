@@ -1,15 +1,16 @@
 package com.hanaro.triptogether.dues.dto.response;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.math.BigDecimal;
 
 @Getter
 @Setter
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class DuesDetailYearTotalAmountResponseDto {
-    private String duesOfMonth;
     private BigDecimal duesAmount;
+    private int duesOfMonth;
+
 }
