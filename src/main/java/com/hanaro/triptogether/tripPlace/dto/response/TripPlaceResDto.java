@@ -14,6 +14,7 @@ public class TripPlaceResDto {
     private Long placeIdx;
     private BigDecimal placeAmount;
     private String placeMemo;
+    private int replyCount;
 
     @Builder
     public TripPlaceResDto(TripPlace tripPlace) {
@@ -23,5 +24,6 @@ public class TripPlaceResDto {
         this.placeIdx = tripPlace.getPlace().toPlace().getPlaceIdx();
         this.placeAmount = tripPlace.getPlaceAmount();
         this.placeMemo = tripPlace.getPlaceMemo();
+        this.replyCount = tripPlace.getTripReplies().size();
     }
 }

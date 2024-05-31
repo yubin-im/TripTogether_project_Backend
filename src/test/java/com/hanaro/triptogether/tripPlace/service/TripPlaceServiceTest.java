@@ -22,6 +22,7 @@ import com.hanaro.triptogether.tripPlace.dto.request.TripPlaceOrderReqDto;
 import com.hanaro.triptogether.tripPlace.dto.request.TripPlaceUpdateReqDto;
 import com.hanaro.triptogether.tripPlace.dto.request.UpdateOrderReqDto;
 import com.hanaro.triptogether.tripPlace.dto.response.TripPlaceResDto;
+import com.hanaro.triptogether.tripReply.domain.TripReply;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -309,6 +310,7 @@ class TripPlaceServiceTest {
                 .placeAmount(BigDecimal.valueOf(50)) // 임의의 초기 값 설정
                 .placeMemo("Previous Memo") // 임의의 초기 값 설정
                 .createdBy(member1)
+                .tripReplies(List.of(mock(TripReply.class)))
                 .build();
     }
 

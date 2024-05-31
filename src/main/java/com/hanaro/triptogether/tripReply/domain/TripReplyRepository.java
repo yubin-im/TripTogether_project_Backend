@@ -8,4 +8,5 @@ import java.util.List;
 @Repository
 public interface TripReplyRepository extends JpaRepository<TripReply, Long> {
     List<TripReply> findAllByTripPlace_TripPlaceIdxOrderByCreatedAtAsc(Long trip_place_idx);
+    Long countByTripPlace_TripPlaceIdx(Long trip_place_idx);
 }
