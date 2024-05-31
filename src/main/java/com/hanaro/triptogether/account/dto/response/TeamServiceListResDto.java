@@ -13,4 +13,5 @@ public class TeamServiceListResDto {
     private BigDecimal accBalance;
     private String teamName;
     private Long teamIdx;
+    private Long teamMemberIdx;
 }
