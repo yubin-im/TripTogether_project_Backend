@@ -12,6 +12,7 @@ import com.hanaro.triptogether.member.domain.Member;
 import com.hanaro.triptogether.member.domain.MemberRepository;
 import com.hanaro.triptogether.team.domain.Team;
 import com.hanaro.triptogether.team.domain.TeamRepository;
+import com.hanaro.triptogether.teamMember.domain.TeamMember;
 import com.hanaro.triptogether.teamMember.domain.TeamMemberRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +21,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -38,17 +40,19 @@ public class AccountServiceImpl implements AccountService {
         List<Team> teams = teamRepository.findTeamsByMemberIdx(memberIdx);
 
         for(int i = 0; i < teams.size(); i++) {
-            Long teamMemberIdx = teamMemberRepository.findTeamMemberByMember_MemberIdxAndTeam_TeamIdx(memberIdx, teams.get(i).getTeamIdx()).get().getTeamMemberIdx();
-            TeamServiceListResDto teamServiceListResDto = TeamServiceListResDto.builder()
-                    .accIdx(teams.get(i).getAccount().getAccIdx())
-                    .accNumber(teams.get(i).getAccount().getAccNumber())
-                    .accBalance(teams.get(i).getAccount().getAccBalance())
-                    .teamName(teams.get(i).getTeamName())
-                    .teamIdx(teams.get(i).getTeamIdx())
-                    .teamMemberIdx(teamMemberIdx)
-                    .build();
-
-            teamServiceListResDtos.add(teamServiceListResDto);
+            Optional<TeamMember> teamMember=  teamMemberRepository.findTeamMemberByMember_MemberIdxAndTeam_TeamIdx(memberIdx, teams.get(i).getTeamIdx());
+            if(teamMember.isPresent()) {
+                Long teamMemberIdx = teamMember.get().getTeamMemberIdx();
+                TeamServiceListResDto teamServiceListResDto = TeamServiceListResDto.builder()
+                        .accIdx(teams.get(i).getAccount().getAccIdx())
+                        .accNumber(teams.get(i).getAccount().getAccNumber())
+                        .accBalance(teams.get(i).getAccount().getAccBalance())
+                        .teamName(teams.get(i).getTeamName())
+                        .teamIdx(teams.get(i).getTeamIdx())
+                        .teamMemberIdx(teamMemberIdx)
+                        .build();
+                teamServiceListResDtos.add(teamServiceListResDto);
+            }
         }
 
         return teamServiceListResDtos;
