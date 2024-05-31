@@ -3,6 +3,7 @@ package com.hanaro.triptogether.trip.service;
 import com.hanaro.triptogether.city.domain.CityEntity;
 import com.hanaro.triptogether.city.domain.CityRepository;
 import com.hanaro.triptogether.city.dto.City;
+import com.hanaro.triptogether.country.domain.CountryEntity;
 import com.hanaro.triptogether.exception.ApiException;
 import com.hanaro.triptogether.exception.ExceptionEnum;
 import com.hanaro.triptogether.member.domain.Member;
@@ -133,6 +134,7 @@ public class TripService {
     private TripResDto toTripResDto(Trip trip) {
         List<TripCity> tripCities = tripCityService.getTripCountry(trip.getTripIdx());
         List<City> cities = tripCities.stream().map(tripCity -> tripCity.getCity().toCity()).toList();
+        CountryEntity country = tripCities.get(0).getCity().getCountry();
         return TripResDto.builder()
                 .teamIdx(trip.getTeam().getTeamIdx())
                 .teamName(trip.getTeam().getTeamName())
@@ -142,6 +144,9 @@ public class TripService {
                 .tripGoalAmount(trip.getTripGoalAmount())
                 .tripName(trip.getTripName())
                 .tripStartDay(trip.getTripStartDay())
+                .countryIdx(country.getCountryIdx())
+                .countryNameEng(country.getCountryNameEng())
+                .countryNameKo(country.getCountryNameKo())
                 .cities(cities)
                 .build();
     }
