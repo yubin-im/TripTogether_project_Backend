@@ -85,6 +85,7 @@ public class TeamServiceImpl implements TeamService {
 
         // 전체 내보내기
         for(int i = 0; i < teamMembers.size(); i++) {
+            teamMembers.get(i).updateTeamMemberState(TeamMemberState.거절);
             teamMembers.get(i).delete(LocalDateTime.now(), exportTeamReqDto.getMemberIdx());
             teamMemberRepository.save(teamMembers.get(i));
         }
