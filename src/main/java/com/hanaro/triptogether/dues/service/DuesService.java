@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.YearMonth;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,7 +35,13 @@ public class DuesService {
     }
 
     public void setDuesRule(DuesRuleRequestDto duesRuleRequestDto){
-        duesRepository.save(duesRuleRequestDto.toEntity());
+        Dues curDues = duesRepository.findDuesByTeamIdx(duesRuleRequestDto.getTeamIdx());
+        if (curDues !=null) {
+            curDues.modifyDuesRule(duesRuleRequestDto);
+            duesRepository.save(curDues);
+        } else {
+            duesRepository.save(duesRuleRequestDto.toEntity());
+        }
     }
 
     public DuesRuleResponseDto getDuesRule(Long teamIdx){
@@ -42,7 +49,7 @@ public class DuesService {
         if (dues == null) {
             return null;
         }
-        return DuesRuleResponseDto.builder().duesDate(String.valueOf(dues.getDuesDate().getDayOfMonth())).duesAmount(dues.getDuesAmount()).build();
+        return DuesRuleResponseDto.builder().duesDate(String.valueOf(dues.getDuesDate())).duesAmount(dues.getDuesAmount()).build();
     }
 
 
