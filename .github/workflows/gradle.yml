@@ -92,7 +92,7 @@ jobs:
     if: failure()
     steps:
       - name: Notify Slack on failure
-        uses: rtCamp/action-slack-notify@v3
+        uses: rtCamp/action-slack-notify@v2
         with:
           status: 'failure'
           author_name: 'SERVER CI/CD'
@@ -106,7 +106,7 @@ jobs:
     if: success()
     steps:
       - name: Notify Slack on success
-        uses: rtCamp/action-slack-notify@v3
+        uses: rtCamp/action-slack-notify@v2
         with:
           status: 'success'
           author_name: 'SERVER CI/CD'
