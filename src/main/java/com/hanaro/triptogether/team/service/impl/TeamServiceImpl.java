@@ -2,6 +2,7 @@ package com.hanaro.triptogether.team.service.impl;
 
 import com.hanaro.triptogether.account.domain.Account;
 import com.hanaro.triptogether.account.domain.AccountRepository;
+import com.hanaro.triptogether.enumeration.TeamMemberState;
 import com.hanaro.triptogether.exception.ApiException;
 import com.hanaro.triptogether.exception.ExceptionEnum;
 import com.hanaro.triptogether.member.domain.Member;
@@ -35,6 +36,7 @@ public class TeamServiceImpl implements TeamService {
     @Override
     public void addTeam(AddTeamReqDto addTeamReqDto) {
         Account account = accountRepository.findById(addTeamReqDto.getAccIdx()).orElseThrow(() -> new ApiException(ExceptionEnum.ACCOUNT_NOT_FOUND));
+        Member member = memberRepository.findById(addTeamReqDto.getMemberIdx()).orElseThrow(() -> new ApiException(ExceptionEnum.MEMBER_NOT_FOUND));
 
         Team team = Team.builder()
                 .account(account)
@@ -45,7 +47,15 @@ public class TeamServiceImpl implements TeamService {
                 .createdBy(memberRepository.findById(addTeamReqDto.getMemberIdx()).orElseThrow(() -> new ApiException(ExceptionEnum.MEMBER_NOT_FOUND)))
                 .build();
 
+        TeamMember teamMember = TeamMember.builder()
+                .team(team)
+                .member(member)
+                .teamMemberState(TeamMemberState.총무)
+                .createdAt(LocalDateTime.now())
+                .build();
+
         teamRepository.save(team);
+        teamMemberRepository.save(teamMember);
     }
 
     // 모임서비스 상세

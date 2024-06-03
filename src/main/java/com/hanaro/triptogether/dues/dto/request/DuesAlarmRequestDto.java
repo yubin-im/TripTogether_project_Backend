@@ -20,6 +20,5 @@ public class DuesAlarmRequestDto {
     @ToString
     public static class RequestMemberInfo {
         private Long memberIdx;
-        private String fcmToken;
     }
 }
