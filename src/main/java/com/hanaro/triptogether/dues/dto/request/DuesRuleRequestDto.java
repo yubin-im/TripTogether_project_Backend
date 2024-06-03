@@ -14,7 +14,7 @@ import java.time.LocalDate;
 public class DuesRuleRequestDto {
 
     private Long teamIdx;
-    private LocalDate duesDate;
+    private int duesDate;
     private BigDecimal duesAmount;
 
     public Dues toEntity() {

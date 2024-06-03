@@ -1,5 +1,6 @@
 package com.hanaro.triptogether.dues.domain.entity;
 
+import com.hanaro.triptogether.dues.dto.request.DuesRuleRequestDto;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -19,10 +20,14 @@ public class Dues extends BaseEntity {
 
     private Long teamIdx;
 
-    private LocalDate duesDate;
+    private int duesDate;
 
     private BigDecimal duesAmount;
 
 
+    public void modifyDuesRule(DuesRuleRequestDto dto){
+        this.duesDate=dto.getDuesDate();
+        this.duesAmount=dto.getDuesAmount();
+    }
 
 }
