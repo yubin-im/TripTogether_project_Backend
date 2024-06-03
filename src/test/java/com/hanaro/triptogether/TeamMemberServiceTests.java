@@ -14,6 +14,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -26,7 +27,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
-public class TeamMemberServiceTests extends TriptogetherApplicationTests {
+public class TeamMemberServiceTests {
     @Mock
     private TeamMemberRepository teamMemberRepository;
 
@@ -45,6 +46,7 @@ public class TeamMemberServiceTests extends TriptogetherApplicationTests {
 
     @BeforeEach
     void setUp() {
+        MockitoAnnotations.openMocks(this);
         member1 = Member.builder()
                 .memberIdx(1L)
                 .memberId("testId1")

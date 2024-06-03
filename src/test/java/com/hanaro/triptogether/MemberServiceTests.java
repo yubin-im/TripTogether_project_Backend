@@ -9,13 +9,14 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
-public class MemberServiceTests extends TriptogetherApplicationTests {
+public class MemberServiceTests {
     @Mock
     private MemberRepository memberRepository;
 
@@ -26,6 +27,7 @@ public class MemberServiceTests extends TriptogetherApplicationTests {
 
     @BeforeEach
     void setUp() {
+        MockitoAnnotations.openMocks(this);
         member = Member.builder()
                 .memberIdx(1L)
                 .memberId("testId")
