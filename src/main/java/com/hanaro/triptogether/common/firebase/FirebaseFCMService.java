@@ -24,11 +24,9 @@ import com.hanaro.triptogether.team.domain.TeamRepository;
 import lombok.RequiredArgsConstructor;
 import okhttp3.*;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -132,7 +130,8 @@ public class FirebaseFCMService {
 
         List<String> tokenList = new ArrayList<>();
         for (DuesAlarmRequestDto.RequestMemberInfo memberInfo:duesAlarmRequestDto.getMemberInfos()) {
-            tokenList.add(memberInfo.getFcmToken());
+            Member member = memberRepository.findById(memberInfo.getMemberIdx()).orElseThrow(()->new ApiException(ExceptionEnum.MEMBER_NOT_FOUND));
+            tokenList.add(member.getFcmToken());
         }
 
         MulticastMessage message = MulticastMessage.builder()

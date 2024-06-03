@@ -6,7 +6,7 @@ import lombok.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "Member")
+@Table(name = "member")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Builder
@@ -21,6 +21,9 @@ public class Member {
 
     @Column(nullable = false, length = 50)
     private String memberPw;
+
+    @Column
+    private String fcmToken;
 
     @Column(nullable = false)
     private Boolean alarmStatus = true;
