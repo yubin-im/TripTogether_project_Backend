@@ -65,14 +65,14 @@ jobs:
         run: ./gradlew build
 
       - name: dev Docker build & push to prod
-        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/dev' || (github.event_name == 'pull_request' && github.event.pull_request.base.ref == 'dev') }}
+        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/dev' || (github.event_name == 'pull_request' && github.event.pull_request.base.ref == 'dev' && github.event.pull_request.merged == true) }}
         run: |
           docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
           docker build -f Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/hanaro-trip-together .       
           docker push ${{ secrets.DOCKER_USERNAME }}/hanaro-trip-together
 
       - name: Deploy to dev
-        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/dev' || (github.event_name == 'pull_request' && github.event.pull_request.base.ref == 'dev') }}
+        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/dev' || (github.event_name == 'pull_request' && github.event.pull_request.base.ref == 'dev' && github.event.pull_request.merged == true) }}
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.HOST_DEV }}
