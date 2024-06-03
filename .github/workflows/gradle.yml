@@ -85,3 +85,17 @@ jobs:
             sudo docker rm hanaro-trip-together
             sudo docker run -it -d -p 8080:8080 --name hanaro-trip-together ${{ secrets.DOCKER_USERNAME }}/hanaro-trip-together
             sudo docker image prune -f
+
+  notify_slack:
+    needs: [build]
+    runs-on: ubuntu-latest
+    if: failure()
+    steps:
+      - name: Notify Slack on failure
+        uses: rtCamp/action-slack-notify@v3
+        with:
+          status: 'failure'
+          author_name: 'SERVER CI/CD'
+          fields: 'Job ID: ${{ github.run_id }} FAILED'
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
