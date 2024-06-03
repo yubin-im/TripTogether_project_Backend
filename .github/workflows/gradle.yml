@@ -65,14 +65,14 @@ jobs:
         run: ./gradlew build
 
       - name: dev Docker build & push to prod
-        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/dev' || (github.event_name == 'pull_request' && github.event.pull_request.base.ref == 'dev') }}
+        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/dev' || (github.event_name == 'pull_request' && github.event.pull_request.base.ref == 'dev' && github.event.pull_request.merged == true) }}
         run: |
           docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
           docker build -f Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/hanaro-trip-together .       
           docker push ${{ secrets.DOCKER_USERNAME }}/hanaro-trip-together
 
       - name: Deploy to dev
-        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/dev' || (github.event_name == 'pull_request' && github.event.pull_request.base.ref == 'dev') }}
+        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/dev' || (github.event_name == 'pull_request' && github.event.pull_request.base.ref == 'dev' && github.event.pull_request.merged == true) }}
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.HOST_DEV }}
@@ -85,3 +85,31 @@ jobs:
             sudo docker rm hanaro-trip-together
             sudo docker run -it -d -p 8080:8080 --name hanaro-trip-together ${{ secrets.DOCKER_USERNAME }}/hanaro-trip-together
             sudo docker image prune -f
+
+  notify_slack_failed:
+    needs: [build]
+    runs-on: ubuntu-latest
+    if: failure()
+    steps:
+      - name: Notify Slack on failure
+        uses: rtCamp/action-slack-notify@v3
+        with:
+          status: 'failure'
+          author_name: 'SERVER CI/CD'
+          fields: 'Job ID: ${{ github.run_id }} FAILED'
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+
+  notify_slack_success:
+    needs: [build]
+    runs-on: ubuntu-latest
+    if: success()
+    steps:
+      - name: Notify Slack on success
+        uses: rtCamp/action-slack-notify@v3
+        with:
+          status: 'success'
+          author_name: 'SERVER CI/CD'
+          fields: 'Job ID: ${{ github.run_id }} SUCCEEDED'
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
