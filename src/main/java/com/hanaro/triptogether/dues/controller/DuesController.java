@@ -37,9 +37,9 @@ public class DuesController {
         return BaseResponse.res(ResponseStatus.SUCCESS,ResponseStatus.SUCCESS.getMessage(),duesService.getDuesRule(teamIdx));
     }
 
-    @GetMapping("/details/amount")
-    public BaseResponse getDuesAllAmount(@RequestBody DuesDetailRequestDto duesDetailRequestDto){
-        return BaseResponse.res(ResponseStatus.SUCCESS,ResponseStatus.SUCCESS.getMessage(),duesService.getDuesDetailTotalAmount(duesDetailRequestDto));
+    @GetMapping("/details/{accIdx}/total-amount")
+    public BaseResponse getDuesAllAmount(@PathVariable("accIdx") Long accIdx, @RequestParam("memberIdx") Long memberIdx){
+        return BaseResponse.res(ResponseStatus.SUCCESS,ResponseStatus.SUCCESS.getMessage(),duesService.getDuesDetailTotalAmount(accIdx,memberIdx));
 
     }
 
