@@ -7,10 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Repository;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -23,13 +20,12 @@ public class PlaceController {
     private final PlaceService service;
 
     @GetMapping
-    public ResponseEntity<List<Place>> getPlaces() {
+    public ResponseEntity<List<Place>> getPlacesByCategoryIdAndCityId(@RequestParam(required = false) Long category_id,
+                                                                      @RequestParam(required = false) Long city_id) {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(service.getAll());
+                .body(service.getPlacesByCategoryIdAndCityId(category_id, city_id));
     }
-
-
     @GetMapping("/categories/{category_idx}")
     public ResponseEntity<List<Place>> getPlacesByCategoryId(@PathVariable Long category_idx) {
         return ResponseEntity
