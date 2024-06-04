@@ -6,6 +6,7 @@ import com.hanaro.triptogether.account.dto.request.UpdateAccBalanceReq;
 import com.hanaro.triptogether.account.dto.response.AccountsResDto;
 import com.hanaro.triptogether.account.dto.response.TeamServiceListResDto;
 import com.hanaro.triptogether.account.service.AccountService;
+import com.hanaro.triptogether.enumeration.TeamMemberState;
 import com.hanaro.triptogether.exception.ApiException;
 import com.hanaro.triptogether.exception.ExceptionEnum;
 import com.hanaro.triptogether.member.domain.Member;
@@ -41,7 +42,7 @@ public class AccountServiceImpl implements AccountService {
 
         for(int i = 0; i < teams.size(); i++) {
             Optional<TeamMember> teamMember=  teamMemberRepository.findTeamMemberByMember_MemberIdxAndTeam_TeamIdx(memberIdx, teams.get(i).getTeamIdx());
-            if(teamMember.isPresent()) {
+            if(teamMember.isPresent() && (teamMember.get().getTeamMemberState() == TeamMemberState.총무 || teamMember.get().getTeamMemberState() == TeamMemberState.모임원)) {
                 Long teamMemberIdx = teamMember.get().getTeamMemberIdx();
                 TeamServiceListResDto teamServiceListResDto = TeamServiceListResDto.builder()
                         .accIdx(teams.get(i).getAccount().getAccIdx())
