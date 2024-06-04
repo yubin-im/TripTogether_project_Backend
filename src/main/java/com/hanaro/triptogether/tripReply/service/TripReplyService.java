@@ -32,31 +32,30 @@ public class TripReplyService {
     @Transactional
     public void createReply(Long trip_place_idx, TripReplyReqDto dto) {
         TripPlace tripplace = tripPlaceService.checkTripPlaceExists(trip_place_idx);
-
-        TeamMember teamMember = validateAndReturn(trip_place_idx, dto.getTeamMemberIdx());
-
+        TeamMember teamMember =validateAndReturn(trip_place_idx, tripplace.getTrip().getTeam().getTeamIdx(), dto.getMemberIdx());
         tripReplyRepository.save(dto.toEntity(tripplace, teamMember, dto.getTripReplyContent()));
     }
     @Transactional
     public void updateReply(Long trip_place_idx, TripReplyUpdateReqDto dto) {
         tripPlaceService.checkTripPlaceExists(trip_place_idx);
 
-        validateAndReturn(trip_place_idx, dto.getTeamMemberIdx());
+        TripPlace tripplace = tripPlaceService.checkTripPlaceExists(trip_place_idx);
+        validateAndReturn(trip_place_idx, tripplace.getTrip().getTeam().getTeamIdx(), dto.getMemberIdx());
 
         TripReply tripReply = checkTripReplyExist(dto.getTripReplyIdx());
-        checkSameMember(tripReply.getTeamMember().getTeamMemberIdx(),dto.getTeamMemberIdx());
+        checkSameMember(tripReply.getTeamMember().getTeamMemberIdx(),dto.getMemberIdx());
 
         tripReply.update(dto.getTripReplyContent());
     }
 
     @Transactional
     public void deleteReply(Long trip_place_idx, TripReplyDeleteReqDto dto) {
-        tripPlaceService.checkTripPlaceExists(trip_place_idx);
 
-        validateAndReturn(trip_place_idx, dto.getTeamMemberIdx());
+        TripPlace tripplace = tripPlaceService.checkTripPlaceExists(trip_place_idx);
+        validateAndReturn(trip_place_idx, tripplace.getTrip().getTeam().getTeamIdx(), dto.getMemberIdx());
 
         TripReply tripReply = checkTripReplyExist(dto.getTripReplyIdx());
-        checkSameMember(tripReply.getTeamMember().getTeamMemberIdx(),dto.getTeamMemberIdx());
+        checkSameMember(tripReply.getTeamMember().getTeamMemberIdx(),dto.getMemberIdx());
 
         tripReplyRepository.deleteById(dto.getTripReplyIdx());
     }
@@ -90,9 +89,9 @@ public class TripReplyService {
         }
     }
 
-    TeamMember validateAndReturn(Long trip_place_idx, Long team_member_idx) {
-        TeamMember teamMember = teamMemberService.findTeamMemberByTeamMemberIdx(team_member_idx);
-        validateTeam( trip_place_idx, teamMember.getTeam().getTeamIdx());
+    TeamMember validateAndReturn(Long tripPlaceIdx,Long teamIdx, Long memberIdx) {
+        TeamMember teamMember = teamMemberService.findTeamMemberByMemberIdxAndTeamIdx(memberIdx, teamIdx);
+        validateTeam( tripPlaceIdx, teamMember.getTeam().getTeamIdx());
         validateTeamMember( teamMember.getTeamMemberIdx());
         return teamMember;
     }
@@ -101,7 +100,7 @@ public class TripReplyService {
         //place의 팀과 teamMember의 팀이 일치하지 않는 경우
         if(!Objects.equals(tripPlaceService.findTeamIdByTripPlaceIdx(trip_place_idx), teamIdx)){
             throw new ApiException(ExceptionEnum.TRIP_INFO_NOT_MATCH);
-        };
+        }
     }
 
     private void validateTeamMember(Long team_member_idx) {

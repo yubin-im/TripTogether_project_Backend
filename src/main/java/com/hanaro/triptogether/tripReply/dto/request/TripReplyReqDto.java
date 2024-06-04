@@ -10,7 +10,7 @@ import lombok.Getter;
 @Getter
 @Builder
 public class TripReplyReqDto {
-    private Long teamMemberIdx;
+    private Long memberIdx;
     private String tripReplyContent;
 
     public TripReply toEntity(TripPlace tripPlace, TeamMember teamMember, String trip_reply_content) {
