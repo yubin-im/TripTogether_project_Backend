@@ -8,5 +8,6 @@ import java.util.List;
 public interface PlaceService {
     public List<Place> getAll();
     public List<Place> getPlacesByCategoryId(Long categoryId);
+    public List<Place> getPlacesByCategoryIdAndCityId(Long categoryId, Long cityId);
     PlaceEntity findByPlaceIdx(Long placeIdx);
 }

@@ -38,6 +38,15 @@ public class PlaceServiceImpl implements PlaceService {
     }
 
     @Override
+    public List<Place> getPlacesByCategoryIdAndCityId(Long category_id, Long city_id) {
+        List<PlaceEntity> entities = repository.findByCategoryIdxAndCityIdx(category_id, city_id);
+        List<Place> places = entities.stream().map((entity) -> entity.toPlace())
+                .collect(Collectors.toList());
+
+        return places;
+    };
+
+    @Override
     public PlaceEntity findByPlaceIdx(Long placeIdx) {
         return repository.findById(placeIdx).orElseThrow(()->new ApiException(ExceptionEnum.PLACE_NOT_FOUND));
     }
