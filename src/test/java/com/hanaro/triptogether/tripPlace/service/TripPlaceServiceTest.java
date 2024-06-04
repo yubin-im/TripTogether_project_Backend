@@ -19,7 +19,7 @@ import com.hanaro.triptogether.tripPlace.domain.TripPlace;
 import com.hanaro.triptogether.tripPlace.domain.TripPlaceRepository;
 import com.hanaro.triptogether.tripPlace.dto.request.TripPlaceAddReqDto;
 import com.hanaro.triptogether.tripPlace.dto.request.TripPlaceOrderReqDto;
-import com.hanaro.triptogether.tripPlace.dto.request.TripPlaceUpdateReqDto;
+import com.hanaro.triptogether.tripPlace.dto.request.TripPlaceUpdateInfoReqDto;
 import com.hanaro.triptogether.tripPlace.dto.request.UpdateOrderReqDto;
 import com.hanaro.triptogether.tripPlace.dto.response.TripPlaceResDto;
 import com.hanaro.triptogether.tripReply.domain.TripReply;
@@ -318,7 +318,7 @@ class TripPlaceServiceTest {
     void updatePlace_Success() {
         // given
         Long tripPlaceIdx = 1L; // 수정할 일정 idx
-        TripPlaceUpdateReqDto dto = TripPlaceUpdateReqDto.builder()
+        TripPlaceUpdateInfoReqDto dto = TripPlaceUpdateInfoReqDto.builder()
                 .placeIdx(2L)
                 .placeAmount(BigDecimal.valueOf(100))
                 .placeMemo("Memo")
@@ -355,7 +355,7 @@ class TripPlaceServiceTest {
     void updatePlace_tripPlaceNotFound() {
         // given
         Long tripPlaceIdx = 100L; // 없는 tripPlaceIdx
-        TripPlaceUpdateReqDto tripPlaceUpdateReqDto = TripPlaceUpdateReqDto.builder()
+        TripPlaceUpdateInfoReqDto dto = TripPlaceUpdateInfoReqDto.builder()
                 .placeIdx(1L)
                 .placeAmount(BigDecimal.valueOf(100))
                 .placeMemo("Memo")
@@ -365,7 +365,7 @@ class TripPlaceServiceTest {
         given(tripPlaceRepository.findById(tripPlaceIdx)).willThrow(new ApiException(ExceptionEnum.TRIP_PLACE_NOT_FOUND));
 
         // when
-        ApiException exception = assertThrows(ApiException.class, () -> tripPlaceService.updatePlace(tripPlaceIdx, tripPlaceUpdateReqDto));
+        ApiException exception = assertThrows(ApiException.class, () -> tripPlaceService.updatePlace(tripPlaceIdx, dto));
 
         // then
         assertEquals(ExceptionEnum.TRIP_PLACE_NOT_FOUND.getMessage(), exception.getError().getMessage());
@@ -374,7 +374,7 @@ class TripPlaceServiceTest {
     void updatePlace_memberNotInTeam() {
         // given
         Long tripPlaceIdx = 1L; // 수정할 일정 idx
-        TripPlaceUpdateReqDto dto = TripPlaceUpdateReqDto.builder()
+        TripPlaceUpdateInfoReqDto dto = TripPlaceUpdateInfoReqDto.builder()
                 .placeIdx(2L)
                 .placeAmount(BigDecimal.valueOf(100))
                 .placeMemo("Memo")
@@ -399,7 +399,7 @@ class TripPlaceServiceTest {
     void updatePlace_placeNotFound() {
         // given
         Long tripPlaceIdx = 1L; // 수정할 일정 idx
-        TripPlaceUpdateReqDto dto = TripPlaceUpdateReqDto.builder()
+        TripPlaceUpdateInfoReqDto dto = TripPlaceUpdateInfoReqDto.builder()
                 .placeIdx(2L)
                 .placeAmount(BigDecimal.valueOf(100))
                 .placeMemo("Memo")
@@ -423,7 +423,7 @@ class TripPlaceServiceTest {
     void updatePlace_memberNotFound() {
         // given
         Long tripPlaceIdx = 1L; // 수정할 일정 idx
-        TripPlaceUpdateReqDto dto = TripPlaceUpdateReqDto.builder()
+        TripPlaceUpdateInfoReqDto dto = TripPlaceUpdateInfoReqDto.builder()
                 .placeIdx(2L)
                 .placeAmount(BigDecimal.valueOf(100))
                 .placeMemo("Memo")

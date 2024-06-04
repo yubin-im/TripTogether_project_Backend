@@ -15,7 +15,7 @@ import com.hanaro.triptogether.tripPlace.domain.TripPlace;
 import com.hanaro.triptogether.tripPlace.domain.TripPlaceRepository;
 import com.hanaro.triptogether.tripPlace.dto.request.TripPlaceAddReqDto;
 import com.hanaro.triptogether.tripPlace.dto.request.TripPlaceOrderReqDto;
-import com.hanaro.triptogether.tripPlace.dto.request.TripPlaceUpdateReqDto;
+import com.hanaro.triptogether.tripPlace.dto.request.TripPlaceUpdateInfoReqDto;
 import com.hanaro.triptogether.tripPlace.dto.request.UpdateOrderReqDto;
 import com.hanaro.triptogether.tripPlace.dto.response.TripPlaceResDto;
 import lombok.RequiredArgsConstructor;
@@ -60,7 +60,7 @@ public class TripPlaceService {
     }
 
     @Transactional
-    public void updatePlace(Long trip_placeIdx, TripPlaceUpdateReqDto dto) {
+    public void updatePlace(Long trip_placeIdx, TripPlaceUpdateInfoReqDto dto) {
         TripPlace tripPlace = checkTripPlaceExists(trip_placeIdx);
         validateTeamMember(tripPlace.getTrip().getTeam(), dto.getMemberIdx());
 

@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 
 @Getter
 @Builder
-public class TripPlaceUpdateReqDto {
+public class TripPlaceUpdateInfoReqDto {
     private Long placeIdx;
     private BigDecimal placeAmount;
     private String placeMemo;
