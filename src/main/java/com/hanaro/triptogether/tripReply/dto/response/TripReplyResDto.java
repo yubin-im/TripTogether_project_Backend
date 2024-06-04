@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @Getter
 public class TripReplyResDto {
     private Long tripReplyIdx;
-    private Long teamMemberIdx;
+    private Long memberIdx;
     private String teamMemberNickname;
     private String tripReplyContent;
     private LocalDateTime createdAt;
@@ -19,7 +19,7 @@ public class TripReplyResDto {
     public TripReplyResDto(TripReply reply, String teamMemberNickname) {
         this.teamMemberNickname = teamMemberNickname; //탈퇴한 멤버일 경우, 대체하기 위해
         this.tripReplyIdx = reply.getTripReplyIdx();
-        this.teamMemberIdx=reply.getTeamMember().getTeamMemberIdx();
+        this.memberIdx=reply.getTeamMember().getMember().getMemberIdx();
         this.tripReplyContent=reply.getTripReplyContent();
         this.createdAt=reply.getCreatedAt();
         this.lastModifiedAt=reply.getLastModifiedAt();
