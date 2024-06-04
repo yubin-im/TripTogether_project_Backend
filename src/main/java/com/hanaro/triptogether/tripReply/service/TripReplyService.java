@@ -43,7 +43,7 @@ public class TripReplyService {
         validateAndReturn(trip_place_idx, tripplace.getTrip().getTeam().getTeamIdx(), dto.getMemberIdx());
 
         TripReply tripReply = checkTripReplyExist(dto.getTripReplyIdx());
-        checkSameMember(tripReply.getTeamMember().getTeamMemberIdx(),dto.getMemberIdx());
+        checkSameMember(tripReply.getTeamMember().getMember().getMemberIdx(),dto.getMemberIdx());
 
         tripReply.update(dto.getTripReplyContent());
     }
@@ -55,7 +55,7 @@ public class TripReplyService {
         validateAndReturn(trip_place_idx, tripplace.getTrip().getTeam().getTeamIdx(), dto.getMemberIdx());
 
         TripReply tripReply = checkTripReplyExist(dto.getTripReplyIdx());
-        checkSameMember(tripReply.getTeamMember().getTeamMemberIdx(),dto.getMemberIdx());
+        checkSameMember(tripReply.getTeamMember().getMember().getMemberIdx(),dto.getMemberIdx());
 
         tripReplyRepository.deleteById(dto.getTripReplyIdx());
     }
