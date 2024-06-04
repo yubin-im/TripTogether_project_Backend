@@ -22,7 +22,7 @@ public class TripPlaceResDto {
         this.tripPlaceIdx = tripPlace.getTripPlaceIdx();
         this.tripDate = tripPlace.getTripDate();
         this.placeOrder = tripPlace.getPlaceOrder();
-        this.place = tripPlace.getPlace().toPlace();
+        this.place = tripPlace.getPlace() == null ? null : tripPlace.getPlace().toPlace();
         this.placeAmount = tripPlace.getPlaceAmount();
         this.placeMemo = tripPlace.getPlaceMemo();
         this.replyCount = tripPlace.getTripReplies().size();
