@@ -5,8 +5,6 @@ import com.hanaro.triptogether.common.firebase.FirebaseFCMService;
 import com.hanaro.triptogether.common.response.BaseResponse;
 import com.hanaro.triptogether.common.response.ResponseStatus;
 import com.hanaro.triptogether.dues.dto.request.DuesAlarmRequestDto;
-import com.hanaro.triptogether.dues.dto.request.DuesDetailOfMonthAmountRequestDto;
-import com.hanaro.triptogether.dues.dto.request.DuesDetailRequestDto;
 import com.hanaro.triptogether.dues.dto.request.DuesRuleRequestDto;
 import com.hanaro.triptogether.dues.dto.response.DuesListResponseDto;
 import com.hanaro.triptogether.dues.service.DuesService;
@@ -16,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.time.YearMonth;
-import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -34,7 +31,16 @@ public class DuesController {
 
     @GetMapping("/rule/{teamIdx}")
     public BaseResponse getDuesRule(@PathVariable(value ="teamIdx" ) Long teamIdx) {
+        if (duesService.getDuesRule(teamIdx)==null){
+            return BaseResponse.res(ResponseStatus.DUES_NOT_FOUND,ResponseStatus.DUES_NOT_FOUND.getMessage());
+        };
         return BaseResponse.res(ResponseStatus.SUCCESS,ResponseStatus.SUCCESS.getMessage(),duesService.getDuesRule(teamIdx));
+    }
+
+    @DeleteMapping("/rule/{teamIdx}")
+    public BaseResponse deleteDuesRule(@PathVariable(value = "teamIdx") Long teamIdx) {
+        duesService.deleteDuesRule(teamIdx);
+        return BaseResponse.res(ResponseStatus.SUCCESS,ResponseStatus.SUCCESS.getMessage());
     }
 
     @GetMapping("/details/{accIdx}/total-amount")

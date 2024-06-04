@@ -31,6 +31,19 @@ public interface AccountTransactionDetailsRepository extends JpaRepository<Accou
             @Param("year") int year);
 
 
+    @Query("SELECT new com.hanaro.triptogether.dues.dto.response.DuesListMemberResponseDto(atd.member.memberIdx, atd.member.memberName, SUM(atd.transAmount)) " +
+            "FROM AccountTransactionDetails atd " +
+            "WHERE atd.account.accIdx = :accIdx " +
+            "AND atd.member.memberIdx = :memberIdx " +
+            "AND YEAR(atd.transDate) = :year " +
+            "AND MONTH(atd.transDate) = :month " +
+            "GROUP BY atd.member.memberIdx, atd.member.memberName")
+    DuesListMemberResponseDto findUsersWithTransAmount(
+            @Param("accIdx") Long accIdx,
+            @Param("memberIdx") Long memberIdx,
+            @Param("year") int year,
+            @Param("month") int month);
+
 
 
 

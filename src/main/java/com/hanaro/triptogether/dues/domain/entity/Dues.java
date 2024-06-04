@@ -5,7 +5,6 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 
 @Entity
 @Table(name = "dues")
@@ -24,10 +23,18 @@ public class Dues extends BaseEntity {
 
     private BigDecimal duesAmount;
 
+    @Column(nullable = false)
+    private Boolean isDeleted;
+
 
     public void modifyDuesRule(DuesRuleRequestDto dto){
         this.duesDate=dto.getDuesDate();
         this.duesAmount=dto.getDuesAmount();
+        this.isDeleted=false;
+    }
+
+    public void deleteDuesRule(){
+        this.isDeleted = true;
     }
 
 }
