@@ -56,4 +56,10 @@ public class TeamController {
     public InviteTeamResDto inviteTeam(@RequestParam String inviter, @RequestParam Long teamNo) {
         return teamService.inviteTeam(inviter, teamNo);
     }
+
+    //여행 즐겨찾기
+    @PutMapping("/team/preference")
+    public void updateTeamPreference(@RequestBody UpdateTeamPreferenceReqDto dto) {
+        teamService.updateTeamPreference(dto);
+    }
 }
