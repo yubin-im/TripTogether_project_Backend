@@ -53,6 +53,8 @@ public class DuesService {
         Dues dues = duesRepository.findDuesByTeamIdx(teamIdx);
         if (dues == null) {
             return null;
+        }else if(dues.getIsDeleted()){
+            return null;
         }
         return DuesRuleResponseDto.builder().duesDate(String.valueOf(dues.getDuesDate())).duesAmount(dues.getDuesAmount()).build();
     }
