@@ -3,7 +3,6 @@ package com.hanaro.triptogether.dues.service;
 import com.hanaro.triptogether.account.domain.AccountTransactionDetailsRepository;
 import com.hanaro.triptogether.dues.domain.entity.Dues;
 import com.hanaro.triptogether.dues.domain.repository.DuesRepository;
-import com.hanaro.triptogether.dues.dto.request.DuesDetailRequestDto;
 import com.hanaro.triptogether.dues.dto.request.DuesRuleRequestDto;
 import com.hanaro.triptogether.dues.dto.response.*;
 import com.hanaro.triptogether.teamMember.domain.TeamMember;
@@ -13,7 +12,6 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.YearMonth;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,8 +24,8 @@ public class DuesService {
     private final TeamMemberRepository teamMemberRepository;
 
 
-    public DuesDetailTotalAmountResponseDto getDuesDetailTotalAmount(DuesDetailRequestDto duesDetailRequestDto) {
-        return accountTransactionDetailsRepository.findSumOfTransAmountByMemberIdx(duesDetailRequestDto.getAccIdx(),duesDetailRequestDto.getMemberIdx());
+    public DuesDetailTotalAmountResponseDto getDuesDetailTotalAmount(Long accIdx, Long memberIdx) {
+        return accountTransactionDetailsRepository.findSumOfTransAmountByMemberIdx(accIdx,memberIdx);
     }
 
     public List<DuesDetailYearTotalAmountResponseDto> getDuesDetailByMonthAmount(Long accIdx, Long memberIdx, String duesYear){
