@@ -11,6 +11,7 @@ public enum ExceptionEnum {
 
     // ----team
     TEAM_NOT_FOUND(HttpStatus.BAD_REQUEST,"TEAM_NOT_FOUND","해당하는 모임이 없습니다."),
+    TEAM_AND_TRIP_NOT_MATCH(HttpStatus.BAD_REQUEST,"TEAM_AND_TRIP_NOT_MATCH","팀 정보와 여행 정보가 일치하지 않습니다."),
 
     //---------team member
     TEAM_MEMBER_NOT_FOUND(HttpStatus.BAD_REQUEST, "TEAM_MEMBER_NOT_FOUND","해당하는 팀원IDX가 없습니다."),

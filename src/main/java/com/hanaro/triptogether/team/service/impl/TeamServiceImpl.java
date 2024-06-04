@@ -16,6 +16,9 @@ import com.hanaro.triptogether.team.dto.response.ManageTeamResDto;
 import com.hanaro.triptogether.team.service.TeamService;
 import com.hanaro.triptogether.teamMember.domain.TeamMember;
 import com.hanaro.triptogether.teamMember.domain.TeamMemberRepository;
+import com.hanaro.triptogether.trip.domain.Trip;
+import com.hanaro.triptogether.trip.domain.TripRepository;
+import com.hanaro.triptogether.trip.service.TripService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,6 +29,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class TeamServiceImpl implements TeamService {
+    private final TripRepository tripRepository;
     private final TeamRepository teamRepository;
     private final AccountRepository accountRepository;
     private final TeamMemberRepository teamMemberRepository;
@@ -155,5 +159,20 @@ public class TeamServiceImpl implements TeamService {
     @Override
     public Team findTeamByTeamIdx(Long teamIdx) {
         return teamRepository.findById(teamIdx).orElseThrow(()->new ApiException(ExceptionEnum.TEAM_NOT_FOUND));
+    }
+
+    @Override
+    public void updateTeamPreference(UpdateTeamPreferenceReqDto dto) {
+        Team team = teamRepository.findById(dto.getTeamIdx()).orElseThrow(() -> new ApiException(ExceptionEnum.TEAM_NOT_FOUND));
+        Member member = memberRepository.findById(dto.getMemberIdx()).orElseThrow(() -> new ApiException(ExceptionEnum.MEMBER_NOT_FOUND));
+        Trip trip =null;
+        if(dto.getTripIdx() != null) {
+            trip = tripRepository.findById(dto.getTripIdx()).orElseThrow(() -> new ApiException(ExceptionEnum.TRIP_NOT_FOUND));
+            if(!trip.getTeam().equals(team)){
+                throw new ApiException(ExceptionEnum.TEAM_AND_TRIP_NOT_MATCH);
+            }
+        }
+        team.updatePreferTrip(trip, member);
+        teamRepository.save(team);
     }
 }

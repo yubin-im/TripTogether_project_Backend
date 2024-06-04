@@ -30,4 +30,6 @@ public interface TeamService {
 
     //모임 검색
     Team findTeamByTeamIdx(Long teamIdx);
+
+    void updateTeamPreference(UpdateTeamPreferenceReqDto dto);
 }

@@ -4,6 +4,7 @@ import com.hanaro.triptogether.account.domain.Account;
 import com.hanaro.triptogether.enumeration.PreferenceType;
 import com.hanaro.triptogether.enumeration.TeamType;
 import com.hanaro.triptogether.member.domain.Member;
+import com.hanaro.triptogether.trip.domain.Trip;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import lombok.*;
@@ -34,7 +35,11 @@ public class Team {
     private PreferenceType preferenceType;
 
     private String teamNotice;
-    private Long preferTrip;
+
+
+    @OneToOne
+    @JoinColumn(name = "prefer_trip")
+    private Trip preferTrip;
 
     @Column(nullable = false)
     private LocalDateTime createdAt;
@@ -63,5 +68,11 @@ public class Team {
     // 공지 등록/수정
     public void updateTeamNotice(String teamNotice) {
         this.teamNotice = teamNotice;
+    }
+
+    public void updatePreferTrip(Trip preferTrip, Member member) {
+        this.preferTrip = preferTrip;
+        this.lastModifiedBy = member;
+        this.lastModifiedAt=LocalDateTime.now();
     }
 }
