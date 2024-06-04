@@ -7,7 +7,9 @@ import com.hanaro.triptogether.exception.ExceptionEnum;
 import com.hanaro.triptogether.member.domain.Member;
 import com.hanaro.triptogether.team.domain.Team;
 import com.hanaro.triptogether.teamMember.domain.TeamMember;
+import com.hanaro.triptogether.teamMember.domain.TeamMemberRepository;
 import com.hanaro.triptogether.teamMember.service.impl.TeamMemberServiceImpl;
+import com.hanaro.triptogether.trip.domain.Trip;
 import com.hanaro.triptogether.tripPlace.domain.TripPlace;
 import com.hanaro.triptogether.tripPlace.service.TripPlaceService;
 import com.hanaro.triptogether.tripReply.domain.TripReply;
@@ -20,6 +22,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -36,6 +40,8 @@ class TripReplyServiceTest {
     private TeamMemberServiceImpl teamMemberService;
     @Mock
     private TripReplyRepository tripReplyRepository;
+    @Mock
+    private TeamMemberRepository teamMemberRepository;
 
     @Spy
     @InjectMocks
@@ -65,9 +71,23 @@ class TripReplyServiceTest {
         //given
         Long trip_place_idx=1L;
         TripReplyReqDto dto = createTripReplyReqDto();
-        TeamMember teamMember = createTeamMember(1L,Mockito.mock(Team.class), TeamMemberState.요청중);
-        given(teamMemberService.findTeamMemberByTeamMemberIdx(dto.getTeamMemberIdx())).willReturn(teamMember);
-        given(tripReplyService.validateAndReturn(trip_place_idx, dto.getTeamMemberIdx())).willThrow(new ApiException(ExceptionEnum.INVALID_TEAM_MEMBER_ROLE));
+        Team team = createTeam(1L);
+        TeamMember teamMember = createTeamMember(1L,team, TeamMemberState.요청중);
+        Trip trip = Trip.builder()
+                .tripIdx(1L)
+                .team(team)
+                .tripName("tripName")
+                .tripContent("tripContent")
+                .tripGoalAmount(BigDecimal.valueOf(100))
+                .tripDay(3)
+                .tripStartDay(LocalDate.of(2025, 1, 1))
+                .createdAt(LocalDateTime.now())
+                .build();
+
+        given(tripPlaceService.checkTripPlaceExists(trip_place_idx)).willReturn(TripPlace.builder().trip(trip).build());
+        given(teamMemberService.findTeamMemberByMemberIdxAndTeamIdx(dto.getMemberIdx(), team.getTeamIdx())).willReturn(teamMember);
+        given(tripPlaceService.findTeamIdByTripPlaceIdx(trip_place_idx)).willReturn(team.getTeamIdx());
+        given(tripReplyService.validateAndReturn(team.getTeamIdx(), trip_place_idx, dto.getMemberIdx())).willThrow(new ApiException(ExceptionEnum.INVALID_TEAM_MEMBER_ROLE));
         //when
         ApiException exception = assertThrows(ApiException.class, ()->tripReplyService.createReply(trip_place_idx, dto));
 
@@ -83,15 +103,27 @@ class TripReplyServiceTest {
         TripReplyReqDto dto = createTripReplyReqDto();
         Team team1 = createTeam(1L);
         Team team2 = createTeam(2L);
-        TeamMember teamMember = createTeamMember(1L, team1, TeamMemberState.총무);
-        given(teamMemberService.findTeamMemberByTeamMemberIdx(dto.getTeamMemberIdx())).willReturn(teamMember);
-        given(tripPlaceService.findTeamIdByTripPlaceIdx(trip_place_idx)).willReturn(team2.getTeamIdx());
+
+        Trip trip = Trip.builder()
+                .tripIdx(1L)
+                .team(team1)
+                .tripName("tripName")
+                .tripContent("tripContent")
+                .tripGoalAmount(BigDecimal.valueOf(100))
+                .tripDay(3)
+                .tripStartDay(LocalDate.of(2025, 1, 1))
+                .createdAt(LocalDateTime.now())
+                .build();
+
+        given(tripPlaceService.checkTripPlaceExists(trip_place_idx)).willReturn(TripPlace.builder().trip(trip).build());
+        given(teamMemberRepository.findTeamMemberByMember_MemberIdxAndTeam_TeamIdx(dto.getMemberIdx(), team2.getTeamIdx())).willReturn(Optional.empty());
+        given(teamMemberService.findTeamMemberByMemberIdxAndTeamIdx(dto.getMemberIdx(), trip.getTeam().getTeamIdx())).willThrow(new ApiException(ExceptionEnum.INVALID_TEAM_MEMBER));
 
         //when
         ApiException exception = assertThrows(ApiException.class, ()->tripReplyService.createReply(trip_place_idx, dto));
 
         //then
-        assertEquals( ExceptionEnum.TRIP_INFO_NOT_MATCH.getMessage(), exception.getMessage());
+        assertEquals( ExceptionEnum.INVALID_TEAM_MEMBER.getMessage(), exception.getMessage());
         then(tripReplyRepository).should(never()).save(any(TripReply.class));
     }
     @Test
@@ -99,8 +131,21 @@ class TripReplyServiceTest {
         //given
         Long trip_place_idx=1L;
         TripReplyReqDto dto = createTripReplyReqDto();
-        TeamMember teamMember = createTeamMember(1L,Mockito.mock(Team.class), TeamMemberState.총무);
-        given(teamMemberService.findTeamMemberByTeamMemberIdx(dto.getTeamMemberIdx())).willReturn(teamMember);
+        Team team1 = createTeam(1L);
+        Trip trip = Trip.builder()
+                .tripIdx(1L)
+                .team(team1)
+                .tripName("tripName")
+                .tripContent("tripContent")
+                .tripGoalAmount(BigDecimal.valueOf(100))
+                .tripDay(3)
+                .tripStartDay(LocalDate.of(2025, 1, 1))
+                .createdAt(LocalDateTime.now())
+                .build();
+        TeamMember teamMember = createTeamMember(1L,team1, TeamMemberState.총무);
+        given(tripPlaceService.checkTripPlaceExists(trip_place_idx)).willReturn(TripPlace.builder().trip(trip).build());
+        given(tripPlaceService.findTeamIdByTripPlaceIdx(trip_place_idx)).willReturn(team1.getTeamIdx());
+        given(teamMemberService.findTeamMemberByMemberIdxAndTeamIdx(dto.getMemberIdx(), team1.getTeamIdx())).willReturn(teamMember);
 
         //when
         tripReplyService.createReply(trip_place_idx, dto);
@@ -129,8 +174,22 @@ class TripReplyServiceTest {
         // given
         Long trip_place_idx = 1L;
         TripReplyUpdateReqDto dto = createTripReplyUpdateReqDto();
-        mockValidTripPlaceAndTeamMember(trip_place_idx, dto.getTeamMemberIdx());
+        mockValidTripPlaceAndTeamMember(trip_place_idx, dto.getMemberIdx());
         given(tripReplyRepository.findById(dto.getTripReplyIdx())).willReturn(Optional.empty());
+        TeamMember teamMember = createTeamMember(1L);
+        Team team = createTeam(1L);
+        Trip trip = Trip.builder()
+                .tripIdx(1L)
+                .team(team)
+                .tripName("tripName")
+                .tripContent("tripContent")
+                .tripGoalAmount(BigDecimal.valueOf(100))
+                .tripDay(3)
+                .tripStartDay(LocalDate.of(2025, 1, 1))
+                .createdAt(LocalDateTime.now())
+                .build();
+        given(tripPlaceService.checkTripPlaceExists(trip_place_idx)).willReturn(TripPlace.builder().trip(trip).build());
+        given(teamMemberService.findTeamMemberByMemberIdxAndTeamIdx(dto.getMemberIdx(), trip.getTeam().getTeamIdx())).willReturn(teamMember);
 
         // when
         ApiException exception = assertThrows(ApiException.class, () -> tripReplyService.updateReply(trip_place_idx, dto));
@@ -146,8 +205,22 @@ class TripReplyServiceTest {
         Long trip_place_idx = 1L;
         TripReplyUpdateReqDto dto = createTripReplyUpdateReqDto();
         TripReply tripReply = createTripReply(createTeamMember(2L));
-        mockValidTripPlaceAndTeamMember(trip_place_idx, dto.getTeamMemberIdx());
+        mockValidTripPlaceAndTeamMember(trip_place_idx, dto.getMemberIdx());
         given(tripReplyRepository.findById(dto.getTripReplyIdx())).willReturn(Optional.of(tripReply));
+        TeamMember teamMember = createTeamMember(1L);
+        Team team = createTeam(1L);
+        Trip trip = Trip.builder()
+                .tripIdx(1L)
+                .team(team)
+                .tripName("tripName")
+                .tripContent("tripContent")
+                .tripGoalAmount(BigDecimal.valueOf(100))
+                .tripDay(3)
+                .tripStartDay(LocalDate.of(2025, 1, 1))
+                .createdAt(LocalDateTime.now())
+                .build();
+        given(tripPlaceService.checkTripPlaceExists(trip_place_idx)).willReturn(TripPlace.builder().trip(trip).build());
+        given(teamMemberService.findTeamMemberByMemberIdxAndTeamIdx(dto.getMemberIdx(), trip.getTeam().getTeamIdx())).willReturn(teamMember);
 
         // when
         ApiException exception = assertThrows(ApiException.class, () -> tripReplyService.updateReply(trip_place_idx, dto));
@@ -164,8 +237,21 @@ class TripReplyServiceTest {
         TripReplyUpdateReqDto dto = createTripReplyUpdateReqDto();
         TeamMember teamMember = createTeamMember(1L);
         TripReply tripReply = createTripReply(teamMember);
-        mockValidTripPlaceAndTeamMember(trip_place_idx, dto.getTeamMemberIdx());
+        mockValidTripPlaceAndTeamMember(trip_place_idx, dto.getMemberIdx());
         given(tripReplyRepository.findById(dto.getTripReplyIdx())).willReturn(Optional.of(tripReply));
+        Team team = createTeam(1L);
+        Trip trip = Trip.builder()
+                .tripIdx(1L)
+                .team(team)
+                .tripName("tripName")
+                .tripContent("tripContent")
+                .tripGoalAmount(BigDecimal.valueOf(100))
+                .tripDay(3)
+                .tripStartDay(LocalDate.of(2025, 1, 1))
+                .createdAt(LocalDateTime.now())
+                .build();
+        given(tripPlaceService.checkTripPlaceExists(trip_place_idx)).willReturn(TripPlace.builder().trip(trip).build());
+        given(teamMemberService.findTeamMemberByMemberIdxAndTeamIdx(dto.getMemberIdx(), trip.getTeam().getTeamIdx())).willReturn(teamMember);
 
         // when
         tripReplyService.updateReply(trip_place_idx, dto);
@@ -195,8 +281,25 @@ class TripReplyServiceTest {
         // given
         Long trip_place_idx = 1L;
         TripReplyDeleteReqDto dto = createTripReplyDeleteReqDto();
-        mockValidTripPlaceAndTeamMember(trip_place_idx, dto.getTeamMemberIdx());
+        mockValidTripPlaceAndTeamMember(trip_place_idx, dto.getMemberIdx());
         given(tripReplyRepository.findById(dto.getTripReplyIdx())).willReturn(Optional.empty());
+
+        TeamMember teamMember = createTeamMember(1L);
+        Team team = createTeam(1L);
+        Trip trip = Trip.builder()
+                .tripIdx(1L)
+                .team(team)
+                .tripName("tripName")
+                .tripContent("tripContent")
+                .tripGoalAmount(BigDecimal.valueOf(100))
+                .tripDay(3)
+                .tripStartDay(LocalDate.of(2025, 1, 1))
+                .createdAt(LocalDateTime.now())
+                .build();
+        given(tripPlaceService.checkTripPlaceExists(trip_place_idx)).willReturn(TripPlace.builder().trip(trip).build());
+        given(teamMemberService.findTeamMemberByMemberIdxAndTeamIdx(dto.getMemberIdx(), trip.getTeam().getTeamIdx())).willReturn(teamMember);
+        given(tripReplyRepository.findById(dto.getTripReplyIdx())).willReturn(Optional.empty());
+
 
         // when
         ApiException exception = assertThrows(ApiException.class, () -> tripReplyService.deleteReply(trip_place_idx, dto));
@@ -212,8 +315,22 @@ class TripReplyServiceTest {
         Long trip_place_idx = 1L;
         TripReplyDeleteReqDto dto = createTripReplyDeleteReqDto();
         TripReply tripReply = createTripReply(createTeamMember(2L));
-        mockValidTripPlaceAndTeamMember(trip_place_idx, dto.getTeamMemberIdx());
+        mockValidTripPlaceAndTeamMember(trip_place_idx, dto.getMemberIdx());
         given(tripReplyRepository.findById(dto.getTripReplyIdx())).willReturn(Optional.of(tripReply));
+        TeamMember teamMember = createTeamMember(1L);
+        Team team = createTeam(1L);
+        Trip trip = Trip.builder()
+                .tripIdx(1L)
+                .team(team)
+                .tripName("tripName")
+                .tripContent("tripContent")
+                .tripGoalAmount(BigDecimal.valueOf(100))
+                .tripDay(3)
+                .tripStartDay(LocalDate.of(2025, 1, 1))
+                .createdAt(LocalDateTime.now())
+                .build();
+        given(tripPlaceService.checkTripPlaceExists(trip_place_idx)).willReturn(TripPlace.builder().trip(trip).build());
+        given(teamMemberService.findTeamMemberByMemberIdxAndTeamIdx(dto.getMemberIdx(), trip.getTeam().getTeamIdx())).willReturn(teamMember);
 
         // when
         ApiException exception = assertThrows(ApiException.class, () -> tripReplyService.deleteReply(trip_place_idx, dto));
@@ -230,7 +347,20 @@ class TripReplyServiceTest {
         TripReplyDeleteReqDto dto = createTripReplyDeleteReqDto();
         TeamMember teamMember = createTeamMember(1L);
         TripReply tripReply = createTripReply(teamMember);
-        mockValidTripPlaceAndTeamMember(trip_place_idx, dto.getTeamMemberIdx());
+        Team team = createTeam(1L);
+        Trip trip = Trip.builder()
+                .tripIdx(1L)
+                .team(team)
+                .tripName("tripName")
+                .tripContent("tripContent")
+                .tripGoalAmount(BigDecimal.valueOf(100))
+                .tripDay(3)
+                .tripStartDay(LocalDate.of(2025, 1, 1))
+                .createdAt(LocalDateTime.now())
+                .build();
+        mockValidTripPlaceAndTeamMember(trip_place_idx, dto.getMemberIdx());
+        given(tripPlaceService.checkTripPlaceExists(trip_place_idx)).willReturn(TripPlace.builder().trip(trip).build());
+        given(teamMemberService.findTeamMemberByMemberIdxAndTeamIdx(dto.getMemberIdx(), trip.getTeam().getTeamIdx())).willReturn(teamMember);
         given(tripReplyRepository.findById(dto.getTripReplyIdx())).willReturn(Optional.of(tripReply));
 
         // when
@@ -280,7 +410,7 @@ class TripReplyServiceTest {
     private TripReplyReqDto createTripReplyReqDto() {
         return TripReplyReqDto.builder()
                 .tripReplyContent("test")
-                .teamMemberIdx(1L)
+                .memberIdx(1L)
                 .build();
     }
 
@@ -288,14 +418,14 @@ class TripReplyServiceTest {
         return TripReplyUpdateReqDto.builder()
                 .tripReplyIdx(1L)
                 .tripReplyContent("updated content")
-                .teamMemberIdx(1L)
+                .memberIdx(1L)
                 .build();
     }
 
     private TripReplyDeleteReqDto createTripReplyDeleteReqDto() {
         return TripReplyDeleteReqDto.builder()
                 .tripReplyIdx(1L)
-                .teamMemberIdx(1L)
+                .memberIdx(1L)
                 .build();
     }
 

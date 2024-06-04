@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -203,5 +204,14 @@ public class TeamMemberServiceImpl implements TeamMemberService {
     public TeamMember checkIsMyTeamByTeamMemberIdx(Long team_member_idx) {
         return teamMemberRepository.findById(team_member_idx)
                 .orElseThrow(() -> new ApiException(ExceptionEnum.INVALID_TEAM_MEMBER));
+    }
+
+    @Override
+    public TeamMember findTeamMemberByMemberIdxAndTeamIdx(Long memberIdx, Long teamIdx) {
+        Optional<TeamMember> teamMember = teamMemberRepository.findTeamMemberByMember_MemberIdxAndTeam_TeamIdx(memberIdx, teamIdx);
+        if(teamMember.isEmpty()) {
+            throw new ApiException(ExceptionEnum.INVALID_TEAM_MEMBER);
+        }
+        return teamMember.get();
     }
 }
