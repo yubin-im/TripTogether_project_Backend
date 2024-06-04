@@ -2,6 +2,8 @@ package com.hanaro.triptogether.dues.domain.entity;
 
 import com.hanaro.triptogether.member.domain.Member;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -12,6 +14,8 @@ import java.time.LocalDateTime;
 
 @EntityListeners(value = {AuditingEntityListener.class})
 @MappedSuperclass
+@Getter
+@Setter
 public class BaseEntity {
 
     @CreatedDate                            // 엔티티가 생성되어 저장될 때 시간을 자동으로 저장함

@@ -14,6 +14,7 @@ import java.math.BigDecimal;
 import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -26,6 +27,12 @@ public class DuesService {
 
     public DuesDetailTotalAmountResponseDto getDuesDetailTotalAmount(Long accIdx, Long memberIdx) {
         return accountTransactionDetailsRepository.findSumOfTransAmountByMemberIdx(accIdx,memberIdx);
+    }
+
+    public void deleteDuesRule(Long teamIdx){
+        Dues dues = duesRepository.findDuesByTeamIdx(teamIdx);
+        dues.deleteDuesRule();
+        duesRepository.save(dues);
     }
 
     public List<DuesDetailYearTotalAmountResponseDto> getDuesDetailByMonthAmount(Long accIdx, Long memberIdx, String duesYear){
@@ -57,32 +64,45 @@ public class DuesService {
 
         List<TeamMember> teamMembers = teamMemberRepository.findAllByTeamIdx(teamIdx);
 
-        if(paid) {
-            for (TeamMember member :teamMembers) {
+        BigDecimal teamDuesAmount = getTeamDuesAmount(teamIdx);
 
-                DuesListMemberResponseDto responseDto = accountTransactionDetailsRepository.findUsersWithTransAmountGreaterThanOrEqual(accIdx, member.getMember().getMemberIdx(), date.getYear(), date.getMonthValue(), getTeamDuesAmount(teamIdx));
-                if (responseDto != null){
+        if (paid) {
+            for (TeamMember member : teamMembers) {
+                DuesListMemberResponseDto responseDto = accountTransactionDetailsRepository.findUsersWithTransAmountGreaterThanOrEqual(accIdx, member.getMember().getMemberIdx(), date.getYear(), date.getMonthValue(), teamDuesAmount);
+                if (responseDto != null) {
                     duesListMemberResponseDtos.add(responseDto);
                 }
             }
-        }
-        else {
-            for (TeamMember member :teamMembers) {
-                DuesListMemberResponseDto responseDto = accountTransactionDetailsRepository.findUsersWithTransAmountLessThan(accIdx, member.getMember().getMemberIdx(), date.getYear(), date.getMonthValue(), getTeamDuesAmount(teamIdx));
-                if (responseDto != null){
-                    duesListMemberResponseDtos.add(responseDto);
-                }else {
-                    duesListMemberResponseDtos.add(DuesListMemberResponseDto.builder().memberName(member.getMember().getMemberName()).memberIdx(member.getMember().getMemberIdx()).memberAmount(BigDecimal.valueOf(0)).build());
+        } else {
+            for (TeamMember member : teamMembers) {
+                DuesListMemberResponseDto responseDto = accountTransactionDetailsRepository.findUsersWithTransAmountLessThan(accIdx, member.getMember().getMemberIdx(), date.getYear(), date.getMonthValue(), teamDuesAmount);
+                DuesListMemberResponseDto paidResponseDto = accountTransactionDetailsRepository.findUsersWithTransAmountGreaterThanOrEqual(accIdx, member.getMember().getMemberIdx(), date.getYear(), date.getMonthValue(), teamDuesAmount);
 
+                if (responseDto != null) {
+                    duesListMemberResponseDtos.add(responseDto);
+                } else if (paidResponseDto != null && Objects.equals(paidResponseDto.getMemberIdx(), member.getTeamMemberIdx())) {
+                    continue;
+                } else {
+                    duesListMemberResponseDtos.add(DuesListMemberResponseDto.builder()
+                            .memberName(member.getMember().getMemberName())
+                            .memberIdx(member.getMember().getMemberIdx())
+                            .memberAmount(BigDecimal.ZERO)
+                            .build());
                 }
             }
         }
         duesTotalAmount = accountTransactionDetailsRepository.findTotalTransAmountByAccIdxAndYearAndMonth(accIdx,date.getYear(),date.getMonthValue());
+        if (duesTotalAmount == null) {
+            duesTotalAmount = BigDecimal.ZERO;
+        }
         return DuesListResponseDto.builder().duesTotalAmount(duesTotalAmount).memberResponseDtos(duesListMemberResponseDtos).build();
     }
 
     private BigDecimal getTeamDuesAmount(Long teamIdx){
         Dues dues = duesRepository.findDuesByTeamIdx(teamIdx);
+        if (dues == null) {
+            return null;
+        }
         return dues.getDuesAmount();
     }
 
