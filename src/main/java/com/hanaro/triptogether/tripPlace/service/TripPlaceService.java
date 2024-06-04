@@ -64,7 +64,10 @@ public class TripPlaceService {
         TripPlace tripPlace = checkTripPlaceExists(trip_placeIdx);
         validateTeamMember(tripPlace.getTrip().getTeam(), dto.getMemberIdx());
 
-        PlaceEntity place = placeService.findByPlaceIdx(dto.getPlaceIdx());
+        PlaceEntity place = null;
+        if(dto.getPlaceIdx()!=0){
+            place = placeService.findByPlaceIdx(dto.getPlaceIdx());
+        }
         Member member = memberService.findByMemberIdx(dto.getMemberIdx());
         tripPlace.update(place, dto.getPlaceAmount(), dto.getPlaceMemo(), member);
     }
@@ -139,7 +142,10 @@ public class TripPlaceService {
         List<TripPlaceUpdateAddReqDto> dtos = reqDto.getNewPlaces();
         for(TripPlaceUpdateAddReqDto dto : dtos) {
             validateTripDate(trip, dto.getTripDate());
-            PlaceEntity place = placeService.findByPlaceIdx(dto.getPlaceIdx());
+            PlaceEntity place = null;
+            if(dto.getPlaceIdx()!=0){
+                place = placeService.findByPlaceIdx(dto.getPlaceIdx());
+            }
             TripPlace tripPlace = TripPlace.builder()
                     .trip(trip)
                     .tripDate(dto.getTripDate())
