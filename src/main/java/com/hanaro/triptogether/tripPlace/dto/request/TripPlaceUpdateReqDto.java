@@ -1,15 +1,12 @@
 package com.hanaro.triptogether.tripPlace.dto.request;
 
-import lombok.Builder;
 import lombok.Getter;
 
-import java.math.BigDecimal;
+import java.util.List;
 
 @Getter
-@Builder
 public class TripPlaceUpdateReqDto {
-    private Long placeIdx;
-    private BigDecimal placeAmount;
-    private String placeMemo;
-    private Long memberIdx; //수정자 idx
+    private Long memberIdx;
+    private List<TripPlaceUpdateAddReqDto> newPlaces; // 추가된 장소
+    private List<TripPlaceOrderReqDto> orders; //전체 순서
 }

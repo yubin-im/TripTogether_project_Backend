@@ -13,10 +13,7 @@ import com.hanaro.triptogether.trip.domain.Trip;
 import com.hanaro.triptogether.trip.service.TripService;
 import com.hanaro.triptogether.tripPlace.domain.TripPlace;
 import com.hanaro.triptogether.tripPlace.domain.TripPlaceRepository;
-import com.hanaro.triptogether.tripPlace.dto.request.TripPlaceAddReqDto;
-import com.hanaro.triptogether.tripPlace.dto.request.TripPlaceOrderReqDto;
-import com.hanaro.triptogether.tripPlace.dto.request.TripPlaceUpdateReqDto;
-import com.hanaro.triptogether.tripPlace.dto.request.UpdateOrderReqDto;
+import com.hanaro.triptogether.tripPlace.dto.request.*;
 import com.hanaro.triptogether.tripPlace.dto.response.TripPlaceResDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -25,6 +22,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 
 @Service
@@ -60,7 +60,7 @@ public class TripPlaceService {
     }
 
     @Transactional
-    public void updatePlace(Long trip_placeIdx, TripPlaceUpdateReqDto dto) {
+    public void updatePlace(Long trip_placeIdx, TripPlaceUpdateInfoReqDto dto) {
         TripPlace tripPlace = checkTripPlaceExists(trip_placeIdx);
         validateTeamMember(tripPlace.getTrip().getTeam(), dto.getMemberIdx());
 
@@ -69,29 +69,29 @@ public class TripPlaceService {
         tripPlace.update(place, dto.getPlaceAmount(), dto.getPlaceMemo(), member);
     }
 
-@Transactional
-public void updatePlaceOrder(Long tripIdx, UpdateOrderReqDto reqDto) {
+    @Transactional
+    public void updatePlaceOrder(Long tripIdx, UpdateOrderReqDto reqDto) {
 
-    Trip trip = tripService.findByTripIdx(tripIdx);
+        Trip trip = tripService.findByTripIdx(tripIdx);
 
-    validateTeamMember(trip.getTeam(), reqDto.getMemberIdx());
-    Member member = memberService.findByMemberIdx(reqDto.getMemberIdx());
-    List<TripPlaceOrderReqDto> dtos = reqDto.getOrders();
-    int num = tripPlaceRepository.countByTripId(tripIdx);
+        validateTeamMember(trip.getTeam(), reqDto.getMemberIdx());
+        Member member = memberService.findByMemberIdx(reqDto.getMemberIdx());
+        List<TripPlaceOrderReqDto> dtos = reqDto.getOrders();
+        int num = tripPlaceRepository.countByTripId(tripIdx);
 
-    if (dtos.stream().map(TripPlaceOrderReqDto::getTripPlaceIdx).distinct().count() != num){ //중복 및 사이즈 체크
-        throw new ApiException(ExceptionEnum.INVALID_ORDER_LIST);
-    }
-
-    for (TripPlaceOrderReqDto dto : dtos) {
-        validateTripDate(trip, dto.getTripDate());
-        TripPlace tripPlace = checkTripPlaceExists(dto.getTripPlaceIdx());
-        if (!Objects.equals(tripPlace.getTrip().getTripIdx(), tripIdx)) {
-            throw new ApiException(ExceptionEnum.TEAM_NOT_MATCH);
+        if (dtos.stream().map(TripPlaceOrderReqDto::getTripPlaceIdx).distinct().count() != num){ //중복 및 사이즈 체크
+            throw new ApiException(ExceptionEnum.INVALID_ORDER_LIST);
         }
-        tripPlace.updateOrder(dto.getPlaceOrder(), dto.getTripDate(), member);
+
+        for (TripPlaceOrderReqDto dto : dtos) {
+            validateTripDate(trip, dto.getTripDate());
+            TripPlace tripPlace = checkTripPlaceExists(dto.getTripPlaceIdx());
+            if (!Objects.equals(tripPlace.getTrip().getTripIdx(), tripIdx)) {
+                throw new ApiException(ExceptionEnum.TEAM_NOT_MATCH);
+            }
+            tripPlace.updateOrder(dto.getPlaceOrder(), dto.getTripDate(), member);
+        }
     }
-}
 
 
     public List<TripPlaceResDto> getPlace(Long tripIdx) {
@@ -110,6 +110,62 @@ public void updatePlaceOrder(Long tripIdx, UpdateOrderReqDto reqDto) {
 
         // placeOrder 감소
         tripPlaceRepository.decrementPlaceOrderAfter(tripId, deletedPlaceOrder);
+    }
+
+    @Transactional
+    public void updateTripPlace(Long tripIdx, TripPlaceUpdateReqDto reqDto) {
+        Trip trip = tripService.findByTripIdx(tripIdx);
+        validateTeamMember(trip.getTeam(), reqDto.getMemberIdx());
+        Member member = memberService.findByMemberIdx(reqDto.getMemberIdx());
+
+        //삭제 감지 및 삭제
+        List<TripPlace> prevPlaces = tripPlaceRepository.findAllByTrip_TripIdxOrderByTripDateAscPlaceOrderAsc(tripIdx);
+
+        // TripPlaceOrderReqDto 리스트에서 tripPlaceIdx들을 Set으로 추출
+        Set<Long> newPlaceIds = reqDto.getOrders().stream()
+                .map(TripPlaceOrderReqDto::getTripPlaceIdx)
+                .collect(Collectors.toSet());
+
+        // 이전 리스트에서 삭제할 tripPlaceIdx들을 찾는다.
+        List<TripPlace> placesToDelete = prevPlaces.stream()
+                .filter(place -> !newPlaceIds.contains(place.getTripPlaceIdx()))
+                .collect(Collectors.toList());
+
+        // 삭제할 곳들을 데이터베이스에서 삭제한다.
+        tripPlaceRepository.deleteAll(placesToDelete);
+
+
+        //추가
+        List<TripPlaceUpdateAddReqDto> dtos = reqDto.getNewPlaces();
+        for(TripPlaceUpdateAddReqDto dto : dtos) {
+            validateTripDate(trip, dto.getTripDate());
+            PlaceEntity place = placeService.findByPlaceIdx(dto.getPlaceIdx());
+            TripPlace tripPlace = TripPlace.builder()
+                    .trip(trip)
+                    .tripDate(dto.getTripDate())
+                    .placeOrder(dto.getPlaceOrder())
+                    .place(place)
+                    .placeAmount(dto.getPlaceAmount())
+                    .placeMemo(dto.getPlaceMemo())
+                    .createdAt(LocalDateTime.now())
+                    .createdBy(member)
+                    .build();
+            tripPlaceRepository.save(tripPlace);
+        }
+
+        //순서 변경
+        List<TripPlaceOrderReqDto> orderDtos = reqDto.getOrders();
+
+        for (TripPlaceOrderReqDto dto : orderDtos) {
+            validateTripDate(trip, dto.getTripDate());
+            if(dto.getTripPlaceIdx()==0) continue;
+            TripPlace tripPlace = checkTripPlaceExists(dto.getTripPlaceIdx());
+            if (!Objects.equals(tripPlace.getTrip().getTripIdx(), tripIdx)) {
+                throw new ApiException(ExceptionEnum.TEAM_NOT_MATCH);
+            }
+            tripPlace.updateOrder(dto.getPlaceOrder(), dto.getTripDate(), member);
+        }
+
     }
 
     public TripPlace checkTripPlaceExists(Long trip_placeIdx){
