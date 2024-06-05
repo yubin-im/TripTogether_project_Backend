@@ -59,7 +59,7 @@ public class TripService {
             dtos.add(toTripResDto(trip));
         }
 
-        return TripListResDto.builder().trips(dtos).preferTripIdx(team.getPreferTrip().getTripIdx()).build();
+        return TripListResDto.builder().trips(dtos).preferTripIdx(team.getPreferTrip()==null? null: team.getPreferTrip().getTripIdx()).build();
     }
 
     @Transactional
