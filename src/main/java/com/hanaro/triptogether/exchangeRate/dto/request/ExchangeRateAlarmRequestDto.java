@@ -4,6 +4,7 @@ import com.hanaro.triptogether.common.BigDecimalConverter;
 import com.hanaro.triptogether.enumeration.ExchangeRateAlarmType;
 import com.hanaro.triptogether.exchangeRate.domain.entity.ExchangeRate;
 import com.hanaro.triptogether.exchangeRate.domain.entity.ExchangeRateAlarm;
+import com.hanaro.triptogether.member.domain.Member;
 import com.hanaro.triptogether.team.domain.Team;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,15 +17,15 @@ import java.math.BigDecimal;
 @ToString
 public class ExchangeRateAlarmRequestDto {
 
-    private Long teamIdx;
+    private Long memberIdx;
     private String curCode;
     private String curRate;
     private ExchangeRateAlarmType rateAlarmType;
     private String fcmToken;
 
-    public ExchangeRateAlarm toEntity(Team team, ExchangeRate exchangeRate) {
+    public ExchangeRateAlarm toEntity(Member member, ExchangeRate exchangeRate) {
         return ExchangeRateAlarm.builder()
-                .team(team)
+                .member(member)
                 .fcmToken(fcmToken)
                 .exchangeRate(exchangeRate)
                 .rateType(rateAlarmType)

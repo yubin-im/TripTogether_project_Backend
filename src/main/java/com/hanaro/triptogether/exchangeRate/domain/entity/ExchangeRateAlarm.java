@@ -1,6 +1,7 @@
 package com.hanaro.triptogether.exchangeRate.domain.entity;
 import com.hanaro.triptogether.dues.domain.entity.BaseEntity;
 import com.hanaro.triptogether.enumeration.ExchangeRateAlarmType;
+import com.hanaro.triptogether.member.domain.Member;
 import com.hanaro.triptogether.team.domain.Team;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -17,18 +18,19 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ExchangeRateAlarm extends BaseEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "alarm_idx")
+    @Column(name = "exchange_rate_alarm_idx")
     private Long alarmIdx;
-
-    @ManyToOne
-    @JoinColumn(name = "team_idx", nullable = false)
-    private Team team;
 
     @ManyToOne
     @JoinColumn(name = "cur_idx", nullable = false)
     private ExchangeRate exchangeRate;
+
+    @ManyToOne
+    @JoinColumn(name = "member_idx", nullable = false)
+    private Member member;
 
     @Column(name = "cur_Code", nullable = false)
     private String curCode;
