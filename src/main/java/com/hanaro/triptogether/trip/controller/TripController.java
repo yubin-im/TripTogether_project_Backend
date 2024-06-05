@@ -1,6 +1,7 @@
 package com.hanaro.triptogether.trip.controller;
 
 import com.hanaro.triptogether.trip.dto.request.TripReqDto;
+import com.hanaro.triptogether.trip.dto.response.TripListResDto;
 import com.hanaro.triptogether.trip.dto.response.TripResDto;
 import com.hanaro.triptogether.trip.service.TripService;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +24,7 @@ public class TripController {
     }
 
     @GetMapping("/teams/{team_idx}")
-    public List<TripResDto> getTrips(@PathVariable("team_idx") Long team_idx) {
+    public TripListResDto getTrips(@PathVariable("team_idx") Long team_idx) {
         return tripService.getTripsByTeam(team_idx);
     }
 
