@@ -40,16 +40,17 @@ public class AccountServiceImpl implements AccountService {
 
         List<Team> teams = teamRepository.findTeamsByMemberIdx(memberIdx);
 
-        for(int i = 0; i < teams.size(); i++) {
-            Optional<TeamMember> teamMember=  teamMemberRepository.findTeamMemberByMember_MemberIdxAndTeam_TeamIdx(memberIdx, teams.get(i).getTeamIdx());
-            if(teamMember.isPresent() && (teamMember.get().getTeamMemberState() == TeamMemberState.총무 || teamMember.get().getTeamMemberState() == TeamMemberState.모임원)) {
+        for (Team team : teams) {
+            if (team.getDeletedAt() != null || team.getDeletedBy()!=null ) continue;
+            Optional<TeamMember> teamMember = teamMemberRepository.findTeamMemberByMember_MemberIdxAndTeam_TeamIdx(memberIdx, team.getTeamIdx());
+            if (teamMember.isPresent() && (teamMember.get().getTeamMemberState() == TeamMemberState.총무 || teamMember.get().getTeamMemberState() == TeamMemberState.모임원)) {
                 Long teamMemberIdx = teamMember.get().getTeamMemberIdx();
                 TeamServiceListResDto teamServiceListResDto = TeamServiceListResDto.builder()
-                        .accIdx(teams.get(i).getAccount().getAccIdx())
-                        .accNumber(teams.get(i).getAccount().getAccNumber())
-                        .accBalance(teams.get(i).getAccount().getAccBalance())
-                        .teamName(teams.get(i).getTeamName())
-                        .teamIdx(teams.get(i).getTeamIdx())
+                        .accIdx(team.getAccount().getAccIdx())
+                        .accNumber(team.getAccount().getAccNumber())
+                        .accBalance(team.getAccount().getAccBalance())
+                        .teamName(team.getTeamName())
+                        .teamIdx(team.getTeamIdx())
                         .teamMemberIdx(teamMemberIdx)
                         .teamMemberState(teamMember.get().getTeamMemberState().name())
                         .build();
