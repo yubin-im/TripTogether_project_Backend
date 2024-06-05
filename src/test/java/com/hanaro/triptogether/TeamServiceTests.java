@@ -145,6 +145,7 @@ public class TeamServiceTests {
         assertEquals(account.getAccNumber(), result.getAccNumber());
         assertEquals(account.getAccBalance(), result.getAccBalance());
         assertEquals(member.getAlarmStatus(), result.getAlarmStatus());
+        assertEquals(account.getAccIdx(), result.getAccIdx());
 
         verify(teamRepository, times(1)).findById(teamIdx);
     }

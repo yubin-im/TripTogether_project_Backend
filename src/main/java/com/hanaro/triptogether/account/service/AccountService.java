@@ -13,9 +13,9 @@ public interface AccountService {
     // 전체 계좌 조회 (계좌 선택 기능)
     List<AccountsResDto> accounts(Long memberIdx);
 
-    // 계좌 입금
+    // 계좌 입출금
     void depositAcc(UpdateAccBalanceReq updateAccBalanceReq);
 
     // 계좌 출금
-    void withdrawAcc(UpdateAccBalanceReq updateAccBalanceReq);
+//    void withdrawAcc(UpdateAccBalanceReq updateAccBalanceReq);
 }

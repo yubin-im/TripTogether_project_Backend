@@ -113,6 +113,7 @@ public class TeamServiceImpl implements TeamService {
                 .accNumber(account.getAccNumber())
                 .accBalance(account.getAccBalance())
                 .alarmStatus(member.getAlarmStatus())
+                .accIdx(account.getAccIdx())
                 .build();
 
         return manageTeamResDto;

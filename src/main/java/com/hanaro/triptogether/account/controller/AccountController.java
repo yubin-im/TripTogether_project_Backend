@@ -32,15 +32,15 @@ public class AccountController {
         return accountService.accounts(memberIdx);
     }
 
-    // 계좌 입금
+    // 계좌 입출금
     @PutMapping("/account/deposit")
     public void depositAcc(@RequestBody UpdateAccBalanceReq updateAccBalanceReq) {
         accountService.depositAcc(updateAccBalanceReq);
     }
 
     // 계좌 출금
-    @PutMapping("/account/withdraw")
-    public void withdrawAcc(@RequestBody UpdateAccBalanceReq updateAccBalanceReq) {
-        accountService.withdrawAcc(updateAccBalanceReq);
-    }
+//    @PutMapping("/account/withdraw")
+//    public void withdrawAcc(@RequestBody UpdateAccBalanceReq updateAccBalanceReq) {
+//        accountService.withdrawAcc(updateAccBalanceReq);
+//    }
 }
