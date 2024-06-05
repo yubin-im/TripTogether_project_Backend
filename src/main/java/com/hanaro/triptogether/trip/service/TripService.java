@@ -52,9 +52,7 @@ public class TripService {
 
     public List<TripResDto> getTripsByTeam(Long teamIdx) {
         teamService.findTeamByTeamIdx(teamIdx); // 팀 확인
-        System.out.println("팀 존재~~");
         List<Trip> trips = tripRepository.findAllByTeam_TeamIdx(teamIdx);
-        System.out.println("여행 사이즈~~"+trips.size());
         List<TripResDto> dtos = new ArrayList<>();
         for (Trip trip : trips) {
             dtos.add(toTripResDto(trip));
@@ -163,5 +161,12 @@ public class TripService {
                 .countryNameKo(country.getCountryNameKo())
                 .cities(cities)
                 .build();
+    }
+
+    @Transactional
+    public void setGoalAmount(Long tripIdx, BigDecimal goalAmount) {
+        Trip trip = tripRepository.findById(tripIdx)
+                .orElseThrow(() -> new ApiException(ExceptionEnum.TRIP_NOT_FOUND));
+        tripRepository.updateGoalAmount(tripIdx, goalAmount);
     }
 }
