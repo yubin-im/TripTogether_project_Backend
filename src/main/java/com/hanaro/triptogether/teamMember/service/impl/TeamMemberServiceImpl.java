@@ -37,12 +37,14 @@ public class TeamMemberServiceImpl implements TeamMemberService {
         Team team = teamRepository.findById(teamIdx).orElseThrow(() -> new ApiException(ExceptionEnum.TEAM_NOT_FOUND));
         List<TeamMember> teamMembers = teamMemberRepository.findTeamMembersByTeam(team);
 
-        for(int i = 0; i < teamMembers.size(); i++) {
+        for (TeamMember teamMember : teamMembers) {
+            if(teamMember.getDeletedBy()!=null || teamMember.getDeletedAt()!=null ) continue;
+
             TeamMembersResDto teamMembersResDto = TeamMembersResDto.builder()
-                    .teamMemberIdx(teamMembers.get(i).getTeamMemberIdx())
-                    .memberName(teamMembers.get(i).getMember().getMemberName())
-                    .teamMemberState(teamMembers.get(i).getTeamMemberState())
-                    .memberIdx(teamMembers.get(i).getMember().getMemberIdx())
+                    .teamMemberIdx(teamMember.getTeamMemberIdx())
+                    .memberName(teamMember.getMember().getMemberName())
+                    .teamMemberState(teamMember.getTeamMemberState())
+                    .memberIdx(teamMember.getMember().getMemberIdx())
                     .build();
 
             teamMembersResDtos.add(teamMembersResDto);
