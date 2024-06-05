@@ -53,6 +53,7 @@ public class AccountServiceImpl implements AccountService {
                         .teamIdx(team.getTeamIdx())
                         .teamMemberIdx(teamMemberIdx)
                         .teamMemberState(teamMember.get().getTeamMemberState().name())
+                        .preferTripIdx(team.getPreferTrip()==null? null: team.getPreferTrip().getTripIdx())
                         .build();
                 teamServiceListResDtos.add(teamServiceListResDto);
             }
