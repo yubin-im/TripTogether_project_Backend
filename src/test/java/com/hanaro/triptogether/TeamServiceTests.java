@@ -12,6 +12,7 @@ import com.hanaro.triptogether.team.dto.response.*;
 import com.hanaro.triptogether.team.service.impl.TeamServiceImpl;
 import com.hanaro.triptogether.teamMember.domain.TeamMember;
 import com.hanaro.triptogether.teamMember.domain.TeamMemberRepository;
+import com.hanaro.triptogether.trip.domain.Trip;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -51,6 +52,7 @@ public class TeamServiceTests {
     private Long memberIdx = 1L;
     private TeamMember teamMember;
     private Long teamMemberIdx = 1L;
+    private Trip trip;
 
     @BeforeEach
     void setUp() {
@@ -75,6 +77,10 @@ public class TeamServiceTests {
                 .createdAt(LocalDateTime.now())
                 .build();
 
+        trip = Trip.builder()
+                .tripIdx(1L)
+                .build();
+
         team = Team.builder()
                 .teamIdx(teamIdx)
                 .account(account)
@@ -82,6 +88,7 @@ public class TeamServiceTests {
                 .preferenceType(PreferenceType.해외)
                 .teamNotice("Team Notice")
                 .createdAt(LocalDateTime.now())
+                .preferTrip(trip)
                 .build();
 
         teamMember = TeamMember.builder()
