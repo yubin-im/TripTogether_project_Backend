@@ -43,4 +43,8 @@ public class Member {
     public void updateAlarm(Boolean alarmStatus) {
         this.alarmStatus = alarmStatus;
     }
+
+    public void setFcmToken(String fcmToken) {
+        this.fcmToken = fcmToken;
+    }
 }

@@ -46,7 +46,7 @@ public class MemberServiceTests {
         when(memberRepository.findMemberByMemberIdxAndMemberLoginPw(1L, "123456")).thenReturn(member);
 
         // When
-        LoginResDto result = memberService.login(1L, "123456");
+        LoginResDto result = memberService.login(1L, "123456","");
 
         // Then
         assertEquals("로그인이 완료되었습니다!", result.getMessage());
@@ -60,7 +60,7 @@ public class MemberServiceTests {
         when(memberRepository.findMemberByMemberIdxAndMemberLoginPw(1L, "123456")).thenReturn(member);
 
         // When
-        LoginResDto result = memberService.login(1L, "456789");
+        LoginResDto result = memberService.login(1L, "456789","");
 
         // Then
         assertEquals("비밀번호가 맞지 않습니다.", result.getMessage());

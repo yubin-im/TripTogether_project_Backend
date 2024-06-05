@@ -6,4 +6,5 @@ import lombok.Getter;
 public class LoginReqDto {
     private Long memberIdx;
     private String memberLoginPw;
+    private String fcmToken;
 }
