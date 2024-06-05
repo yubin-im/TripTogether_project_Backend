@@ -27,7 +27,7 @@ public class MemberController {
         HttpSession session = request.getSession();
         session.setAttribute("loginUserIdx",loginReqDto.getMemberIdx());
 
-        return memberService.login(memberIdx, memberLoginPw);
+        return memberService.login(memberIdx, memberLoginPw, loginReqDto.getFcmToken());
     }
 
     // 알림설정 (on/off)

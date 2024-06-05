@@ -18,9 +18,9 @@ public class MemberServiceImpl implements MemberService {
     // 간편 로그인
     @Transactional
     @Override
-    public LoginResDto login(Long memberIdx, String memberLoginPw) {
+    public LoginResDto login(Long memberIdx, String memberLoginPw,String fcmToken) {
         Member member = memberRepository.findMemberByMemberIdxAndMemberLoginPw(memberIdx, memberLoginPw);
-
+        member.setFcmToken(fcmToken);
         if(member == null) {
             return LoginResDto.builder()
                     .message("비밀번호가 맞지 않습니다.")
