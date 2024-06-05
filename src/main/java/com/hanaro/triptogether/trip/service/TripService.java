@@ -52,7 +52,9 @@ public class TripService {
 
     public List<TripResDto> getTripsByTeam(Long teamIdx) {
         teamService.findTeamByTeamIdx(teamIdx); // 팀 확인
+        System.out.println("팀 존재~~");
         List<Trip> trips = tripRepository.findAllByTeam_TeamIdx(teamIdx);
+        System.out.println("여행 사이즈~~"+trips.size());
         List<TripResDto> dtos = new ArrayList<>();
         for (Trip trip : trips) {
             dtos.add(toTripResDto(trip));
@@ -133,6 +135,18 @@ public class TripService {
 
     private TripResDto toTripResDto(Trip trip) {
         List<TripCity> tripCities = tripCityService.getTripCountry(trip.getTripIdx());
+        if(tripCities.isEmpty() || tripCities.get(0).getCity()==null || tripCities.get(0).getCity().getCountry()==null) {
+            return TripResDto.builder()
+                    .teamIdx(trip.getTeam().getTeamIdx())
+                    .teamName(trip.getTeam().getTeamName())
+                    .tripIdx(trip.getTripIdx())
+                    .tripDay(trip.getTripDay())
+                    .tripContent(trip.getTripContent())
+                    .tripGoalAmount(trip.getTripGoalAmount())
+                    .tripName(trip.getTripName())
+                    .tripStartDay(trip.getTripStartDay())
+                    .build();
+        }
         List<City> cities = tripCities.stream().map(tripCity -> tripCity.getCity().toCity()).toList();
         CountryEntity country = tripCities.get(0).getCity().getCountry();
         return TripResDto.builder()
