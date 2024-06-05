@@ -68,9 +68,11 @@ public class TeamServiceImpl implements TeamService {
     public DetailTeamResDto detailTeam(DetailTeamReqDto detailTeamReqDto) {
         Team team = teamRepository.findById(detailTeamReqDto.getTeamIdx()).orElseThrow(() -> new ApiException(ExceptionEnum.TEAM_NOT_FOUND));
         TeamMember teamMember = teamMemberRepository.findById(detailTeamReqDto.getTeamMemberIdx()).orElseThrow(() -> new ApiException(ExceptionEnum.TEAM_MEMBER_NOT_FOUND));
+        Long preferTripIdx = null;
+        if(team.getPreferTrip()!=null) preferTripIdx = team.getPreferTrip().getTripIdx();
 
         return DetailTeamResDto.builder()
-                .preferTripIdx(team.getPreferTrip().getTripIdx())
+                .preferTripIdx(preferTripIdx)
                 .teamNotice(team.getTeamNotice())
                 .teamName(team.getTeamName())
                 .accNumber(team.getAccount().getAccNumber())
