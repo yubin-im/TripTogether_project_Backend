@@ -14,6 +14,8 @@ import com.hanaro.triptogether.exchangeRate.dto.request.ExchangeRateResponse;
 import com.hanaro.triptogether.exchangeRate.dto.request.FcmSendDto;
 import com.hanaro.triptogether.exchangeRate.exception.EntityNotFoundException;
 import com.hanaro.triptogether.exchangeRate.utils.ExchangeUtils;
+import com.hanaro.triptogether.member.domain.Member;
+import com.hanaro.triptogether.member.domain.MemberRepository;
 import com.hanaro.triptogether.team.domain.Team;
 import com.hanaro.triptogether.team.domain.TeamRepository;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +35,7 @@ public class ExchangeService {
 
     private final ExchangeRateAlarmRepository exchangeRateAlarmRepository;
     private final TeamRepository teamRepository;
+    private final MemberRepository memberRepository;
     private final ExchangeRateRepository exchangeRateRepository;
 
     private final ExchangeUtils exchangeUtils;
@@ -66,9 +69,9 @@ public class ExchangeService {
 
     @Transactional
     public void setExchangeRateAlarm(ExchangeRateAlarmRequestDto requestDto){
-        Team team = teamRepository.findById(requestDto.getTeamIdx()).orElseThrow(EntityNotFoundException::new);
+        Member member = memberRepository.findById(requestDto.getMemberIdx()).orElseThrow(EntityNotFoundException::new);
         ExchangeRate exchangeRate = exchangeRateRepository.findExchangeRateByCurCd(requestDto.getCurCode());
-        exchangeRateAlarmRepository.save(requestDto.toEntity(team,exchangeRate));
+        exchangeRateAlarmRepository.save(requestDto.toEntity(member,exchangeRate));
     }
 
     @Transactional
@@ -100,7 +103,6 @@ public class ExchangeService {
 
         }
 
-        System.out.println("ssssaaaa"+alarms.size());
     }
 
     @Transactional
