@@ -5,10 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
-import com.google.firebase.messaging.BatchResponse;
-import com.google.firebase.messaging.FirebaseMessaging;
-import com.google.firebase.messaging.FirebaseMessagingException;
-import com.google.firebase.messaging.MulticastMessage;
+import com.google.firebase.messaging.*;
 import com.hanaro.triptogether.common.response.BaseResponse;
 import com.hanaro.triptogether.common.response.ResponseStatus;
 import com.hanaro.triptogether.dues.dto.request.DuesAlarmRequestDto;
@@ -76,6 +73,7 @@ public class FirebaseFCMService {
     private String makeMessage(FcmSendDto fcmSendDto) throws JsonProcessingException {
 
         ObjectMapper om = new ObjectMapper();
+
         FcmMessageDto fcmMessageDto = FcmMessageDto
                 .builder()
                 .message(FcmMessageDto.Message.builder()
@@ -135,9 +133,10 @@ public class FirebaseFCMService {
         }
 
         MulticastMessage message = MulticastMessage.builder()
-                .putData("fcm_type","NOTIFICATION")
-                .putData("title",title)
-                .putData("body",body)
+                .setNotification(Notification.builder()
+                        .setTitle(title)
+                        .setBody("회비 "+body+" 원을 요청하였습니다.")
+                        .build())
                 .addAllTokens(tokenList)
                 .build();
 

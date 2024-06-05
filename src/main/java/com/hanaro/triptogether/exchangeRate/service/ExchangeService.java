@@ -39,7 +39,7 @@ public class ExchangeService {
     private final ExchangeRateRepository exchangeRateRepository;
 
     private final ExchangeUtils exchangeUtils;
-    private FirebaseFCMService firebaseFCMService;
+    private final FirebaseFCMService firebaseFCMService;
 
     public ExchangeRateInfoResponseDto getExchangeRate(){
 
@@ -94,7 +94,7 @@ public class ExchangeService {
                 }
 
                 if (notify) {
-                    firebaseFCMService.sendMessageTo(FcmSendDto.builder().token(alarm.getFcmToken()).title("환율 알림").body("설정한 환율 조건에 도달했습니다.").build());
+                    firebaseFCMService.sendMessageTo(FcmSendDto.builder().token(alarm.getFcmToken()).title("환율 알림").body("환율이 "+alarm.getCurRate()+" 에 도달했어요~!!.").build());
                     alarm.setNotified(true);
                     exchangeRateAlarmRepository.save(alarm);
 
