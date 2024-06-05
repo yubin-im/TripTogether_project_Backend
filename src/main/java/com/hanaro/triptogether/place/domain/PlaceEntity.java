@@ -9,6 +9,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
+import org.springframework.util.StringUtils;
 
 @Entity
 @Table(name = "Place")
@@ -51,10 +52,12 @@ public class PlaceEntity {
     private Member deletedBy;
 
     public Place toPlace() {
+        String placeNameKo = StringUtils.hasText(this.placeNameKo) ? this.placeNameKo : this.placeNameEng;
+
         return Place.builder()
                 .placeIdx(this.placeIdx)
                 .cityIdx(this.city.getCityIdx())
-                .placeNameKo(this.placeNameKo)
+                .placeNameKo(placeNameKo)
                 .placeNameEng(this.placeNameEng)
                 .placeImg(this.placeImg)
                 .categoryIdx(this.categoryIdx)
