@@ -14,6 +14,7 @@ import com.hanaro.triptogether.team.service.impl.TeamServiceImpl;
 import com.hanaro.triptogether.trip.domain.Trip;
 import com.hanaro.triptogether.trip.domain.TripRepository;
 import com.hanaro.triptogether.trip.dto.request.TripReqDto;
+import com.hanaro.triptogether.trip.dto.response.TripListResDto;
 import com.hanaro.triptogether.trip.dto.response.TripResDto;
 import com.hanaro.triptogether.tripCity.domain.TripCity;
 import com.hanaro.triptogether.tripCity.domain.TripCityRepository;
@@ -50,14 +51,15 @@ public class TripService {
         return tripRepository.findById(tripIdx).orElseThrow(() -> new ApiException(ExceptionEnum.TRIP_NOT_FOUND));
     }
 
-    public List<TripResDto> getTripsByTeam(Long teamIdx) {
-        teamService.findTeamByTeamIdx(teamIdx); // 팀 확인
+    public TripListResDto getTripsByTeam(Long teamIdx) {
+        Team team = teamService.findTeamByTeamIdx(teamIdx); // 팀 확인
         List<Trip> trips = tripRepository.findAllByTeam_TeamIdx(teamIdx);
         List<TripResDto> dtos = new ArrayList<>();
         for (Trip trip : trips) {
             dtos.add(toTripResDto(trip));
         }
-        return dtos;
+
+        return TripListResDto.builder().trips(dtos).preferTripIdx(team.getPreferTrip().getTripIdx()).build();
     }
 
     @Transactional

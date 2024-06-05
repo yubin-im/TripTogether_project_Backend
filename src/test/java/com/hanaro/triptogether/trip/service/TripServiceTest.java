@@ -12,6 +12,7 @@ import com.hanaro.triptogether.team.domain.Team;
 import com.hanaro.triptogether.team.service.impl.TeamServiceImpl;
 import com.hanaro.triptogether.trip.domain.Trip;
 import com.hanaro.triptogether.trip.domain.TripRepository;
+import com.hanaro.triptogether.trip.dto.response.TripListResDto;
 import com.hanaro.triptogether.trip.dto.response.TripResDto;
 import com.hanaro.triptogether.tripCity.domain.TripCity;
 import com.hanaro.triptogether.tripCity.service.TripCityService;
@@ -82,6 +83,7 @@ class TripServiceTest {
                 .preferenceType(PreferenceType.모두)
                 .teamNotice("지각비 5만원")
                 .createdBy(member1)
+                .preferTrip(trip)
                 .build();
         country = CountryEntity.builder()
                 .countryIdx(1L)
@@ -144,15 +146,25 @@ class TripServiceTest {
         given(tripRepository.findAllByTeam_TeamIdx(trip.getTeam().getTeamIdx())).willReturn(List.of(trip, trip2));
         given(tripCityService.getTripCountry(trip.getTripIdx())).willReturn(trip.getTripCities());
         given(tripCityService.getTripCountry(trip2.getTripIdx())).willReturn(trip2.getTripCities());
+        given(teamService.findTeamByTeamIdx(trip.getTeam().getTeamIdx())).willReturn(Team.builder()
+                .teamIdx(1L)
+                .teamName("teamName")
+                .account(mock(Account.class))
+                .teamType(TeamType.여행)
+                .preferenceType(PreferenceType.모두)
+                .teamNotice("지각비 5만원")
+                .createdBy(member1)
+                .preferTrip(trip)
+                .build());
 
         //when
-        List<TripResDto> dtos = tripService.getTripsByTeam(trip.getTeam().getTeamIdx());
+        TripListResDto dto = tripService.getTripsByTeam(trip.getTeam().getTeamIdx());
 
 
         //then
-        assertEquals(2, dtos.size());
-        assertEquals(trip.getTripIdx(), dtos.get(0).getTripIdx());
-        assertEquals(trip2.getTripIdx(), dtos.get(1).getTripIdx());
+        assertEquals(2, dto.getTrips().size());
+        assertEquals(trip.getTripIdx(), dto.getTrips().get(0).getTripIdx());
+        assertEquals(trip2.getTripIdx(), dto.getTrips().get(1).getTripIdx());
     }
     @Test
     void getTripsByTeam_invalidTeamIdx() {
