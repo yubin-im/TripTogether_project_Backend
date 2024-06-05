@@ -28,7 +28,7 @@ public class TripCity {
     private Trip trip;
 
     @ManyToOne
-    @JoinColumn(name = "city_idx", nullable = false)
+    @JoinColumn(name = "city_idx")
     private CityEntity city;
 
     @ManyToOne
