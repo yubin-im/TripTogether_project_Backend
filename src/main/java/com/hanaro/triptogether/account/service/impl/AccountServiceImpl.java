@@ -75,6 +75,7 @@ public class AccountServiceImpl implements AccountService {
                     .accIdx(accounts.get(i).getAccIdx())
                     .accNumber(accounts.get(i).getAccNumber())
                     .accName(accounts.get(i).getAccName())
+                    .accBalance(accounts.get(i).getAccBalance())
                     .build();
 
             accountsResDtos.add(accountsResDto);
