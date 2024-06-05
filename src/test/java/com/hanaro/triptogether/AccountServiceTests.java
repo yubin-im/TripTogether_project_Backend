@@ -171,10 +171,12 @@ public class AccountServiceTests {
         assertEquals(account1.getAccIdx(), dto1.getAccIdx());
         assertEquals(account1.getAccNumber(), dto1.getAccNumber());
         assertEquals(account1.getAccName(), dto1.getAccName());
+        assertEquals(account1.getAccBalance(), dto1.getAccBalance());
 
         AccountsResDto dto2 = result.get(1);
         assertEquals(account2.getAccIdx(), dto2.getAccIdx());
         assertEquals(account2.getAccNumber(), dto2.getAccNumber());
         assertEquals(account2.getAccName(), dto2.getAccName());
+        assertEquals(account2.getAccBalance(), dto2.getAccBalance());
     }
 }
