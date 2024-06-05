@@ -16,8 +16,6 @@ import com.hanaro.triptogether.exchangeRate.exception.EntityNotFoundException;
 import com.hanaro.triptogether.exchangeRate.utils.ExchangeUtils;
 import com.hanaro.triptogether.member.domain.Member;
 import com.hanaro.triptogether.member.domain.MemberRepository;
-import com.hanaro.triptogether.team.domain.Team;
-import com.hanaro.triptogether.team.domain.TeamRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,12 +32,11 @@ import java.util.List;
 public class ExchangeService {
 
     private final ExchangeRateAlarmRepository exchangeRateAlarmRepository;
-    private final TeamRepository teamRepository;
     private final MemberRepository memberRepository;
     private final ExchangeRateRepository exchangeRateRepository;
 
     private final ExchangeUtils exchangeUtils;
-    private FirebaseFCMService firebaseFCMService;
+    private final FirebaseFCMService firebaseFCMService;
 
     public ExchangeRateInfoResponseDto getExchangeRate(){
 
@@ -94,7 +91,7 @@ public class ExchangeService {
                 }
 
                 if (notify) {
-                    firebaseFCMService.sendMessageTo(FcmSendDto.builder().token(alarm.getFcmToken()).title("환율 알림").body("설정한 환율 조건에 도달했습니다.").build());
+                    firebaseFCMService.sendMessageTo(FcmSendDto.builder().token(alarm.getFcmToken()).title("환율 알림").body("환율이 "+alarm.getCurRate()+" 에 도달했어요~!!.").build());
                     alarm.setNotified(true);
                     exchangeRateAlarmRepository.save(alarm);
 
