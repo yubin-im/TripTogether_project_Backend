@@ -16,7 +16,6 @@ import com.hanaro.triptogether.exchangeRate.exception.EntityNotFoundException;
 import com.hanaro.triptogether.exchangeRate.utils.ExchangeUtils;
 import com.hanaro.triptogether.member.domain.Member;
 import com.hanaro.triptogether.member.domain.MemberRepository;
-import com.hanaro.triptogether.team.domain.Team;
 import com.hanaro.triptogether.team.domain.TeamRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -34,7 +33,6 @@ import java.util.List;
 public class ExchangeService {
 
     private final ExchangeRateAlarmRepository exchangeRateAlarmRepository;
-    private final TeamRepository teamRepository;
     private final MemberRepository memberRepository;
     private final ExchangeRateRepository exchangeRateRepository;
 
