@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 
@@ -21,4 +22,7 @@ public interface TripPlaceRepository extends JpaRepository<TripPlace, Long> {
     @Modifying
     @Query("UPDATE TripPlace tp SET tp.placeOrder = tp.placeOrder - 1 WHERE tp.trip.tripIdx = :tripIdx AND tp.placeOrder > :placeOrder")
     void decrementPlaceOrderAfter(@Param("tripIdx") Long tripIdx, @Param("placeOrder") Integer placeOrder);
+
+    @Query("SELECT sum(tp.placeAmount) FROM TripPlace tp WHERE tp.trip.tripIdx= :tripIdx")
+    BigDecimal getSumPlaceAmountByTripIdx(Long tripIdx);
 }

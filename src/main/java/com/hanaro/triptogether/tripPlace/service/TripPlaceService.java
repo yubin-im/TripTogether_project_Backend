@@ -19,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
@@ -65,11 +66,15 @@ public class TripPlaceService {
         validateTeamMember(tripPlace.getTrip().getTeam(), dto.getMemberIdx());
 
         PlaceEntity place = null;
-        if(dto.getPlaceIdx()!=0){
+        if(dto.getPlaceIdx()!=null && dto.getPlaceIdx()!=0){
             place = placeService.findByPlaceIdx(dto.getPlaceIdx());
         }
         Member member = memberService.findByMemberIdx(dto.getMemberIdx());
         tripPlace.update(place, dto.getPlaceAmount(), dto.getPlaceMemo(), member);
+
+        Long tripIdx = tripPlace.getTrip().getTripIdx();
+        //goalAmount 계산 및 설정
+        tripService.setGoalAmount(tripIdx, tripPlaceRepository.getSumPlaceAmountByTripIdx(tripIdx));
     }
 
     @Transactional
@@ -115,6 +120,8 @@ public class TripPlaceService {
         tripPlaceRepository.decrementPlaceOrderAfter(tripId, deletedPlaceOrder);
     }
 
+
+    //병합된 코드(수정/추가/삭제)
     @Transactional
     public void updateTripPlace(Long tripIdx, TripPlaceUpdateReqDto reqDto) {
         Trip trip = tripService.findByTripIdx(tripIdx);
@@ -143,7 +150,7 @@ public class TripPlaceService {
         for(TripPlaceUpdateAddReqDto dto : dtos) {
             validateTripDate(trip, dto.getTripDate());
             PlaceEntity place = null;
-            if(dto.getPlaceIdx()!=0){
+            if(dto.getPlaceIdx()!=null && dto.getPlaceIdx()!=0 ) {
                 place = placeService.findByPlaceIdx(dto.getPlaceIdx());
             }
             TripPlace tripPlace = TripPlace.builder()
@@ -172,7 +179,17 @@ public class TripPlaceService {
             tripPlace.updateOrder(dto.getPlaceOrder(), dto.getTripDate(), member);
         }
 
+        //goalAmount 계산 및 설정
+        tripService.setGoalAmount(tripIdx, tripPlaceRepository.getSumPlaceAmountByTripIdx(tripIdx));
+
     }
+
+//    private BigDecimal calcGoalAmount(Long tripIdx){
+//        List<BigDecimal> placeAmounts = tripPlaceRepository.findAllByTrip_TripIdx(tripIdx);
+//        System.out.println(placeAmounts.size()+"~~~~~~~~~");
+//        if(placeAmounts.isEmpty()) return BigDecimal.ZERO;
+//        return placeAmounts.stream().reduce(BigDecimal.ZERO, BigDecimal::add);
+//    }
 
     public TripPlace checkTripPlaceExists(Long trip_placeIdx){
         return tripPlaceRepository.findById(trip_placeIdx).orElseThrow(() -> new ApiException(ExceptionEnum.TRIP_PLACE_NOT_FOUND));
