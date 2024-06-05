@@ -71,7 +71,7 @@ public class TripService {
         Trip trip = Trip.builder()
                 .team(team)
                 .tripName(tripReqDto.getTripName())
-                .tripContent(tripReqDto.toString())
+                .tripContent(tripReqDto.getTripContent())
                 .tripGoalAmount(tripReqDto.getTripGoalAmount())
                 .tripDay(tripReqDto.getTripDay())
                 .tripImg(tripReqDto.getTripImg())
