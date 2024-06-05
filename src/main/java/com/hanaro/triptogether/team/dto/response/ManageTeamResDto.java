@@ -12,4 +12,5 @@ public class ManageTeamResDto {
     private String accNumber;
     private BigDecimal accBalance;
     private Boolean alarmStatus;
+    private Long accIdx;
 }

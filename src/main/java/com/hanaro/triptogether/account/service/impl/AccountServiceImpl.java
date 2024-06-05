@@ -84,25 +84,33 @@ public class AccountServiceImpl implements AccountService {
         return accountsResDtos;
     }
 
-    // 계좌 입금
+    // 계좌 입출금
     @Transactional
     @Override
     public void depositAcc(UpdateAccBalanceReq updateAccBalanceReq) {
-        Account account = accountRepository.findById(updateAccBalanceReq.getAccIdx()).orElseThrow(() -> new ApiException(ExceptionEnum.ACCOUNT_NOT_FOUND));
+        // 계좌 입금
+        Account depositAcc = accountRepository.findById(updateAccBalanceReq.getDepositAccIdx()).orElseThrow(() -> new ApiException(ExceptionEnum.ACCOUNT_NOT_FOUND));
 
-        account.updateAccBalance(account.getAccBalance().add(updateAccBalanceReq.getAmount()));
-        account.updateModifiedAt(LocalDateTime.now());
-        accountRepository.save(account);
+        depositAcc.updateAccBalance(depositAcc.getAccBalance().add(updateAccBalanceReq.getAmount()));
+        depositAcc.updateModifiedAt(LocalDateTime.now());
+        accountRepository.save(depositAcc);
+
+        // 계좌 출금
+        Account withdrawAcc = accountRepository.findById(updateAccBalanceReq.getWithdrawAccIdx()).orElseThrow(() -> new ApiException(ExceptionEnum.ACCOUNT_NOT_FOUND));
+
+        withdrawAcc.updateAccBalance(withdrawAcc.getAccBalance().subtract(updateAccBalanceReq.getAmount()));
+        withdrawAcc.updateModifiedAt(LocalDateTime.now());
+        accountRepository.save(withdrawAcc);
     }
 
     // 계좌 출금
-    @Transactional
-    @Override
-    public void withdrawAcc(UpdateAccBalanceReq updateAccBalanceReq) {
-        Account account = accountRepository.findById(updateAccBalanceReq.getAccIdx()).orElseThrow(() -> new ApiException(ExceptionEnum.ACCOUNT_NOT_FOUND));
-
-        account.updateAccBalance(account.getAccBalance().subtract(updateAccBalanceReq.getAmount()));
-        account.updateModifiedAt(LocalDateTime.now());
-        accountRepository.save(account);
-    }
+//    @Transactional
+//    @Override
+//    public void withdrawAcc(UpdateAccBalanceReq updateAccBalanceReq) {
+//        Account account = accountRepository.findById(updateAccBalanceReq.getAccIdx()).orElseThrow(() -> new ApiException(ExceptionEnum.ACCOUNT_NOT_FOUND));
+//
+//        account.updateAccBalance(account.getAccBalance().subtract(updateAccBalanceReq.getAmount()));
+//        account.updateModifiedAt(LocalDateTime.now());
+//        accountRepository.save(account);
+//    }
 }
