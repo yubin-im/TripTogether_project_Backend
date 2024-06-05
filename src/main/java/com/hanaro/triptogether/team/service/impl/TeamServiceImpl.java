@@ -69,15 +69,14 @@ public class TeamServiceImpl implements TeamService {
         Team team = teamRepository.findById(detailTeamReqDto.getTeamIdx()).orElseThrow(() -> new ApiException(ExceptionEnum.TEAM_NOT_FOUND));
         TeamMember teamMember = teamMemberRepository.findById(detailTeamReqDto.getTeamMemberIdx()).orElseThrow(() -> new ApiException(ExceptionEnum.TEAM_MEMBER_NOT_FOUND));
 
-        DetailTeamResDto detailTeamResDto = DetailTeamResDto.builder()
+        return DetailTeamResDto.builder()
+                .preferTripIdx(team.getPreferTrip().getTripIdx())
                 .teamNotice(team.getTeamNotice())
                 .teamName(team.getTeamName())
                 .accNumber(team.getAccount().getAccNumber())
                 .accBalance(team.getAccount().getAccBalance())
                 .teamMemberState(teamMember.getTeamMemberState())
                 .build();
-
-        return detailTeamResDto;
     }
 
     // 모임서비스 나가기 (전체 내보내기 후 모임 삭제)
