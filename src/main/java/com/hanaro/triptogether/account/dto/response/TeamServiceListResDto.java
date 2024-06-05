@@ -15,4 +15,5 @@ public class TeamServiceListResDto {
     private Long teamIdx;
     private Long teamMemberIdx;
     private String teamMemberState;
+    private Long preferTripIdx;
 }
