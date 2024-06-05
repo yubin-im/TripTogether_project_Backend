@@ -82,7 +82,7 @@ public class DuesService {
 
                 if (responseDto != null) {
                     duesListMemberResponseDtos.add(responseDto);
-                } else if (paidResponseDto != null && Objects.equals(paidResponseDto.getMemberIdx(), member.getTeamMemberIdx())) {
+                } else if (paidResponseDto != null ) {
                     continue;
                 } else {
                     duesListMemberResponseDtos.add(DuesListMemberResponseDto.builder()
