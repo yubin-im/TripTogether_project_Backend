@@ -1,6 +1,7 @@
 package com.hanaro.triptogether.exchangeRate.domain.entity;
 import com.hanaro.triptogether.dues.domain.entity.BaseEntity;
 import com.hanaro.triptogether.enumeration.ExchangeRateAlarmType;
+import com.hanaro.triptogether.exchangeRate.dto.response.ExchangeRateAlarmResponseDto;
 import com.hanaro.triptogether.member.domain.Member;
 import com.hanaro.triptogether.team.domain.Team;
 import jakarta.persistence.*;
@@ -32,8 +33,11 @@ public class ExchangeRateAlarm extends BaseEntity {
     @JoinColumn(name = "member_idx", nullable = false)
     private Member member;
 
-    @Column(name = "cur_Code", nullable = false)
+    @Column(name = "cur_code", nullable = false)
     private String curCode;
+
+    @Column(name = "cur_name", nullable = false)
+    private String curName;
 
     @Column(name = "cur_rate", nullable = false)
     private BigDecimal curRate;
@@ -43,11 +47,20 @@ public class ExchangeRateAlarm extends BaseEntity {
     private Boolean notified;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "rate_type", nullable = false, columnDefinition = "ENUM('over', 'less')")
+    @Column(name = "rate_type", nullable = false, columnDefinition = "ENUM('OVER', 'LESS')")
     private ExchangeRateAlarmType rateType;
 
     public void setNotified(boolean notify){
         this.notified = notify;
+    }
+
+    public ExchangeRateAlarmResponseDto toDto(ExchangeRateAlarm exchangeRateAlarm) {
+        return ExchangeRateAlarmResponseDto.builder()
+                .curCode(exchangeRateAlarm.getCurCode())
+                .curType(exchangeRateAlarm.getRateType())
+                .curRate(exchangeRateAlarm.getCurRate())
+                .curName(exchangeRateAlarm.getCurName())
+                .build();
     }
 
 

@@ -7,11 +7,12 @@ import com.hanaro.triptogether.exchangeRate.domain.entity.ExchangeRate;
 import com.hanaro.triptogether.exchangeRate.domain.entity.ExchangeRateAlarm;
 import com.hanaro.triptogether.exchangeRate.domain.repository.ExchangeRateAlarmRepository;
 import com.hanaro.triptogether.exchangeRate.domain.repository.ExchangeRateRepository;
-import com.hanaro.triptogether.exchangeRate.dto.ExchangeDto;
+import com.hanaro.triptogether.exchangeRate.dto.response.ExchangeDto;
 import com.hanaro.triptogether.exchangeRate.dto.request.ExchangeRateAlarmRequestDto;
 import com.hanaro.triptogether.exchangeRate.dto.request.ExchangeRateInfoResponseDto;
 import com.hanaro.triptogether.exchangeRate.dto.request.ExchangeRateResponse;
 import com.hanaro.triptogether.exchangeRate.dto.request.FcmSendDto;
+import com.hanaro.triptogether.exchangeRate.dto.response.ExchangeRateAlarmResponseDto;
 import com.hanaro.triptogether.exchangeRate.exception.EntityNotFoundException;
 import com.hanaro.triptogether.exchangeRate.utils.ExchangeUtils;
 import com.hanaro.triptogether.member.domain.Member;
@@ -48,6 +49,10 @@ public class ExchangeService {
 
         }
         return ExchangeRateInfoResponseDto.builder().exchangeRateTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"))).exchangeRates(exchangeRateResponseDtos).build();
+    }
+
+    public List<ExchangeRateAlarmResponseDto> getExchangeRateAlarmList(Long memberIdx) {
+        return exchangeRateAlarmRepository.findExchangeRateAlarmByMember_MemberIdx(memberIdx).stream().map(exchangeRateAlarm -> exchangeRateAlarm.toDto(exchangeRateAlarm)).toList();
     }
 
     @Transactional

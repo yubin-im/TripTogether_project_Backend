@@ -1,4 +1,4 @@
-package com.hanaro.triptogether.exchangeRate.dto;
+package com.hanaro.triptogether.exchangeRate.dto.response;
 
 import com.hanaro.triptogether.common.BigDecimalConverter;
 import com.hanaro.triptogether.exchangeRate.domain.entity.ExchangeRate;
