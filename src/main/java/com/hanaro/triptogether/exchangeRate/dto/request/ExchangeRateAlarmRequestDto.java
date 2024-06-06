@@ -5,12 +5,10 @@ import com.hanaro.triptogether.enumeration.ExchangeRateAlarmType;
 import com.hanaro.triptogether.exchangeRate.domain.entity.ExchangeRate;
 import com.hanaro.triptogether.exchangeRate.domain.entity.ExchangeRateAlarm;
 import com.hanaro.triptogether.member.domain.Member;
-import com.hanaro.triptogether.team.domain.Team;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.math.BigDecimal;
 
 @Getter
 @Setter
@@ -30,6 +28,7 @@ public class ExchangeRateAlarmRequestDto {
                 .exchangeRate(exchangeRate)
                 .rateType(rateAlarmType)
                 .curCode(curCode)
+                .curName(exchangeRate.getCurName())
                 .curRate(BigDecimalConverter.convertStringToBigDecimal(curRate)).build();
     }
 

@@ -1,6 +1,6 @@
 package com.hanaro.triptogether.exchangeRate.batch;
 
-import com.hanaro.triptogether.exchangeRate.dto.ExchangeDto;
+import com.hanaro.triptogether.exchangeRate.dto.response.ExchangeDto;
 import com.hanaro.triptogether.exchangeRate.service.ExchangeService;
 import com.hanaro.triptogether.exchangeRate.utils.ExchangeUtils;
 import lombok.RequiredArgsConstructor;
