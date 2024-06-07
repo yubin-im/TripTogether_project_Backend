@@ -108,40 +108,40 @@ public class FirebaseFCMService {
     }
 
 
-    private void firebaseCreateOption() throws IOException {
-        try {
-            InputStream refreshToken = new ClassPathResource(firebaseConfigPath).getInputStream();
-
-            FirebaseApp firebaseApp = null;
-            List firebaseApps = FirebaseApp.getApps();
-
-            if(firebaseApps != null && !firebaseApps.isEmpty()){
-
-                for(Object app : firebaseApps){
-                    if (app instanceof FirebaseApp) {
-                        FirebaseApp apps = (FirebaseApp) app;
-                        if (apps.getName().equals(FirebaseApp.DEFAULT_APP_NAME)) {
-                            firebaseApp = (FirebaseApp) app;
-                        }
-                    }
-                }
-
-            }else{
-                FirebaseOptions options = FirebaseOptions.builder()
-                        .setCredentials(GoogleCredentials.fromStream(refreshToken)).build();
-
-                FirebaseApp.initializeApp(options);
-            }
-
-
-        } catch (IOException e) {
-            throw new RuntimeException(e.getMessage());
-        }
-
-    }
+//    private void firebaseCreateOption() throws IOException {
+//        try {
+//            InputStream refreshToken = new ClassPathResource(firebaseConfigPath).getInputStream();
+//
+//            FirebaseApp firebaseApp = null;
+//            List firebaseApps = FirebaseApp.getApps();
+//
+//            if(firebaseApps != null && !firebaseApps.isEmpty()){
+//
+//                for(Object app : firebaseApps){
+//                    if (app instanceof FirebaseApp) {
+//                        FirebaseApp apps = (FirebaseApp) app;
+//                        if (apps.getName().equals(FirebaseApp.DEFAULT_APP_NAME)) {
+//                            firebaseApp = (FirebaseApp) app;
+//                        }
+//                    }
+//                }
+//
+//            }else{
+//                FirebaseOptions options = FirebaseOptions.builder()
+//                        .setCredentials(GoogleCredentials.fromStream(refreshToken)).build();
+//
+//                FirebaseApp.initializeApp(options);
+//            }
+//
+//
+//        } catch (IOException e) {
+//            throw new RuntimeException(e.getMessage());
+//        }
+//
+//    }
     public BaseResponse notificationAlarm(String title, String body, DuesAlarmRequestDto duesAlarmRequestDto) throws IOException, FirebaseMessagingException {
 
-        firebaseCreateOption();
+        //firebaseCreateOption();
 
         List<String> tokenList = new ArrayList<>();
         for (DuesAlarmRequestDto.RequestMemberInfo memberInfo:duesAlarmRequestDto.getMemberInfos()) {
