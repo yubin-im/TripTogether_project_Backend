@@ -19,10 +19,12 @@ import com.hanaro.triptogether.member.domain.MemberRepository;
 import com.hanaro.triptogether.team.domain.Team;
 import com.hanaro.triptogether.team.domain.TeamRepository;
 import lombok.RequiredArgsConstructor;
-import okhttp3.*;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.http.*;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -45,6 +47,7 @@ public class FirebaseFCMService {
         GoogleCredentials googleCredentials = GoogleCredentials.fromStream(new ClassPathResource(firebaseConfigPath).getInputStream())
                 .createScoped(List.of("https://www.googleapis.com/auth/cloud-platform"));
 
+
         googleCredentials.refreshIfExpired();;
         return googleCredentials.getAccessToken().getTokenValue();
     }
@@ -52,22 +55,36 @@ public class FirebaseFCMService {
     public void sendMessageTo(FcmSendDto fcmSendDto) throws IOException {
         String message = makeMessage(fcmSendDto);
 
-        OkHttpClient client = new OkHttpClient();
+        RestTemplate restTemplate = new RestTemplate();
 
-        RequestBody requestBody = RequestBody.create(message, MediaType.get("application/json; charset=utf-8"));
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.set("Authorization", "Bearer " + getAccessToken());
 
-        Request request = new Request.Builder()
-                .url(API_URL)
-                .post(requestBody)
-                .addHeader(HttpHeaders.AUTHORIZATION,"Bearer "+
-                        getAccessToken())
-                .addHeader(HttpHeaders.CONTENT_TYPE,"application/json; UTF-8")
-                .build();
+        HttpEntity<String> entity = new HttpEntity<>(message, headers);
 
-        Response response = client.newCall(request)
-                .execute();
+        ResponseEntity<String> response = restTemplate.exchange(API_URL, HttpMethod.POST, entity, String.class);
 
-        System.out.println(response.body().string()+"Asdfasdf");
+        System.out.println(response.getStatusCode());
+
+
+//        OkHttpClient client = new OkHttpClient();
+//
+//        RequestBody requestBody = RequestBody.create(message, MediaType.get("application/json; charset=utf-8"));
+//
+//
+//        Request request = new Request.Builder()
+//                .url(API_URL)
+//                .post(requestBody)
+//                .addHeader(HttpHeaders.AUTHORIZATION,"Bearer "+
+//                        getAccessToken())
+//                .addHeader(HttpHeaders.CONTENT_TYPE,MediaType.APPLICATION_JSON_VALUE)
+//                .build();
+//
+//        Response response = client.newCall(request)
+//                .execute();
+//
+//        System.out.println(response.body().string()+"Asdfasdf");
     }
 
     private String makeMessage(FcmSendDto fcmSendDto) throws JsonProcessingException {
