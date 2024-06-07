@@ -21,7 +21,7 @@ public class FirebaseConfig {
     @Bean
     public FirebaseApp firebaseApp() throws IOException {
 
-        InputStream resource = new ClassPathResource("src/main/resources/triptogether-e7bac-firebase-adminsdk-peiki-127517aa66.json").getInputStream();
+        InputStream resource = new ClassPathResource("triptogether-e7bac-firebase-adminsdk-peiki-127517aa66.json").getInputStream();
 
 //        JsonReader jsonReader = new JsonReader(new InputStreamReader(resource));
 //        jsonReader.setLenient(true);
