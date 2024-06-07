@@ -22,6 +22,7 @@ public class DuesRuleRequestDto {
                 .duesAmount(duesAmount)
                 .duesDate(duesDate)
                 .teamIdx(teamIdx)
+                .isDeleted(false)
                 .build();
     }
 }
