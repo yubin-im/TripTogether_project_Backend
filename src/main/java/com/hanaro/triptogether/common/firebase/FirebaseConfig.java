@@ -21,12 +21,14 @@ public class FirebaseConfig {
     @Bean
     public FirebaseApp firebaseApp() throws IOException {
 
+        System.out.println("fcm");
         InputStream resource = new ClassPathResource("triptogether-e7bac-firebase-adminsdk-peiki-127517aa66.json").getInputStream();
 
 //        JsonReader jsonReader = new JsonReader(new InputStreamReader(resource));
 //        jsonReader.setLenient(true);
 
         byte[] jsonBytes = resource.readAllBytes();
+        System.out.println("fcm");
         String jsonString = new String(jsonBytes, StandardCharsets.UTF_8);
         System.out.println("fcm"+jsonString);
 
