@@ -4,15 +4,14 @@ import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.gson.JsonParser;
+import com.google.gson.stream.JsonReader;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.util.ResourceUtils;
 
-import java.io.ByteArrayInputStream;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 
 @Configuration
@@ -20,17 +19,21 @@ public class FirebaseConfig {
     @Bean
     public FirebaseApp firebaseApp() throws IOException {
 
-        InputStream resource = new ClassPathResource("./triptogether-e7bac-firebase-adminsdk-peiki-127517aa66.json").getInputStream();
-        String jsonString = new String(resource.readAllBytes(), StandardCharsets.UTF_8);
+        InputStream resource = new ClassPathResource("triptogether-e7bac-firebase-adminsdk-peiki-127517aa66.json").getInputStream();
 
-        // \n을 실제 줄 바꿈으로 변환
-        String formattedJson = jsonString.replace("\\n", "\n");
+        JsonReader jsonReader = new JsonReader(new InputStreamReader(resource));
+        jsonReader.setLenient(true);
 
-        InputStream formattedJsonStream = new ByteArrayInputStream(formattedJson.getBytes(StandardCharsets.UTF_8));
+        // JsonParser를 사용하여 JSON 데이터를 파싱
+        var jsonElement = JsonParser.parseReader(jsonReader);
+        String jsonString = jsonElement.toString();
+
+        // 파싱된 JSON 데이터를 다시 InputStream으로 변환
+        InputStream jsonInputStream = new ByteArrayInputStream(jsonString.getBytes(StandardCharsets.UTF_8));
 
         FirebaseOptions options = FirebaseOptions
                 .builder()
-                .setCredentials(GoogleCredentials.fromStream(formattedJsonStream))
+                .setCredentials(GoogleCredentials.fromStream(jsonInputStream))
                 .build();
         return FirebaseApp.initializeApp(options);
     }
