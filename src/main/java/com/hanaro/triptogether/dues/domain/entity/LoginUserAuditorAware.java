@@ -3,7 +3,6 @@ package com.hanaro.triptogether.dues.domain.entity;
 import com.hanaro.triptogether.member.domain.Member;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.stereotype.Component;
 
