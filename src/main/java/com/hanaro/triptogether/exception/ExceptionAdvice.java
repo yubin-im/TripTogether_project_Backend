@@ -23,11 +23,11 @@ public class ExceptionAdvice {
                         .build());
     }
 
-//    @ExceptionHandler(Exception.class)
-//    public ResponseEntity<BaseResponse> handleAllExceptions(Exception ex) {
-//        BaseResponse response = BaseResponse.res(ResponseStatus.INTERNAL_SERVER_ERROR, ex.getMessage());
-//        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-//    }
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<BaseResponse> handleAllExceptions(Exception ex) {
+        BaseResponse response = BaseResponse.res(ResponseStatus.INTERNAL_SERVER_ERROR, ex.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 
     @ExceptionHandler(BadRequestException.class)
     public ResponseEntity<BaseResponse> handleBadRequestException(BadRequestException ex) {
