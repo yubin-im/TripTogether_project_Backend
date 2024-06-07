@@ -17,7 +17,7 @@ import java.io.InputStream;
 public class FirebaseConfig {
     @Bean
     public FirebaseApp firebaseApp() throws IOException {
-        InputStream refreshToken = new ClassPathResource("triptogether-e7bac-firebase-adminsdk-peiki-127517aa66.json").getInputStream();
+        InputStream refreshToken = new ClassPathResource("./triptogether-e7bac-firebase-adminsdk-peiki-127517aa66.json").getInputStream();
 
         FirebaseOptions options = FirebaseOptions
                 .builder()
