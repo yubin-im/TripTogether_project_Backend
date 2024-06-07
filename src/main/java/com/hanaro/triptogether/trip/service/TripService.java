@@ -75,6 +75,7 @@ public class TripService {
                 .tripName(tripReqDto.getTripName())
                 .tripContent(tripReqDto.getTripContent())
                 .tripGoalAmount(tripReqDto.getTripGoalAmount())
+                .tripExpectedAmount(BigDecimal.ZERO)
                 .tripDay(tripReqDto.getTripDay())
                 .tripImg(tripReqDto.getTripImg())
                 .tripStartDay(tripReqDto.getTripStartDay())
