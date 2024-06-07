@@ -18,6 +18,7 @@ public class TripResDto {
     private String tripName;
     private String tripContent;
     private BigDecimal tripGoalAmount;
+    private BigDecimal tripExpectedAmount;
     private Integer tripDay;
     private Integer tripImg;
     private LocalDate tripStartDay;

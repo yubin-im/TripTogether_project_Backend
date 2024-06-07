@@ -143,6 +143,7 @@ public class TripService {
                     .tripDay(trip.getTripDay())
                     .tripContent(trip.getTripContent())
                     .tripGoalAmount(trip.getTripGoalAmount())
+                    .tripExpectedAmount(trip.getTripExpectedAmount())
                     .tripName(trip.getTripName())
                     .tripStartDay(trip.getTripStartDay())
                     .build();
@@ -156,6 +157,7 @@ public class TripService {
                 .tripDay(trip.getTripDay())
                 .tripContent(trip.getTripContent())
                 .tripGoalAmount(trip.getTripGoalAmount())
+                .tripExpectedAmount(trip.getTripExpectedAmount())
                 .tripName(trip.getTripName())
                 .tripStartDay(trip.getTripStartDay())
                 .countryIdx(country.getCountryIdx())
@@ -166,9 +168,9 @@ public class TripService {
     }
 
     @Transactional
-    public void setGoalAmount(Long tripIdx, BigDecimal goalAmount) {
+    public void setExpectedAmount(Long tripIdx, BigDecimal expectedAmount) {
         Trip trip = tripRepository.findById(tripIdx)
                 .orElseThrow(() -> new ApiException(ExceptionEnum.TRIP_NOT_FOUND));
-        tripRepository.updateGoalAmount(tripIdx, goalAmount);
+        tripRepository.updateExpectedAmount(tripIdx, expectedAmount);
     }
 }

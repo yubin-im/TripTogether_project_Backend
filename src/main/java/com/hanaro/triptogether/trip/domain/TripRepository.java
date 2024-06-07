@@ -13,6 +13,6 @@ import java.util.List;
 public interface TripRepository extends JpaRepository<Trip, Long> {
     List<Trip> findAllByTeam_TeamIdx(Long teamIdx);
     @Modifying
-    @Query("UPDATE Trip t SET t.tripGoalAmount = :goalAmount WHERE t.tripIdx = :tripIdx")
-    void updateGoalAmount(@Param("tripIdx") Long tripIdx, @Param("goalAmount") BigDecimal goalAmount);
+    @Query("UPDATE Trip t SET t.tripExpectedAmount = :tripExpectedAmount WHERE t.tripIdx = :tripIdx")
+    void updateExpectedAmount(@Param("tripIdx") Long tripIdx, @Param("tripExpectedAmount") BigDecimal expectedAmount);
 }

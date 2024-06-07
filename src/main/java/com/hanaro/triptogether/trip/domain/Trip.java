@@ -37,6 +37,9 @@ public class Trip {
     @Column(nullable = false, precision = 20, scale = 2)
     private BigDecimal tripGoalAmount = BigDecimal.ZERO;
 
+    @Column(nullable = false, precision = 20, scale = 2)
+    private BigDecimal tripExpectedAmount = BigDecimal.ZERO;
+
     @Column(nullable = false)
     private Integer tripDay = 1;
 
@@ -74,6 +77,7 @@ public class Trip {
                 .tripDay(this.getTripDay())
                 .tripContent(this.getTripContent())
                 .tripGoalAmount(this.getTripGoalAmount())
+                .tripExpectedAmount(this.getTripExpectedAmount())
                 .tripName(this.getTripName())
                 .tripStartDay(this.getTripStartDay())
                 .build();
