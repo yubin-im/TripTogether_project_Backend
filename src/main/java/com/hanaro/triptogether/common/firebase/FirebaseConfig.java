@@ -28,6 +28,7 @@ public class FirebaseConfig {
 
         byte[] jsonBytes = resource.readAllBytes();
         String jsonString = new String(jsonBytes, StandardCharsets.UTF_8);
+        System.out.println("fcm"+jsonString);
 
         // Gson을 사용하여 JSON 문자열을 JsonObject로 파싱
         Gson gson = new Gson();
