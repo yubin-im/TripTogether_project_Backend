@@ -27,7 +27,7 @@ public class ExchangeRate {
     @Column(nullable = false, length = 10)
     private String curName;
 
-    @Column(nullable = false, length = 10)
+    @Column( length = 10)
     private String curIcon;
 
     @Column(nullable = false, precision = 20, scale = 2)

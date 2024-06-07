@@ -10,9 +10,9 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import java.util.TimeZone;
 
 @SpringBootApplication
-//@EnableScheduling
+@EnableScheduling
 @EnableJpaAuditing
-//@EnableBatchProcessing
+@EnableBatchProcessing
 public class TriptogetherApplication {
 
 	@PostConstruct

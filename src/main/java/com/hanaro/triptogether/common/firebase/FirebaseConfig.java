@@ -4,6 +4,7 @@ import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
 import org.springframework.context.annotation.Bean;
@@ -25,8 +26,15 @@ public class FirebaseConfig {
         jsonReader.setLenient(true);
 
         // JsonParser를 사용하여 JSON 데이터를 파싱
-        var jsonElement = JsonParser.parseReader(jsonReader);
-        String jsonString = jsonElement.toString();
+//        var jsonElement = JsonParser.parseReader(jsonReader);
+//        String jsonString = jsonElement.toString();
+
+        // JsonParser를 사용하여 JSON 데이터를 파싱
+        JsonObject jsonObject = JsonParser.parseReader(jsonReader).getAsJsonObject();
+
+        // JSON 데이터를 문자열로 변환
+        String jsonString = jsonObject.toString();
+
 
         // 파싱된 JSON 데이터를 다시 InputStream으로 변환
         InputStream jsonInputStream = new ByteArrayInputStream(jsonString.getBytes(StandardCharsets.UTF_8));
