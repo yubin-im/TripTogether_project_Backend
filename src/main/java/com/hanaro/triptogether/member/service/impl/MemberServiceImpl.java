@@ -20,7 +20,7 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public LoginResDto login(Long memberIdx, String memberLoginPw,String fcmToken) {
         Member member = memberRepository.findMemberByMemberIdxAndMemberLoginPw(memberIdx, memberLoginPw);
-        member.setFcmToken(fcmToken);
+        if (fcmToken != null) member.setFcmToken(fcmToken);
         if(member == null) {
             return LoginResDto.builder()
                     .message("비밀번호가 맞지 않습니다.")
