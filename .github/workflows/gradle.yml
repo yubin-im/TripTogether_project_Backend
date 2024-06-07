@@ -47,6 +47,7 @@ jobs:
           touch ./triptogether-e7bac-firebase-adminsdk-peiki-127517aa66.json
           echo "${{ secrets.FIREBASE_KEY }}" > ./triptogether-e7bac-firebase-adminsdk-peiki-127517aa66.json
           cat ./triptogether-e7bac-firebase-adminsdk-peiki-127517aa66.json
+          pwd 
         shell: bash
 
       - name: Grant execute permission to Gradle wrapper
