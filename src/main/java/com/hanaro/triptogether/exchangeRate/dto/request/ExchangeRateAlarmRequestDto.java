@@ -25,6 +25,7 @@ public class ExchangeRateAlarmRequestDto {
                 .member(member)
                 .exchangeRate(exchangeRate)
                 .rateType(rateAlarmType)
+                .notified(false)
                 .curRate(BigDecimalConverter.convertStringToBigDecimal(curRate)).build();
     }
 
