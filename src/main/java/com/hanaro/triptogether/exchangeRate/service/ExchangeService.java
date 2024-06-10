@@ -120,4 +120,11 @@ public class ExchangeService {
         }
     }
 
+
+    @Transactional
+    public void deleteAlarm(Long memberIdx) {
+        ExchangeRateAlarm exchangeRateAlarm = exchangeRateAlarmRepository.findExchangeRateAlarmByMember_MemberIdx(memberIdx);
+        exchangeRateAlarmRepository.delete(exchangeRateAlarm);
+    }
+
 }
