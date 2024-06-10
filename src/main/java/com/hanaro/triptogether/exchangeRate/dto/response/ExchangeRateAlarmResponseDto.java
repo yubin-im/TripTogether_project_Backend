@@ -11,8 +11,11 @@ import java.math.BigDecimal;
 @Setter
 @Builder
 public class ExchangeRateAlarmResponseDto {
+
+    private Long idx;
     private String curCode;
     private String curName;
+    private String curIcon;
     private BigDecimal curRate;
     private ExchangeRateAlarmType curType;
 

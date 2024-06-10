@@ -44,7 +44,7 @@ public class ExchangeService {
         List<ExchangeDto> exchangeDtoList = exchangeUtils.getExchangeDataAsDtoList();
         List<ExchangeRateResponse> exchangeRateResponseDtos = new ArrayList<>();
         for(ExchangeDto exchangeDto: exchangeDtoList){
-            ExchangeRate exchangeRate = exchangeRateRepository.findExchangeRateByCurCd(exchangeDto.getCur_unit());
+            ExchangeRate exchangeRate = exchangeRateRepository.findExchangeRateByCurCode(exchangeDto.getCur_unit());
             exchangeRateResponseDtos.add(exchangeDto.toDto(exchangeRate.getCurIcon()));
 
         }
@@ -52,12 +52,16 @@ public class ExchangeService {
     }
 
     public List<ExchangeRateAlarmResponseDto> getExchangeRateAlarmList(Long memberIdx) {
-        return exchangeRateAlarmRepository.findExchangeRateAlarmByMember_MemberIdx(memberIdx).stream().map(exchangeRateAlarm -> exchangeRateAlarm.toDto(exchangeRateAlarm)).toList();
+
+        return exchangeRateAlarmRepository.findExchangeRatesAlarmByMember_MemberIdx(memberIdx).stream().map(entity -> {
+            ExchangeRate exchangeRate = exchangeRateRepository.findById(entity.getExchangeRate().getCurIdx()).orElseThrow(EntityNotFoundException::new);
+            return entity.toDto(entity,exchangeRate);
+        }).toList();
     }
 
     @Transactional
     public void saveExchangeRate(String curCode, String curRate,String curName) {
-        ExchangeRate existingExchangeRate = exchangeRateRepository.findExchangeRateByCurCd(curCode);
+        ExchangeRate existingExchangeRate = exchangeRateRepository.findExchangeRateByCurCode(curCode);
 
         if (existingExchangeRate != null) {
             existingExchangeRate.updateExchangeRate(BigDecimalConverter.convertStringToBigDecimal(curRate));
@@ -65,14 +69,14 @@ public class ExchangeService {
 
         }else {
 
-            exchangeRateRepository.save(ExchangeRate.builder().rate(BigDecimalConverter.convertStringToBigDecimal(curRate)).curCd(curCode).curName(curName).build());
+            exchangeRateRepository.save(ExchangeRate.builder().curRate(BigDecimalConverter.convertStringToBigDecimal(curRate)).curCode(curCode).curName(curName).build());
         }
     }
 
     @Transactional
     public void setExchangeRateAlarm(ExchangeRateAlarmRequestDto requestDto){
         Member member = memberRepository.findById(requestDto.getMemberIdx()).orElseThrow(EntityNotFoundException::new);
-        ExchangeRate exchangeRate = exchangeRateRepository.findExchangeRateByCurCd(requestDto.getCurCode());
+        ExchangeRate exchangeRate = exchangeRateRepository.findExchangeRateByCurCode(requestDto.getCurCode());
         exchangeRateAlarmRepository.save(requestDto.toEntity(member,exchangeRate));
     }
 
@@ -85,9 +89,9 @@ public class ExchangeService {
             if(alarm.getNotified()) {
                 continue;
             }
-            ExchangeRate exchangeRate = exchangeRateRepository.findExchangeRateByCurCd(alarm.getCurCode());
-            BigDecimal currRate = exchangeRate.getRate();
-            if(alarm.getCurCode().equals(exchangeRate.getCurCd())){
+            ExchangeRate exchangeRate = exchangeRateRepository.findExchangeRateByCurCode(alarm.getExchangeRate().getCurCode());
+            BigDecimal currRate = exchangeRate.getCurRate();
+            if(alarm.getExchangeRate().getCurCode().equals(exchangeRate.getCurCode())){
                 boolean notify = false;
                 if (alarm.getRateType() == ExchangeRateAlarmType.OVER && currRate.compareTo(alarm.getCurRate()) >= 0) {
                     notify = true;
@@ -114,6 +118,13 @@ public class ExchangeService {
             alarm.setNotified(false);
             exchangeRateAlarmRepository.save(alarm);
         }
+    }
+
+
+    @Transactional
+    public void deleteAlarm(Long memberIdx) {
+        ExchangeRateAlarm exchangeRateAlarm = exchangeRateAlarmRepository.findExchangeRateAlarmByMember_MemberIdx(memberIdx);
+        exchangeRateAlarmRepository.delete(exchangeRateAlarm);
     }
 
 }

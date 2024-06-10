@@ -21,8 +21,8 @@ public class ExchangeRate {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long curIdx;
 
-    @Column(nullable = false, length = 10)
-    private String curCd;
+    @Column(name = "curCode",nullable = false, length = 10)
+    private String curCode;
 
     @Column(nullable = false, length = 10)
     private String curName;
@@ -31,7 +31,7 @@ public class ExchangeRate {
     private String curIcon;
 
     @Column(nullable = false, precision = 20, scale = 2)
-    private BigDecimal rate;
+    private BigDecimal curRate;
 
     @Column(nullable = false)
     private LocalDateTime createdAt;
@@ -60,7 +60,7 @@ public class ExchangeRate {
     }
 
     public void  updateExchangeRate(BigDecimal curRate){
-        this.rate = curRate;
+        this.curRate = curRate;
     }
 
 
