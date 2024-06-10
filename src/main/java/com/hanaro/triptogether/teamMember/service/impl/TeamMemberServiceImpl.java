@@ -193,13 +193,20 @@ public class TeamMemberServiceImpl implements TeamMemberService {
         Member member = memberRepository.findById(joinTeamMemberReq.getMemberIdx()).orElseThrow(() -> new ApiException(ExceptionEnum.MEMBER_NOT_FOUND));
         Team team = teamRepository.findById(joinTeamMemberReq.getTeamIdx()).orElseThrow(() -> new ApiException(ExceptionEnum.TEAM_NOT_FOUND));
 
-        TeamMember teamMember = TeamMember.builder()
-                .team(team)
-                .member(member)
-                .teamMemberState(TeamMemberState.수락대기)
-                .createdAt(LocalDateTime.now()).build();
+        TeamMember existingTeamMember = teamMemberRepository.findTeamMemberByMemberAndTeam(member, team);
 
-        teamMemberRepository.save(teamMember);
+        if (existingTeamMember != null) {
+            existingTeamMember.updateTeamMemberState(TeamMemberState.수락대기);
+            teamMemberRepository.save(existingTeamMember);
+        } else {
+            TeamMember teamMember = TeamMember.builder()
+                    .team(team)
+                    .member(member)
+                    .teamMemberState(TeamMemberState.수락대기)
+                    .createdAt(LocalDateTime.now())
+                    .build();
+            teamMemberRepository.save(teamMember);
+        }
     }
 
     @Override
