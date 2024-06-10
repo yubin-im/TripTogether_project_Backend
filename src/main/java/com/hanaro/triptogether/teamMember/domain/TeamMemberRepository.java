@@ -1,5 +1,6 @@
 package com.hanaro.triptogether.teamMember.domain;
 
+import com.hanaro.triptogether.enumeration.TeamMemberState;
 import com.hanaro.triptogether.member.domain.Member;
 import com.hanaro.triptogether.team.domain.Team;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -26,6 +27,6 @@ public interface TeamMemberRepository extends JpaRepository<TeamMember,Long> {
 
     TeamMember findTeamMemberByMemberAndTeam(Member member, Team team);
 
-    TeamMember findTeamMemberByTeamMemberState(String teamMemberState);
+    TeamMember findTeamMemberByTeamMemberStateAndTeam_TeamIdx(TeamMemberState teamMemberState, Long team_teamIdx);
 
 }
