@@ -68,6 +68,7 @@ public class TeamServiceImpl implements TeamService {
     public DetailTeamResDto detailTeam(DetailTeamReqDto detailTeamReqDto) {
         Team team = teamRepository.findById(detailTeamReqDto.getTeamIdx()).orElseThrow(() -> new ApiException(ExceptionEnum.TEAM_NOT_FOUND));
         TeamMember teamMember = teamMemberRepository.findById(detailTeamReqDto.getTeamMemberIdx()).orElseThrow(() -> new ApiException(ExceptionEnum.TEAM_MEMBER_NOT_FOUND));
+        Integer teamMemberCount = teamMemberRepository.findTeamMembersByTeamAndTeamMemberState(team);
         Long preferTripIdx = null;
         if(team.getPreferTrip()!=null) preferTripIdx = team.getPreferTrip().getTripIdx();
 
@@ -78,6 +79,7 @@ public class TeamServiceImpl implements TeamService {
                 .accNumber(team.getAccount().getAccNumber())
                 .accBalance(team.getAccount().getAccBalance())
                 .teamMemberState(teamMember.getTeamMemberState())
+                .teamMemberCount(teamMemberCount)
                 .build();
     }
 

@@ -18,4 +18,7 @@ public interface TeamMemberRepository extends JpaRepository<TeamMember,Long> {
     List<TeamMember> findTeamMemberByMember_MemberIdx(Long memberIdx);
 
     Optional<TeamMember> findTeamMemberByMember_MemberIdxAndTeam_TeamIdx(Long memberIdx, Long teamIdx);
+
+    @Query("SELECT count(*) FROM TeamMember tm where tm.team = :team and deletedAt is null and (tm.teamMemberState=\"총무\" or tm.teamMemberState=\"모임원\")")
+    Integer findTeamMembersByTeamAndTeamMemberState(Team team);
 }
