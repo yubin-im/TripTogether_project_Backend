@@ -1,5 +1,6 @@
 package com.hanaro.triptogether.exchangeRate.domain.entity;
 
+import com.hanaro.triptogether.exchangeRate.dto.request.ExchangeRateResponse;
 import com.hanaro.triptogether.member.domain.Member;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -51,6 +52,15 @@ public class ExchangeRate {
     @ManyToOne
     @JoinColumn(name = "deleted_by", insertable=false, updatable=false)
     private Member deletedBy;
+
+    public ExchangeRateResponse toDto(String cur_icon) {
+        return ExchangeRateResponse.builder()
+                .cur_code(curCode)
+                .cur_name(curName)
+                .cur_icon(cur_icon)
+                .cur_rate(String.valueOf(curRate))
+                .build();
+    }
 
     @PrePersist
     protected void onCreate() {

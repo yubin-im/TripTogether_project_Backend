@@ -7,14 +7,12 @@ import com.hanaro.triptogether.exchangeRate.domain.entity.ExchangeRate;
 import com.hanaro.triptogether.exchangeRate.domain.entity.ExchangeRateAlarm;
 import com.hanaro.triptogether.exchangeRate.domain.repository.ExchangeRateAlarmRepository;
 import com.hanaro.triptogether.exchangeRate.domain.repository.ExchangeRateRepository;
-import com.hanaro.triptogether.exchangeRate.dto.response.ExchangeDto;
 import com.hanaro.triptogether.exchangeRate.dto.request.ExchangeRateAlarmRequestDto;
 import com.hanaro.triptogether.exchangeRate.dto.request.ExchangeRateInfoResponseDto;
 import com.hanaro.triptogether.exchangeRate.dto.request.ExchangeRateResponse;
 import com.hanaro.triptogether.exchangeRate.dto.request.FcmSendDto;
 import com.hanaro.triptogether.exchangeRate.dto.response.ExchangeRateAlarmResponseDto;
 import com.hanaro.triptogether.exchangeRate.exception.EntityNotFoundException;
-import com.hanaro.triptogether.exchangeRate.utils.ExchangeUtils;
 import com.hanaro.triptogether.member.domain.Member;
 import com.hanaro.triptogether.member.domain.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -36,19 +34,18 @@ public class ExchangeService {
     private final MemberRepository memberRepository;
     private final ExchangeRateRepository exchangeRateRepository;
 
-    private final ExchangeUtils exchangeUtils;
     private final FirebaseFCMService firebaseFCMService;
 
     public ExchangeRateInfoResponseDto getExchangeRate(){
 
-        List<ExchangeDto> exchangeDtoList = exchangeUtils.getExchangeDataAsDtoList();
-        List<ExchangeRateResponse> exchangeRateResponseDtos = new ArrayList<>();
-        for(ExchangeDto exchangeDto: exchangeDtoList){
-            ExchangeRate exchangeRate = exchangeRateRepository.findExchangeRateByCurCode(exchangeDto.getCur_unit());
-            exchangeRateResponseDtos.add(exchangeDto.toDto(exchangeRate.getCurIcon()));
+        List<ExchangeRate> exchangeRateDtoList = exchangeRateRepository.findAll();
+        List<ExchangeRateResponse> exchangeRateResponses = new ArrayList<>();
+        for(ExchangeRate exchangeDto: exchangeRateDtoList){
+            ExchangeRate exchangeRate = exchangeRateRepository.findExchangeRateByCurCode(exchangeDto.getCurCode());
+            exchangeRateResponses.add(exchangeDto.toDto(exchangeRate.getCurIcon()));
 
         }
-        return ExchangeRateInfoResponseDto.builder().exchangeRateTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"))).exchangeRates(exchangeRateResponseDtos).build();
+        return ExchangeRateInfoResponseDto.builder().exchangeRateTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"))).exchangeRates(exchangeRateResponses).build();
     }
 
     public List<ExchangeRateAlarmResponseDto> getExchangeRateAlarmList(Long memberIdx) {
