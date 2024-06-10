@@ -8,8 +8,8 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ExchangeRateResponse {
-    private String cur_unit; // 통화코드
-    private String cur_name; //국가 이름
+    private String cur_code;
+    private String cur_name;
     private String cur_icon;
-    private String deal_bas_r; // 매매 기준율
+    private String cur_rate;
 }
