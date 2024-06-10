@@ -24,7 +24,7 @@ public interface TeamMemberService {
 
     // 모임원 거절 (수락대기-> 모임원 삭제)
     // 모임원 내보내기 (모임원-> 모임원 삭제)
-    void rejectTeamMember(AcceptTeamMemberReqDto acceptTeamMemberReqDto);
+    void rejectTeamMember(AcceptTeamMemberReqDto acceptTeamMemberReqDto) throws IOException;
 
     // 모임원 전체 거절 (수락대기-> 모임원 삭제)
     void rejectTeamMembers(RejectTeamMembersReqDto rejectTeamMembersReqDto);

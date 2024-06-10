@@ -48,7 +48,7 @@ public class TeamMemberContoller {
 
     // 모임원 거절 (수락대기-> 모임원 삭제)
     @PutMapping("/team/reject-one")
-    public void rejectTeamMember(@RequestBody AcceptTeamMemberReqDto acceptTeamMemberReqDto) {
+    public void rejectTeamMember(@RequestBody AcceptTeamMemberReqDto acceptTeamMemberReqDto) throws IOException {
         teamMemberService.rejectTeamMember(acceptTeamMemberReqDto);
     }
 
@@ -60,7 +60,7 @@ public class TeamMemberContoller {
 
     // 모임원 내보내기 (모임원-> 모임원 삭제)
     @PutMapping("/team/export-member")
-    public void exportTeamMember(@RequestBody AcceptTeamMemberReqDto acceptTeamMemberReqDto) {
+    public void exportTeamMember(@RequestBody AcceptTeamMemberReqDto acceptTeamMemberReqDto) throws IOException {
         teamMemberService.rejectTeamMember(acceptTeamMemberReqDto);
     }
 

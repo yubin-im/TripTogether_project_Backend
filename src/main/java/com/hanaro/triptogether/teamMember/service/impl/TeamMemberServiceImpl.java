@@ -88,7 +88,7 @@ public class TeamMemberServiceImpl implements TeamMemberService {
     public void acceptTeamMember(AcceptTeamMemberReqDto acceptTeamMemberReqDto) throws IOException {
         Team team = teamRepository.findById(acceptTeamMemberReqDto.getTeamIdx()).orElseThrow(() -> new ApiException(ExceptionEnum.TEAM_NOT_FOUND));
         List<TeamMember> teamMembers = teamMemberRepository.findTeamMembersByTeam(team);
-        Member member = memberRepository.findById(acceptTeamMemberReqDto.getMemberIdx()).orElseThrow(EntityNotFoundException::new);
+        Member member = memberRepository.findById(acceptTeamMemberReqDto.getTeamMemberIdx()).orElseThrow(EntityNotFoundException::new);
         for(int i = 0; i < teamMembers.size(); i++) {
             if (acceptTeamMemberReqDto.getTeamMemberIdx().equals(teamMembers.get(i).getTeamMemberIdx())) {
                 teamMembers.get(i).updateTeamMemberState(TeamMemberState.모임원);
@@ -120,10 +120,10 @@ public class TeamMemberServiceImpl implements TeamMemberService {
     // 모임원 내보내기 (모임원-> 모임원 삭제)
     @Transactional
     @Override
-    public void rejectTeamMember(AcceptTeamMemberReqDto acceptTeamMemberReqDto) {
+    public void rejectTeamMember(AcceptTeamMemberReqDto acceptTeamMemberReqDto) throws IOException {
         Team team = teamRepository.findById(acceptTeamMemberReqDto.getTeamIdx()).orElseThrow(() -> new ApiException(ExceptionEnum.TEAM_NOT_FOUND));
         List<TeamMember> teamMembers = teamMemberRepository.findTeamMembersByTeam(team);
-
+        Member member = memberRepository.findById(acceptTeamMemberReqDto.getTeamMemberIdx()).orElseThrow(EntityNotFoundException::new);
         for(int i = 0; i < teamMembers.size(); i++) {
             if (acceptTeamMemberReqDto.getTeamMemberIdx().equals(teamMembers.get(i).getTeamMemberIdx())) {
                 teamMembers.get(i).updateTeamMemberState(TeamMemberState.거절);
@@ -131,6 +131,9 @@ public class TeamMemberServiceImpl implements TeamMemberService {
                 teamMemberRepository.save(teamMembers.get(i));
             }
         }
+
+        firebaseFCMService.sendMessageTo(FcmSendDto.builder().token(member.getFcmToken()).title("모임 참여 거절").body(team.getTeamName()+"모임가입에 거절되었습니다.").build());
+
     }
 
     // 모임원 전체 거절 (수락대기-> 모임원 삭제)
