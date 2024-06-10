@@ -26,4 +26,6 @@ public interface TeamMemberRepository extends JpaRepository<TeamMember,Long> {
 
     TeamMember findTeamMemberByMemberAndTeam(Member member, Team team);
 
+    TeamMember findTeamMemberByTeamMemberState(String teamMemberState);
+
 }

@@ -88,7 +88,7 @@ public class TeamMemberServiceImpl implements TeamMemberService {
     public void acceptTeamMember(AcceptTeamMemberReqDto acceptTeamMemberReqDto) throws IOException {
         Team team = teamRepository.findById(acceptTeamMemberReqDto.getTeamIdx()).orElseThrow(() -> new ApiException(ExceptionEnum.TEAM_NOT_FOUND));
         List<TeamMember> teamMembers = teamMemberRepository.findTeamMembersByTeam(team);
-        Member member = memberRepository.findById(acceptTeamMemberReqDto.getTeamMemberIdx()).orElseThrow(EntityNotFoundException::new);
+        TeamMember member = teamMemberRepository.findById(acceptTeamMemberReqDto.getTeamMemberIdx()).orElseThrow(EntityNotFoundException::new);
         for(int i = 0; i < teamMembers.size(); i++) {
             if (acceptTeamMemberReqDto.getTeamMemberIdx().equals(teamMembers.get(i).getTeamMemberIdx())) {
                 teamMembers.get(i).updateTeamMemberState(TeamMemberState.모임원);
@@ -96,7 +96,7 @@ public class TeamMemberServiceImpl implements TeamMemberService {
                 teamMemberRepository.save(teamMembers.get(i));
             }
         }
-        firebaseFCMService.sendMessageTo(FcmSendDto.builder().token(member.getFcmToken()).title("모임 참여 승인 완료").body(team.getTeamName()+"모임에 가입되었습니다.").build());
+        firebaseFCMService.sendMessageTo(FcmSendDto.builder().token(member.getMember().getFcmToken()).title("모임 참여 승인 완료").body(team.getTeamName()+"모임에 가입되었습니다.").build());
 
     }
 
@@ -204,11 +204,14 @@ public class TeamMemberServiceImpl implements TeamMemberService {
         Team team = teamRepository.findById(joinTeamMemberReq.getTeamIdx()).orElseThrow(() -> new ApiException(ExceptionEnum.TEAM_NOT_FOUND));
 
         TeamMember existingTeamMember = teamMemberRepository.findTeamMemberByMemberAndTeam(member, team);
-
+        TeamMember teamBossMember = teamMemberRepository.findTeamMemberByTeamMemberState("총무");
         if (existingTeamMember != null) {
             existingTeamMember.updateTeamMemberState(TeamMemberState.수락대기);
             existingTeamMember.delete(null, null);
             teamMemberRepository.save(existingTeamMember);
+            if (existingTeamMember.getTeamMemberState().equals("총무")) {
+                firebaseFCMService.sendMessageTo(FcmSendDto.builder().token(teamBossMember.getMember().getFcmToken()).title("모임 참여 요청 알림").body(member.getMemberName()+"님이 "+team.getTeamName()+"모임에 참여하기를 원합니다.").build());
+            }
         } else {
             TeamMember teamMember = TeamMember.builder()
                     .team(team)
@@ -218,7 +221,7 @@ public class TeamMemberServiceImpl implements TeamMemberService {
                     .build();
             teamMemberRepository.save(teamMember);
         }
-        firebaseFCMService.sendMessageTo(FcmSendDto.builder().token(member.getFcmToken()).title("모임 참여 요청 알림").body(member.getMemberName()+"님이 "+team.getTeamName()+"모임에 참여하기를 원합니다.").build());
+
 
     }
 
