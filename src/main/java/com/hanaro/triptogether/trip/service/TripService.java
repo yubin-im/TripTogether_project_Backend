@@ -75,6 +75,7 @@ public class TripService {
                 .tripName(tripReqDto.getTripName())
                 .tripContent(tripReqDto.getTripContent())
                 .tripGoalAmount(tripReqDto.getTripGoalAmount())
+                .tripExpectedAmount(BigDecimal.ZERO)
                 .tripDay(tripReqDto.getTripDay())
                 .tripImg(tripReqDto.getTripImg())
                 .tripStartDay(tripReqDto.getTripStartDay())
@@ -141,8 +142,10 @@ public class TripService {
                     .teamName(trip.getTeam().getTeamName())
                     .tripIdx(trip.getTripIdx())
                     .tripDay(trip.getTripDay())
+                    .tripImg(trip.getTripImg())
                     .tripContent(trip.getTripContent())
                     .tripGoalAmount(trip.getTripGoalAmount())
+                    .tripExpectedAmount(trip.getTripExpectedAmount())
                     .tripName(trip.getTripName())
                     .tripStartDay(trip.getTripStartDay())
                     .build();
@@ -154,8 +157,10 @@ public class TripService {
                 .teamName(trip.getTeam().getTeamName())
                 .tripIdx(trip.getTripIdx())
                 .tripDay(trip.getTripDay())
+                .tripImg(trip.getTripImg())
                 .tripContent(trip.getTripContent())
                 .tripGoalAmount(trip.getTripGoalAmount())
+                .tripExpectedAmount(trip.getTripExpectedAmount())
                 .tripName(trip.getTripName())
                 .tripStartDay(trip.getTripStartDay())
                 .countryIdx(country.getCountryIdx())
@@ -166,9 +171,9 @@ public class TripService {
     }
 
     @Transactional
-    public void setGoalAmount(Long tripIdx, BigDecimal goalAmount) {
+    public void setExpectedAmount(Long tripIdx, BigDecimal expectedAmount) {
         Trip trip = tripRepository.findById(tripIdx)
                 .orElseThrow(() -> new ApiException(ExceptionEnum.TRIP_NOT_FOUND));
-        tripRepository.updateGoalAmount(tripIdx, goalAmount);
+        tripRepository.updateExpectedAmount(tripIdx, expectedAmount);
     }
 }

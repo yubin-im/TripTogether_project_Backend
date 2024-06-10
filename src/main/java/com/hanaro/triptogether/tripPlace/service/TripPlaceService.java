@@ -74,7 +74,7 @@ public class TripPlaceService {
 
         Long tripIdx = tripPlace.getTrip().getTripIdx();
         //goalAmount 계산 및 설정
-        tripService.setGoalAmount(tripIdx, tripPlaceRepository.getSumPlaceAmountByTripIdx(tripIdx));
+        tripService.setExpectedAmount(tripIdx, tripPlaceRepository.getSumPlaceAmountByTripIdx(tripIdx));
     }
 
     @Transactional
@@ -179,8 +179,11 @@ public class TripPlaceService {
             tripPlace.updateOrder(dto.getPlaceOrder(), dto.getTripDate(), member);
         }
 
+        BigDecimal expectedAmount = tripPlaceRepository.getSumPlaceAmountByTripIdx(tripIdx);
+        if (reqDto.getNewPlaces().isEmpty()) expectedAmount = BigDecimal.ZERO;
+
         //goalAmount 계산 및 설정
-        tripService.setGoalAmount(tripIdx, tripPlaceRepository.getSumPlaceAmountByTripIdx(tripIdx));
+        tripService.setExpectedAmount(tripIdx, expectedAmount);
 
     }
 
