@@ -8,8 +8,8 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ExchangeRateResponse {
-    private String cur_code;
-    private String cur_name;
-    private String cur_icon;
-    private String cur_rate;
+    private String curCode;
+    private String curName;
+    private String curIcon;
+    private String curRate;
 }
