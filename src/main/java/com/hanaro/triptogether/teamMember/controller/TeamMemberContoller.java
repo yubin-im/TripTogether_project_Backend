@@ -1,5 +1,6 @@
 package com.hanaro.triptogether.teamMember.controller;
 
+import com.hanaro.triptogether.common.firebase.FirebaseFCMService;
 import com.hanaro.triptogether.teamMember.dto.request.*;
 import com.hanaro.triptogether.teamMember.dto.response.TeamMembersResDto;
 import com.hanaro.triptogether.teamMember.service.TeamMemberService;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -16,6 +18,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class TeamMemberContoller {
     private final TeamMemberService teamMemberService;
+    private final FirebaseFCMService firebaseFCMService;
 
     // 모임원 전체 출력
     @PostMapping("/team")
@@ -32,8 +35,9 @@ public class TeamMemberContoller {
 
     // 모임원 수락 (수락대기-> 모임원으로 상태 변경)
     @PutMapping("/team/accept-one")
-    public void acceptTeamMember(@RequestBody AcceptTeamMemberReqDto acceptTeamMemberReqDto) {
+    public void acceptTeamMember(@RequestBody AcceptTeamMemberReqDto acceptTeamMemberReqDto) throws IOException {
         teamMemberService.acceptTeamMember(acceptTeamMemberReqDto);
+
     }
 
     // 모임원 전체 수락 (수락대기-> 모임원으로 상태 변경)
@@ -68,7 +72,7 @@ public class TeamMemberContoller {
 
     // 모임 가입
     @PostMapping("/team/join")
-    public void joinTeamMember(@RequestBody JoinTeamMemberReq joinTeamMemberReq) {
+    public void joinTeamMember(@RequestBody JoinTeamMemberReq joinTeamMemberReq) throws IOException {
         teamMemberService.joinTeamMember(joinTeamMemberReq);
     }
 }

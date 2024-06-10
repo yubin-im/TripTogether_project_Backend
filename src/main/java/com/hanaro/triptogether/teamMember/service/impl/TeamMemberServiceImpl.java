@@ -1,8 +1,11 @@
 package com.hanaro.triptogether.teamMember.service.impl;
 
+import com.hanaro.triptogether.common.firebase.FirebaseFCMService;
 import com.hanaro.triptogether.enumeration.TeamMemberState;
 import com.hanaro.triptogether.exception.ApiException;
 import com.hanaro.triptogether.exception.ExceptionEnum;
+import com.hanaro.triptogether.exchangeRate.dto.request.FcmSendDto;
+import com.hanaro.triptogether.exchangeRate.exception.EntityNotFoundException;
 import com.hanaro.triptogether.member.domain.Member;
 import com.hanaro.triptogether.member.domain.MemberRepository;
 import com.hanaro.triptogether.team.domain.Team;
@@ -16,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +31,7 @@ public class TeamMemberServiceImpl implements TeamMemberService {
     private final TeamMemberRepository teamMemberRepository;
     private final TeamRepository teamRepository;
     private final MemberRepository memberRepository;
+    private final FirebaseFCMService firebaseFCMService;
 
     // 모임원 전체 출력
     @Transactional
@@ -80,10 +85,10 @@ public class TeamMemberServiceImpl implements TeamMemberService {
     // 모임원 수락 (수락대기-> 모임원으로 상태 변경)
     @Transactional
     @Override
-    public void acceptTeamMember(AcceptTeamMemberReqDto acceptTeamMemberReqDto) {
+    public void acceptTeamMember(AcceptTeamMemberReqDto acceptTeamMemberReqDto) throws IOException {
         Team team = teamRepository.findById(acceptTeamMemberReqDto.getTeamIdx()).orElseThrow(() -> new ApiException(ExceptionEnum.TEAM_NOT_FOUND));
         List<TeamMember> teamMembers = teamMemberRepository.findTeamMembersByTeam(team);
-
+        Member member = memberRepository.findById(acceptTeamMemberReqDto.getMemberIdx()).orElseThrow(EntityNotFoundException::new);
         for(int i = 0; i < teamMembers.size(); i++) {
             if (acceptTeamMemberReqDto.getTeamMemberIdx().equals(teamMembers.get(i).getTeamMemberIdx())) {
                 teamMembers.get(i).updateTeamMemberState(TeamMemberState.모임원);
@@ -91,6 +96,8 @@ public class TeamMemberServiceImpl implements TeamMemberService {
                 teamMemberRepository.save(teamMembers.get(i));
             }
         }
+        firebaseFCMService.sendMessageTo(FcmSendDto.builder().token(member.getFcmToken()).title("모임 참여 승인 완료").body(team.getTeamName()+"모임에 가입되었습니다.").build());
+
     }
 
     // 모임원 전체 수락 (수락대기-> 모임원으로 상태 변경)
@@ -189,7 +196,7 @@ public class TeamMemberServiceImpl implements TeamMemberService {
     // 모임 가입
     @Transactional
     @Override
-    public void joinTeamMember(JoinTeamMemberReq joinTeamMemberReq) {
+    public void joinTeamMember(JoinTeamMemberReq joinTeamMemberReq) throws IOException {
         Member member = memberRepository.findById(joinTeamMemberReq.getMemberIdx()).orElseThrow(() -> new ApiException(ExceptionEnum.MEMBER_NOT_FOUND));
         Team team = teamRepository.findById(joinTeamMemberReq.getTeamIdx()).orElseThrow(() -> new ApiException(ExceptionEnum.TEAM_NOT_FOUND));
 
@@ -200,6 +207,7 @@ public class TeamMemberServiceImpl implements TeamMemberService {
                 .createdAt(LocalDateTime.now()).build();
 
         teamMemberRepository.save(teamMember);
+        firebaseFCMService.sendMessageTo(FcmSendDto.builder().token(member.getFcmToken()).title("모임 참여 요청 알림").body(member.getMemberName()+"님이 "+team.getTeamName()+"모임에 참여하기를 원합니다.").build());
     }
 
     @Override

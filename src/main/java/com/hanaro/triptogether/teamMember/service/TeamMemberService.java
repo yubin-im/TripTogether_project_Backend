@@ -5,6 +5,7 @@ import com.hanaro.triptogether.teamMember.domain.TeamMember;
 import com.hanaro.triptogether.teamMember.dto.request.*;
 import com.hanaro.triptogether.teamMember.dto.response.TeamMembersResDto;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,7 +17,7 @@ public interface TeamMemberService {
     void changeOwner(ChangeOwnerReqDto changeOwnerReqDto);
 
     // 모임원 수락 (수락대기-> 모임원으로 상태 변경)
-    void acceptTeamMember(AcceptTeamMemberReqDto acceptTeamMemberReqDto);
+    void acceptTeamMember(AcceptTeamMemberReqDto acceptTeamMemberReqDto) throws IOException;
 
     // 모임원 전체 수락 (수락대기-> 모임원으로 상태 변경)
     void acceptTeamMembers(AcceptTeamMembersReqDto acceptTeamMembersReqDto);
@@ -44,7 +45,7 @@ public interface TeamMemberService {
     void validateTeamMemberState(TeamMember teamMember);
 
     // 모임 가입
-    void joinTeamMember(JoinTeamMemberReq joinTeamMemberReq);
+    void joinTeamMember(JoinTeamMemberReq joinTeamMemberReq) throws IOException;
 
     // 팀멤버idx로 팀멤버 검색
     TeamMember checkIsMyTeamByTeamMemberIdx(Long team_member_idx);
