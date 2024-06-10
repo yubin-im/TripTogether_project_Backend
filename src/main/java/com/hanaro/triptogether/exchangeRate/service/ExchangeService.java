@@ -2,6 +2,7 @@ package com.hanaro.triptogether.exchangeRate.service;
 
 import com.hanaro.triptogether.common.BigDecimalConverter;
 import com.hanaro.triptogether.common.firebase.FirebaseFCMService;
+import com.hanaro.triptogether.common.response.BaseResponse;
 import com.hanaro.triptogether.enumeration.ExchangeRateAlarmType;
 import com.hanaro.triptogether.exchangeRate.domain.entity.ExchangeRate;
 import com.hanaro.triptogether.exchangeRate.domain.entity.ExchangeRateAlarm;
@@ -12,6 +13,7 @@ import com.hanaro.triptogether.exchangeRate.dto.request.ExchangeRateInfoResponse
 import com.hanaro.triptogether.exchangeRate.dto.request.ExchangeRateResponse;
 import com.hanaro.triptogether.exchangeRate.dto.request.FcmSendDto;
 import com.hanaro.triptogether.exchangeRate.dto.response.ExchangeRateAlarmResponseDto;
+import com.hanaro.triptogether.exchangeRate.exception.AlarmNotFoundException;
 import com.hanaro.triptogether.exchangeRate.exception.EntityNotFoundException;
 import com.hanaro.triptogether.member.domain.Member;
 import com.hanaro.triptogether.member.domain.MemberRepository;
@@ -97,7 +99,8 @@ public class ExchangeService {
                 }
 
                 if (notify) {
-                    firebaseFCMService.sendMessageTo(FcmSendDto.builder().token(alarm.getFcmToken()).title("환율 알림").body("환율이 "+alarm.getCurRate()+" 에 도달했어요~!!.").build());
+                    Member member = memberRepository.findById(alarm.getMember().getMemberIdx()).orElseThrow(EntityNotFoundException::new);
+                    firebaseFCMService.sendMessageTo(FcmSendDto.builder().token(member.getFcmToken()).title("환율 알림").body("환율이 "+alarm.getCurRate()+" 에 도달했어요~!!.").build());
                     alarm.setNotified(true);
                     exchangeRateAlarmRepository.save(alarm);
 
@@ -119,9 +122,11 @@ public class ExchangeService {
 
 
     @Transactional
-    public void deleteAlarm(Long memberIdx) {
-        ExchangeRateAlarm exchangeRateAlarm = exchangeRateAlarmRepository.findExchangeRateAlarmByMember_MemberIdx(memberIdx);
-        exchangeRateAlarmRepository.delete(exchangeRateAlarm);
+    public void deleteAlarm(Long memberIdx, Long alarmIdx)  {
+        ExchangeRateAlarm alarm = exchangeRateAlarmRepository.findByMember_MemberIdxAndAlarmIdx(memberIdx, alarmIdx)
+                .orElseThrow(AlarmNotFoundException::new);
+        exchangeRateAlarmRepository.delete(alarm);
+
     }
 
 }

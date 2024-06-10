@@ -22,7 +22,7 @@ public class ExchangeRate {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long curIdx;
 
-    @Column(name = "curCode",nullable = false, length = 10)
+    @Column(nullable = false, length = 10)
     private String curCode;
 
     @Column(nullable = false, length = 10)
@@ -55,10 +55,10 @@ public class ExchangeRate {
 
     public ExchangeRateResponse toDto(String cur_icon) {
         return ExchangeRateResponse.builder()
-                .cur_code(curCode)
-                .cur_name(curName)
-                .cur_icon(cur_icon)
-                .cur_rate(String.valueOf(curRate))
+                .curCode(curCode)
+                .curName(curName)
+                .curIcon(cur_icon)
+                .curRate(String.valueOf(curRate))
                 .build();
     }
 

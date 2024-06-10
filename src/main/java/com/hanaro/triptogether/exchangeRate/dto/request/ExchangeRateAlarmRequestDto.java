@@ -19,12 +19,10 @@ public class ExchangeRateAlarmRequestDto {
     private String curCode;
     private String curRate;
     private ExchangeRateAlarmType rateAlarmType;
-    private String fcmToken;
 
     public ExchangeRateAlarm toEntity(Member member, ExchangeRate exchangeRate) {
         return ExchangeRateAlarm.builder()
                 .member(member)
-                .fcmToken(fcmToken)
                 .exchangeRate(exchangeRate)
                 .rateType(rateAlarmType)
                 .curRate(BigDecimalConverter.convertStringToBigDecimal(curRate)).build();

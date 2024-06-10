@@ -36,8 +36,6 @@ public class ExchangeRateAlarm extends BaseEntity {
     @Column(name = "cur_rate", nullable = false)
     private BigDecimal curRate;
 
-    private String fcmToken;
-
     private Boolean notified;
 
     @Enumerated(EnumType.STRING)

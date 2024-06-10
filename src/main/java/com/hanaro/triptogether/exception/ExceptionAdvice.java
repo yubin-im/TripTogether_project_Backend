@@ -2,6 +2,7 @@ package com.hanaro.triptogether.exception;
 
 import com.hanaro.triptogether.common.response.BaseResponse;
 import com.hanaro.triptogether.common.response.ResponseStatus;
+import com.hanaro.triptogether.exchangeRate.exception.AlarmNotFoundException;
 import org.apache.coyote.BadRequestException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,4 +35,11 @@ public class ExceptionAdvice {
         BaseResponse response = BaseResponse.res(ResponseStatus.BAD_REQUEST, ex.getMessage());
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(AlarmNotFoundException.class)
+    public ResponseEntity<BaseResponse> handleAlarmNotFoundException() {
+        BaseResponse response = BaseResponse.res(ResponseStatus.ALARM_NOT_FOUND,ResponseStatus.ALARM_NOT_FOUND.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    }
+
 }

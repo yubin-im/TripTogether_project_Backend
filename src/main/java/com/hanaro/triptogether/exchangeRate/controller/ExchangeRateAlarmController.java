@@ -28,9 +28,9 @@ public class ExchangeRateAlarmController {
         return BaseResponse.res(ResponseStatus.SUCCESS,ResponseStatus.SUCCESS.getMessage(),exchangeService.getExchangeRateAlarmList(memberIdx));
     }
 
-    @DeleteMapping("/exchange-rate/{memberIdx}")
-    public BaseResponse deleteAlarm(@PathVariable("memberIdx") Long memberIdx){
-        exchangeService.deleteAlarm(memberIdx);
+    @DeleteMapping("/exchange-rate/{memberIdx}/{alarmIdx}")
+    public BaseResponse deleteAlarm(@PathVariable("memberIdx") Long memberIdx,@PathVariable("alarmIdx")Long alarmIdx){
+        exchangeService.deleteAlarm(memberIdx,alarmIdx);
         return BaseResponse.res(ResponseStatus.SUCCESS,ResponseStatus.SUCCESS.getMessage());
     }
 
