@@ -197,6 +197,7 @@ public class TeamMemberServiceImpl implements TeamMemberService {
 
         if (existingTeamMember != null) {
             existingTeamMember.updateTeamMemberState(TeamMemberState.수락대기);
+            existingTeamMember.delete(null, null);
             teamMemberRepository.save(existingTeamMember);
         } else {
             TeamMember teamMember = TeamMember.builder()
