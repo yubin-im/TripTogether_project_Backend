@@ -15,4 +15,5 @@ public class DetailTeamResDto {
     private BigDecimal accBalance;
     private TeamMemberState teamMemberState;
     private Long preferTripIdx;
+    private Integer teamMemberCount;
 }
