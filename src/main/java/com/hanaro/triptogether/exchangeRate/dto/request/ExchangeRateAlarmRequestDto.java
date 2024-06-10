@@ -27,8 +27,6 @@ public class ExchangeRateAlarmRequestDto {
                 .fcmToken(fcmToken)
                 .exchangeRate(exchangeRate)
                 .rateType(rateAlarmType)
-                .curCode(curCode)
-                .curName(exchangeRate.getCurName())
                 .curRate(BigDecimalConverter.convertStringToBigDecimal(curRate)).build();
     }
 

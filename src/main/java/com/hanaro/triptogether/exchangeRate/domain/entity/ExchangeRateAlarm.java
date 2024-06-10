@@ -33,12 +33,6 @@ public class ExchangeRateAlarm extends BaseEntity {
     @JoinColumn(name = "member_idx", nullable = false)
     private Member member;
 
-    @Column(name = "cur_code", nullable = false)
-    private String curCode;
-
-    @Column(name = "cur_name", nullable = false)
-    private String curName;
-
     @Column(name = "cur_rate", nullable = false)
     private BigDecimal curRate;
 
@@ -54,12 +48,14 @@ public class ExchangeRateAlarm extends BaseEntity {
         this.notified = notify;
     }
 
-    public ExchangeRateAlarmResponseDto toDto(ExchangeRateAlarm exchangeRateAlarm) {
+    public ExchangeRateAlarmResponseDto toDto(ExchangeRateAlarm exchangeRateAlarm,ExchangeRate exchangeRate) {
         return ExchangeRateAlarmResponseDto.builder()
-                .curCode(exchangeRateAlarm.getCurCode())
+                .idx(exchangeRateAlarm.alarmIdx)
+                .curIcon(exchangeRate.getCurIcon())
+                .curCode(exchangeRate.getCurCode())
                 .curType(exchangeRateAlarm.getRateType())
                 .curRate(exchangeRateAlarm.getCurRate())
-                .curName(exchangeRateAlarm.getCurName())
+                .curName(exchangeRate.getCurName())
                 .build();
     }
 

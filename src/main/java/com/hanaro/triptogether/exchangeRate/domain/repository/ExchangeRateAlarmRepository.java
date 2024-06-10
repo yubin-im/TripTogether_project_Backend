@@ -7,5 +7,7 @@ import java.util.List;
 
 public interface ExchangeRateAlarmRepository extends JpaRepository<ExchangeRateAlarm,Long> {
 
-    List<ExchangeRateAlarm> findExchangeRateAlarmByMember_MemberIdx(Long memberIdx);
+    List<ExchangeRateAlarm> findExchangeRatesAlarmByMember_MemberIdx(Long memberIdx);
+
+    ExchangeRateAlarm findExchangeRateAlarmByMember_MemberIdx(Long memberIdx);
 }

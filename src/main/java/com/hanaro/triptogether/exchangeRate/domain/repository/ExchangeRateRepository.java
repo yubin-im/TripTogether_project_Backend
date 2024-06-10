@@ -5,5 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ExchangeRateRepository extends JpaRepository<ExchangeRate,Long> {
 
-    ExchangeRate findExchangeRateByCurCd(String curCd);
+    ExchangeRate findExchangeRateByCurCode(String curCode);
 }

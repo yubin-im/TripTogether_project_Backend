@@ -36,8 +36,8 @@ public class ExchangeDto {
 
     public ExchangeRate saveExchangeRate() {
         return ExchangeRate.builder()
-                .rate(BigDecimalConverter.convertStringToBigDecimal(deal_bas_r))
-                .curCd(cur_unit)
+                .curRate(BigDecimalConverter.convertStringToBigDecimal(deal_bas_r))
+                .curCode(cur_unit)
                 .curName(cur_nm)
                 .build();
     }
