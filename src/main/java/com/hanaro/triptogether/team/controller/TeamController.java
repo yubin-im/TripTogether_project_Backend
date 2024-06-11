@@ -1,14 +1,13 @@
 package com.hanaro.triptogether.team.controller;
 
 import com.hanaro.triptogether.team.dto.request.*;
+import com.hanaro.triptogether.team.dto.response.AddTeamResDto;
 import com.hanaro.triptogether.team.dto.response.DetailTeamResDto;
 import com.hanaro.triptogether.team.dto.response.InviteTeamResDto;
 import com.hanaro.triptogether.team.dto.response.ManageTeamResDto;
 import com.hanaro.triptogether.team.service.TeamService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -17,8 +16,8 @@ public class TeamController {
 
     // 모임서비스 가입
     @PostMapping("/account/add")
-    public void addTeam(@RequestBody AddTeamReqDto addTeamReqDto) {
-        teamService.addTeam(addTeamReqDto);
+    public AddTeamResDto addTeam(@RequestBody AddTeamReqDto addTeamReqDto) {
+        return teamService.addTeam(addTeamReqDto);
     }
 
     // 모임서비스 상세

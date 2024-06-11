@@ -10,6 +10,7 @@ import com.hanaro.triptogether.member.domain.MemberRepository;
 import com.hanaro.triptogether.team.domain.Team;
 import com.hanaro.triptogether.team.domain.TeamRepository;
 import com.hanaro.triptogether.team.dto.request.*;
+import com.hanaro.triptogether.team.dto.response.AddTeamResDto;
 import com.hanaro.triptogether.team.dto.response.DetailTeamResDto;
 import com.hanaro.triptogether.team.dto.response.InviteTeamResDto;
 import com.hanaro.triptogether.team.dto.response.ManageTeamResDto;
@@ -18,7 +19,6 @@ import com.hanaro.triptogether.teamMember.domain.TeamMember;
 import com.hanaro.triptogether.teamMember.domain.TeamMemberRepository;
 import com.hanaro.triptogether.trip.domain.Trip;
 import com.hanaro.triptogether.trip.domain.TripRepository;
-import com.hanaro.triptogether.trip.service.TripService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,7 +38,7 @@ public class TeamServiceImpl implements TeamService {
     // 모임서비스 가입
     @Transactional
     @Override
-    public void addTeam(AddTeamReqDto addTeamReqDto) {
+    public AddTeamResDto addTeam(AddTeamReqDto addTeamReqDto) {
         Account account = accountRepository.findById(addTeamReqDto.getAccIdx()).orElseThrow(() -> new ApiException(ExceptionEnum.ACCOUNT_NOT_FOUND));
         Member member = memberRepository.findById(addTeamReqDto.getMemberIdx()).orElseThrow(() -> new ApiException(ExceptionEnum.MEMBER_NOT_FOUND));
 
@@ -60,6 +60,13 @@ public class TeamServiceImpl implements TeamService {
 
         teamRepository.save(team);
         teamMemberRepository.save(teamMember);
+
+        Long teamIdx = team.getTeamIdx();
+        AddTeamResDto addTeamResDto = AddTeamResDto.builder()
+                .teamIdx(teamIdx)
+                .build();
+
+        return addTeamResDto;
     }
 
     // 모임서비스 상세
