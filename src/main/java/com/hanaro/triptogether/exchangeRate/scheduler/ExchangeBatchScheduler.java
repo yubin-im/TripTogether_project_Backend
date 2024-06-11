@@ -8,6 +8,7 @@ import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 @Component
 @RequiredArgsConstructor
@@ -23,7 +24,8 @@ public class ExchangeBatchScheduler {
         exchangeService.resetNotifiedFlags();
     }
 
-    @Scheduled(cron = "0 * * * * *")
+//    @Scheduled(cron = "* * * * * *")
+    @Transactional
     public void run() throws Exception {
         JobParameters parameters = new JobParametersBuilder()
                 .addString("jobName","exchangeJob"+System.currentTimeMillis())
