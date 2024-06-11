@@ -2,13 +2,14 @@ package com.hanaro.triptogether.team.service;
 
 import com.hanaro.triptogether.team.domain.Team;
 import com.hanaro.triptogether.team.dto.request.*;
+import com.hanaro.triptogether.team.dto.response.AddTeamResDto;
 import com.hanaro.triptogether.team.dto.response.DetailTeamResDto;
 import com.hanaro.triptogether.team.dto.response.InviteTeamResDto;
 import com.hanaro.triptogether.team.dto.response.ManageTeamResDto;
 
 public interface TeamService {
     // 모임서비스 가입
-    void addTeam(AddTeamReqDto addTeamReqDto);
+    AddTeamResDto addTeam(AddTeamReqDto addTeamReqDto);
 
     // 모임서비스 상세
     DetailTeamResDto detailTeam(DetailTeamReqDto detailTeamReqDto);
