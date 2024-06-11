@@ -139,11 +139,10 @@ public class FirebaseFCMService {
 //        }
 //
 //    }
-    public BaseResponse notificationAlarm(String title, String body, DuesAlarmRequestDto duesAlarmRequestDto) throws IOException, FirebaseMessagingException {
-
-        //firebaseCreateOption();
+    public BaseResponse notificationAlarm(String title, String body, DuesAlarmRequestDto duesAlarmRequestDto) {
 
         List<String> tokenList = new ArrayList<>();
+        //모임원 fcm token 가져오기
         for (DuesAlarmRequestDto.RequestMemberInfo memberInfo:duesAlarmRequestDto.getMemberInfos()) {
             Member member = memberRepository.findById(memberInfo.getMemberIdx()).orElseThrow(()->new ApiException(ExceptionEnum.MEMBER_NOT_FOUND));
             tokenList.add(member.getFcmToken());
@@ -158,10 +157,11 @@ public class FirebaseFCMService {
                 .build();
 
         try {
+            // sendEachForMulticast를 이용해서 다중 사용자에게 동시 알람
             BatchResponse response = FirebaseMessaging.getInstance().sendEachForMulticast(message);
-            System.out.println("FCMsendsuccess-"+response);
+            System.out.println("FCM success-"+response);
         } catch (FirebaseMessagingException e) {
-            System.out.println("FCMsend-"+e.getMessage());
+            System.out.println("FCM error-"+e.getMessage());
         }
 
         //BatchResponse response = FirebaseMessaging.getInstance().sendEachForMulticast(message);

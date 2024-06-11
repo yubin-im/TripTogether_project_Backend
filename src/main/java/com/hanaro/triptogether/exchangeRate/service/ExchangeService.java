@@ -80,7 +80,7 @@ public class ExchangeService {
     }
 
     @Transactional
-    public void checkNotifyAlarms() throws IOException {
+    public synchronized void checkNotifyAlarms() throws IOException {
 
         List<ExchangeRateAlarm> alarms = exchangeRateAlarmRepository.findAll();
 
@@ -92,18 +92,19 @@ public class ExchangeService {
             BigDecimal currRate = exchangeRate.getCurRate();
             if(alarm.getExchangeRate().getCurCode().equals(exchangeRate.getCurCode())){
                 boolean notify = false;
+                Member member = memberRepository.findById(alarm.getMember().getMemberIdx()).orElseThrow(EntityNotFoundException::new);
+
                 if (alarm.getRateType() == ExchangeRateAlarmType.OVER && currRate.compareTo(alarm.getCurRate()) >= 0) {
                     notify = true;
+                    firebaseFCMService.sendMessageTo(FcmSendDto.builder().token(member.getFcmToken()).title("환율 알림").body("환율이 "+alarm.getCurRate()+" 이상에 도달했어요!").build());
                 } else if (alarm.getRateType() == ExchangeRateAlarmType.LESS && currRate.compareTo(alarm.getCurRate()) <= 0) {
                     notify = true;
-                }
+                    firebaseFCMService.sendMessageTo(FcmSendDto.builder().token(member.getFcmToken()).title("환율 알림").body("환율이 "+alarm.getCurRate()+" 이하에 도달했어요!").build());
 
+                }
                 if (notify) {
-                    Member member = memberRepository.findById(alarm.getMember().getMemberIdx()).orElseThrow(EntityNotFoundException::new);
-                    firebaseFCMService.sendMessageTo(FcmSendDto.builder().token(member.getFcmToken()).title("환율 알림").body("환율이 "+alarm.getCurRate()+" 에 도달했어요~!!.").build());
                     alarm.setNotified(true);
                     exchangeRateAlarmRepository.save(alarm);
-
                 }
             }
 

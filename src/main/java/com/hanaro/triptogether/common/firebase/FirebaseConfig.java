@@ -27,16 +27,12 @@ public class FirebaseConfig {
         byte[] jsonBytes = resource.readAllBytes();
         String jsonString = new String(jsonBytes, StandardCharsets.UTF_8);
 
-        // Gson을 사용하여 JSON 문자열을 JsonObject로 파싱
         Gson gson = new Gson();
         JsonObject jsonObject = JsonParser.parseString(jsonString).getAsJsonObject();
 
-        // JsonObject를 다시 문자열로 변환
         String jsonFormattedString = gson.toJson(jsonObject);
 
-        // 문자열을 다시 InputStream으로 변환
         InputStream jsonInputStream = new ByteArrayInputStream(jsonFormattedString.getBytes(StandardCharsets.UTF_8));
-
 
         FirebaseOptions options = FirebaseOptions
                 .builder()

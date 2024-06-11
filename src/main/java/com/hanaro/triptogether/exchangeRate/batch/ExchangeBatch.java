@@ -48,12 +48,12 @@ public class ExchangeBatch {
 
             List<ExchangeDto> exchangeDtoList = exchangeUtils.getExchangeDataAsDtoList();
 
+            // 10분마다 실시간 환율 정보 db에 저장
             for(ExchangeDto exchangeDto: exchangeDtoList){
                 exchangeService.saveExchangeRate(exchangeDto.getCur_unit(),exchangeDto.getDeal_bas_r(),exchangeDto.getCur_nm());
-
             }
 
-            exchangeService.checkNotifyAlarms();
+            exchangeService.checkNotifyAlarms(); //환율 푸시알림
             return RepeatStatus.FINISHED;
         }));
     }

@@ -23,7 +23,7 @@ public class ExchangeBatchScheduler {
         exchangeService.resetNotifiedFlags();
     }
 
-    //@Scheduled(cron = "0/10 * * * * *")
+    @Scheduled(cron = "0 * * * * *")
     public void run() throws Exception {
         JobParameters parameters = new JobParametersBuilder()
                 .addString("jobName","exchangeJob"+System.currentTimeMillis())
