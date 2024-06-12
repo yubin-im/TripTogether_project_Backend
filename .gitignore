@@ -33,5 +33,11 @@ out/
 /nbdist/
 /.nb-gradle/
 
+src/main/**/application.properties
+src/main/**/db.sql
+src/main/**/triptogether-e7bac-firebase-adminsdk-peiki-127517aa66.json
+
 ### VS Code ###
 .vscode/
+
+application.properties

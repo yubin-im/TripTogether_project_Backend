@@ -1,14 +1,16 @@
 package com.hanaro.triptogether.accountTransactionDetails;
 
-import com.hanaro.triptogether.account.Account;
+import com.hanaro.triptogether.account.domain.Account;
+import com.hanaro.triptogether.dues.domain.entity.BaseEntity;
 import com.hanaro.triptogether.enumeration.TransType;
+import com.hanaro.triptogether.member.domain.Member;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "Account_transaction_details")
-public class AccountTransactionDetails {
+@Table(name = "account_transaction_details")
+public class AccountTransactionDetails extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long transIdx;
@@ -27,7 +29,9 @@ public class AccountTransactionDetails {
     @Column(nullable = false)
     private LocalDateTime transDate;
 
-    private String transName;
+    @ManyToOne
+    @JoinColumn(name = "member_idx", nullable = false)
+    private Member member;
 
     @Column(nullable = false, length = 255)
     private String transFrom;
@@ -35,9 +39,5 @@ public class AccountTransactionDetails {
     @Column(nullable = false, length = 255)
     private String transTo;
 
-    private LocalDateTime lastModifiedAt;
-    private Long lastModifiedBy;
-    private LocalDateTime deletedAt;
-    private Long deletedBy;
 
 }

@@ -1,0 +1,108 @@
+name: Java CI with Gradle
+
+on:
+  push:
+    branches:
+      - dev
+  pull_request:
+    branches:
+      - dev
+    types:
+      - closed
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Log event details
+        run: |
+          echo "Event name: ${{ github.event_name }}"
+          echo "Event action: ${{ github.event.action }}"
+
+      - name: Setup MySQL
+        uses: samin/mysql-action@v1
+        with:
+          character set server: 'utf8'
+          mysql database: ${{ secrets.MYSQL_DATABASE }}
+          mysql user: 'root'
+          mysql password: ${{ secrets.MYSQL_PASSWORD }}
+
+      - name: Make application.properties
+        run: |
+          mkdir -p ./src/main/resources
+          cd ./src/main/resources 
+          touch ./application.properties 
+          echo "${{ secrets.PROPERTIES }}" > ./application.properties
+          touch ./triptogether-e7bac-firebase-adminsdk-peiki-127517aa66.json
+          echo "${{ secrets.FIREBASE_KEY }}" > ./triptogether-e7bac-firebase-adminsdk-peiki-127517aa66.json
+          cat ./triptogether-e7bac-firebase-adminsdk-peiki-127517aa66.json
+          pwd 
+          ls
+        shell: bash
+
+      - name: Grant execute permission to Gradle wrapper
+        run: chmod +x ./gradlew
+
+      - name: Build with Gradle Wrapper
+        run: ./gradlew build
+
+      - name: Dev Docker build & push to prod
+        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/dev' || (github.event_name == 'pull_request' && github.event.pull_request.base.ref == 'dev' && github.event.pull_request.merged == true) }}
+        run: |
+          docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+          docker build -f Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/hanaro-trip-together .       
+          docker push ${{ secrets.DOCKER_USERNAME }}/hanaro-trip-together
+
+      - name: Deploy to dev
+        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/dev' || (github.event_name == 'pull_request' && github.event.pull_request.base.ref == 'dev' && github.event.pull_request.merged == true) }}
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST_DEV }}
+          username: ec2-user
+          key: ${{ secrets.PRIVATE_KEY }}
+          script: |
+            sudo docker ps
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/hanaro-trip-together
+            sudo docker stop hanaro-trip-together
+            sudo docker rm hanaro-trip-together
+            sudo docker run -it -d -p 8080:8080 --name hanaro-trip-together ${{ secrets.DOCKER_USERNAME }}/hanaro-trip-together
+            sudo docker image prune -f
+
+  notify_slack_failed:
+    needs: [build]
+    runs-on: ubuntu-latest
+    if: failure()
+    steps:
+      - name: Notify Slack on failure
+        uses: rtCamp/action-slack-notify@v2
+        with:
+          status: 'failure'
+          author_name: 'SERVER CI/CD'
+          fields: 'Job ID: ${{ github.run_id }} FAILED'
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+
+  notify_slack_success:
+    needs: [build]
+    runs-on: ubuntu-latest
+    if: success()
+    steps:
+      - name: Notify Slack on success
+        uses: rtCamp/action-slack-notify@v2
+        with:
+          status: 'success'
+          author_name: 'SERVER CI/CD'
+          fields: 'Job ID: ${{ github.run_id }} SUCCEEDED'
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
